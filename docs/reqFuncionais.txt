@@ -1,34 +1,127 @@
-Requisitos Funcionais do Speed Market
+REQUISITOS FUNCIONAIS: 
+-------------------------------
+DCU01 - Gerenciar Cliente
+Ator: Administrador do Sistema 
+[RF001] Gerenciar clientes
 
-1. Cadastro e login de usuários
-   - O sistema deve permitir que clientes criem contas com e-mail, telefone ou login social.
-   - O sistema deve permitir que entregadores e administradores também tenham login diferenciado.
+Casos relacionados:
+Atualizar informações pessoais do cliente (<<include>>)
+Bloquear/desbloquear cliente (<<extend>>)
+Visualizar status do cliente (ex: ativo, inativo) (<<extend>>)
+Alterar permissões ou status de acesso (<<extend>>)
 
-2. Busca e visualização de supermercados parceiros
-   - O sistema deve permitir que o cliente visualize a lista de supermercados disponíveis por região.
-   - O sistema deve permitir a busca por nome do mercado ou por produto.
+[RF001] O sistema deve permitir o gerenciamento de clientes.
+Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF001.1] O sistema deve permitir o cadastro, edição, visualização e exclusão de clientes (CRUD).
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF001.2] O sistema deve permitir o bloqueio ou desbloqueio de um cliente.
+ Prioridade: ( )Essencial (x)Importante ( )Desejável
+[RF001.3] O sistema deve mostrar o status do cliente (ativo, inativo).
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF001.4] O sistema deve permitir alterar permissões de acesso de um cliente (ex: permitir apenas visualização, restringir ações de compra).
+ Prioridade: ( )Essencial (x)Importante ( )Desejável
+-------------------------------
+DCU02 - Gerenciar Produtos
+Ator: Administrador da Empresa
+[RF002] Gerenciar produtos
 
-3. Catálogo de produtos
-   - O sistema deve exibir os produtos disponíveis em cada supermercado, com preço e quantidade.
-   - O sistema deve permitir a seleção de múltiplos produtos para adicionar ao carrinho.
+Casos relacionados:
+Adicionar novos produtos ao catálogo (<<include>>)
+Editar produto existente (<<extend>>)
+Excluir produto (<<extend>>)
+Verificar estoque do produto (<<include>>)
+Definir preços e promoções (<<include>>)
+Associar produto a categorias ou tags (<<include>>)
 
-4. Pedidos e pagamentos
-   - O sistema deve permitir que o cliente finalize a compra diretamente pelo aplicativo.
-   - O sistema deve se integrar com empresas de pagamento virtual para processar transações.
+[RF002] O sistema deve permitir o gerenciamento de produtos.
+Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF002.1] O sistema deve permitir o cadastro, edição, visualização e exclusão de produtos (CRUD).
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF002.2] O sistema deve verificar e atualizar o estoque dos produtos.
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF002.3] O sistema deve permitir a definição de preços e promoções por produto.
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF002.4] O sistema deve permitir associar produtos a categorias ou tags.
+ Prioridade: ( )Essencial (x)Importante ( )Desejável
+-------------------------------
+DCU03 - Realizar Pedido
+Ator: Cliente
+[RF003] Realizar pedidos
 
-5. Gestão de entregas
-   - O sistema deve enviar o pedido para um entregador disponível.
-   - O sistema deve permitir que o cliente acompanhe o status da entrega em tempo real.
-   - O entregador deve poder aceitar ou recusar entregas.
+Casos relacionados:
+Visualizar itens recomendados ou promoções (<<include>>)
+Salvar pedido para compras futuras (<<extend>>)
+Aplicar cupons de desconto (<<include>>)
+Definir data de entrega preferencial (<<include>>)
+Selecionar endereço de entrega (<<include>>)
 
-6. Notificações
-   - O sistema deve enviar notificações para o cliente sobre o andamento do pedido (confirmação, saída para entrega, entrega concluída).
-   - O sistema deve notificar o entregador quando um novo pedido estiver disponível.
+[RF003] O sistema deve permitir a realização de pedidos.
+Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF003.1] O sistema deve permitir o cliente adicionar itens ao pedido e finalizar a compra.
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF003.2] O sistema deve permitir aplicar cupons de desconto.
+ Prioridade: ( )Essencial (x)Importante ( )Desejável
+[RF003.3] O sistema deve permitir escolher endereço de entrega.
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF003.4] O sistema deve permitir salvar pedidos para compras futuras.
+ Prioridade: ( )Essencial ( )Importante (x)Desejável
+[RF003.5] O sistema deve permitir escolher data de entrega preferencial.
+ Prioridade: ( )Essencial (x)Importante ( )Desejável
+-------------------------------
+DCU04 - Registrar Pagamento
+Ator: Cliente
+[RF004] Registrar pagamento
 
-7. Atendimento ao cliente
-   - O sistema deve oferecer suporte via WhatsApp ou chat integrado.
-   - O sistema deve permitir que o cliente avalie a entrega e o atendimento.
+Casos relacionados:
+Confirmar pagamento (<<include>>)
+Gerenciar métodos de pagamento salvos (<<extend>>)
+Emitir nota fiscal ou recibo de pagamento (<<include>>)
+Realizar pagamento com parcelamento (<<extend>>)
 
-8. Administração
-   - O sistema deve permitir que administradores cadastrem supermercados parceiros.
-   - O sistema deve permitir a gestão de entregadores, pedidos, e relatórios de vendas.
+[RF004] O sistema deve permitir o registro de pagamento.
+Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF004.1] O sistema deve registrar pagamentos com os métodos: PIX, débito, crédito ou dinheiro.
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF004.2] O sistema deve emitir comprovante ou nota fiscal após o pagamento.
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF004.3] O sistema deve permitir gerenciar métodos de pagamento salvos.
+ Prioridade: ( )Essencial (x)Importante ( )Desejável
+[RF004.4] O sistema deve permitir realizar pagamento parcelado.
+ Prioridade: ( )Essencial ( )Importante (x)Desejável
+-------------------------------
+DCU05 - Avaliar Produto
+Ator: Cliente
+[RF005.1] Avaliar produtos
+
+Casos relacionados:
+Visualizar avaliações anteriores de outros clientes (<<include>>)
+Alterar avaliação do produto (<<extend>>)
+Compartilhar avaliação nas redes sociais (<<extend>>)
+
+[RF005] O sistema deve permitir avaliações de produtos.
+Prioridade: ( )Essencial (x)Importante ( )Desejável
+[RF005.1] O sistema deve permitir o cliente avaliar um produto após a compra.
+ Prioridade: (x)Essencial ( )Importante ( )Desejável
+[RF005.2] O sistema deve mostrar avaliações anteriores de outros clientes.
+ Prioridade: ( )Essencial (x)Importante ( )Desejável
+[RF005.3] O sistema deve permitir editar uma avaliação feita anteriormente.
+ Prioridade: ( )Essencial ( )Importante (x)Desejável
+[RF005.4] O sistema deve permitir compartilhar uma avaliação nas redes sociais.
+ Prioridade: ( )Essencial ( )Importante (x)Desejável
+-------------------------------
+✅ Requisitos Não Funcionais – Speed Market
+[RN001] Linguagem de programação: JavaScript
+
+[RN002] Framework de back-end: Node.js
+
+[RN003] ORM: Prisma
+
+[RN004] IDE de desenvolvimento: VSCode
+
+[RN005] Ferramenta de testes de API: Insomnia
+
+[RN006] Banco de dados relacional com suporte a funções nativas de data/hora
+
+[RN007] Infraestrutura hospedada em nuvem com escalabilidade
+
+[RN008] Interface acessível via Mobile e Web

@@ -5,3 +5,4 @@ cronograma:
 14/03 : Modelar o banco de dados
 24/04 : Backend com prisma
 25/04 : Elencar requisitos funcionais
+25/04 : MER e DCU 
