@@ -20,6 +20,12 @@ const read = async (req, res) => {
 const readOne = async (req, res) => {
     try {
         const empresa = await prisma.empresa.findUnique({
+            select:{
+                id: true,
+                nome: true,
+                cnpj: true,
+                email:true
+            },
             where: {
                 id: Number(req.params.id)
             }

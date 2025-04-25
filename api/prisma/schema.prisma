@@ -11,6 +11,8 @@ datasource db {
 model Empresa {
   id         Int           @id @default(autoincrement())
   nome       String        @db.VarChar(255)
+  cnp        Int @unique
+  email      String        @db.VarChar(255) @unique
   produtos   Produto[]
   empregados Funcionario[]
   enderecos  Endereco[]
@@ -60,9 +62,9 @@ model Funcionario {
 model Cliente {
   id         Int         @id @default(autoincrement())
   nome       String      @db.VarChar(255)
-  cpf        String      @db.VarChar(11)
-  telefone   String      @db.VarChar(15)
-  email      String      @db.VarChar(255)
+  cpf        String      @db.VarChar(11) @unique
+  telefone   String      @db.VarChar(15) @unique
+  email      String      @db.VarChar(255) @unique
   enderecos  Endereco[]
   pedidos    Pedido[]
   avaliacoes Avaliacao[]
@@ -131,7 +133,7 @@ model Avaliacao {
   id             Int      @id @default(autoincrement())
   id_cliente     Int
   id_produto     Int
-  nota           Int
+  nota           Int 
   comentario     String   @db.VarChar(255)
   data_avaliacao DateTime @default(now())
   cliente        Cliente  @relation(fields: [id_cliente], references: [id])
