@@ -1,0 +1,34 @@
+Requisitos Funcionais do Speed Market
+
+1. Cadastro e login de usuários
+   - O sistema deve permitir que clientes criem contas com e-mail, telefone ou login social.
+   - O sistema deve permitir que entregadores e administradores também tenham login diferenciado.
+
+2. Busca e visualização de supermercados parceiros
+   - O sistema deve permitir que o cliente visualize a lista de supermercados disponíveis por região.
+   - O sistema deve permitir a busca por nome do mercado ou por produto.
+
+3. Catálogo de produtos
+   - O sistema deve exibir os produtos disponíveis em cada supermercado, com preço e quantidade.
+   - O sistema deve permitir a seleção de múltiplos produtos para adicionar ao carrinho.
+
+4. Pedidos e pagamentos
+   - O sistema deve permitir que o cliente finalize a compra diretamente pelo aplicativo.
+   - O sistema deve se integrar com empresas de pagamento virtual para processar transações.
+
+5. Gestão de entregas
+   - O sistema deve enviar o pedido para um entregador disponível.
+   - O sistema deve permitir que o cliente acompanhe o status da entrega em tempo real.
+   - O entregador deve poder aceitar ou recusar entregas.
+
+6. Notificações
+   - O sistema deve enviar notificações para o cliente sobre o andamento do pedido (confirmação, saída para entrega, entrega concluída).
+   - O sistema deve notificar o entregador quando um novo pedido estiver disponível.
+
+7. Atendimento ao cliente
+   - O sistema deve oferecer suporte via WhatsApp ou chat integrado.
+   - O sistema deve permitir que o cliente avalie a entrega e o atendimento.
+
+8. Administração
+   - O sistema deve permitir que administradores cadastrem supermercados parceiros.
+   - O sistema deve permitir a gestão de entregadores, pedidos, e relatórios de vendas.
