@@ -1,0 +1,3 @@
+inicio com animação
+tela de login/cadastro
+home mostrando detalhes da empresa com menu 
