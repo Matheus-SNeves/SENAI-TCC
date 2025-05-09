@@ -11,7 +11,7 @@ datasource db {
 model Empresa {
   id         Int           @id @default(autoincrement())
   nome       String        @db.VarChar(255)
-  cnp        Int @unique
+  cnpj        Int @unique
   email      String        @db.VarChar(255) @unique
   produtos   Produto[]
   empregados Funcionario[]
@@ -133,7 +133,7 @@ model Avaliacao {
   id             Int      @id @default(autoincrement())
   id_cliente     Int
   id_produto     Int
-  nota           Int 
+  nota           Int  
   comentario     String   @db.VarChar(255)
   data_avaliacao DateTime @default(now())
   cliente        Cliente  @relation(fields: [id_cliente], references: [id])
