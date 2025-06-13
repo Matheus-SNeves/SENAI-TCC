@@ -1,0 +1,33 @@
+1. Rosas (Forças - Pontos Positivos e Fortes da Nossa Realidade)
+
+Proposta de Valor Clara e Atraente: O foco em entrega rápida e emergencial de produtos essenciais de supermercado é uma proposição de valor forte e diferenciada, atendendo a uma necessidade específica e urgente do cliente.
+Acessibilidade Multi-Plataforma: O serviço pode ser acessado via aplicativo, com suporte e comunicação via WhatsApp e Instagram, ampliando o alcance e a conveniência para o cliente.
+Abrangência de Meios de Pagamento: Suporte a Pix e Cartão de Crédito, além de outras opções, oferece flexibilidade ao cliente e facilita a conversão de vendas.
+Modelo de Negócio com Receita Dupla: Geração de receita tanto pelo frete quanto por uma porcentagem da venda dos produtos, diversificando as fontes de faturamento.
+Estrutura de Banco de Dados Robusta: O projeto conta com uma modelagem de banco de dados que inclui entidades essenciais como Empresa, Produto, Cliente, Pedido, Pagamento e Avaliação, mostrando uma base sólida para o desenvolvimento do sistema.
+Foco no Atendimento ao Cliente: A prioridade é um "total atendimento para que o cliente se sinta confortável e seguro", o que pode gerar fidelidade e boas avaliações.
+
+2. Espinhos (Fraquezas - Fatores Negativos e Fraquezas Internas)
+
+Dependência de Parcerias: A viabilidade do marketplace depende diretamente da adesão de vários supermercados parceiros e empresas de pagamento/servidores em nuvem. Negociações e integração podem ser complexas e demoradas.
+Complexidade Logística: O foco em "entrega rápida e emergencial" exige uma logística de entregadores e veículos altamente eficiente e otimizada. Gerenciar rotas, tempo de resposta e manter veículos operacionais (com custos de gasolina e manutenção) pode ser um desafio significativo.
+Custo de Mão de Obra e Infraestrutura: A estimativa de R$ 100.320,00 para apenas 2 programadores é um custo inicial alto para a equipe de desenvolvimento. Além disso, há custos recorrentes com nuvem, salários de entregadores e outros.
+Gerenciamento do Prazo Acelerado: O prazo final de 18/12/2025, sendo uma antecipação de 3 meses, pode gerar pressão na equipe e comprometer a qualidade se não houver um gerenciamento rigoroso ou aumento de recursos.
+Dependência de Tecnologia: A operação é totalmente dependente da estabilidade e funcionalidade do aplicativo e da infraestrutura de nuvem. Falhas técnicas podem impactar diretamente o serviço.
+
+3. Brotos (Oportunidades - Potenciais Positivos Externos)
+
+Crescimento do Mercado de Delivery: O mercado de entregas, especialmente de alimentos e produtos essenciais, continua em expansão, impulsionado pela conveniência e mudanças nos hábitos de consumo.
+Demanda por Conforto e Urgência: A segmentação de clientes que "não conseguem sair de casa" ou que "precisam de produtos de forma urgente" indica um nicho de mercado com demanda reprimida para o tipo de serviço que o Speed Market oferece.
+Inovação no Modelo de Entrega: O foco em "entrega emergencial" pode posicionar o Speed Market como um diferencial competitivo frente a serviços de delivery mais genéricos.
+Parcerias Estratégicas: Possibilidade de firmar parcerias com mais supermercados, empresas de publicidade e bancos para expandir o alcance e otimizar processos.
+Tecnologia Acessível: A disponibilidade de tecnologias de desenvolvimento e infraestrutura em nuvem facilita a criação e escalabilidade do aplicativo.
+
+4. Baobás (Ameaças - Riscos Negativos Externos)
+
+Concorrência Forte: O mercado de delivery já é altamente competitivo, com grandes players estabelecidos. Atrair e reter clientes pode ser difícil.
+Flutuação de Custos Operacionais: A variação nos preços da gasolina e os custos de manutenção de veículos podem impactar diretamente a lucratividade e a viabilidade do serviço de entrega.
+Regulamentação e Legislação: Novas leis ou regulamentações sobre entregas, trabalho de plataformas ou impostos podem surgir e afetar o modelo de negócio.
+Satisfação dos Parceiros: A dependência de supermercados parceiros implica risco se eles não estiverem satisfeitos com a plataforma ou as condições da parceria, podendo migrar para concorrentes ou deixar de participar.
+Problemas de Escalabilidade: O crescimento rápido pode trazer desafios de escalabilidade da infraestrutura tecnológica e da equipe de entregadores, podendo comprometer a "promessa de entrega rápida".
+Cibersegurança e Proteção de Dados: Como o aplicativo lidará com dados de clientes e pagamentos, a segurança cibernética é uma ameaça constante. Falhas podem levar a perdas financeiras e de reputação.

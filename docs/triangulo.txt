@@ -1,0 +1,12 @@
+1. Escopo (O Que Será Entregue):
+Um aplicativo intuitivo e eficiente que funcione como um marketplace, reunindo diversos supermercados da cidade. O objetivo é facilitar o serviço de entrega de compras, com foco em rapidez e emergência.
+2. Prazo (Quando Será Entregue):
+Início do Projeto: 4 de março de 2025.
+Prazo Final Definido: 18 de dezembro de 2025.
+3. Custo (Quanto Gastará):
+Hora Técnica do Programador: R$ 30,00 por hora.
+Equipe de Programação: 2 programadores.
+Duração: De 04/03/2025 a 18/12/2025 (aproximadamente 290 dias corridos).
+Dias Úteis Estimados: Cerca de 209 dias úteis.
+Horas por Programador: 209 dias úteis * 8 horas/dia = 1.672 horas por programador.
+Custo Estimado da Mão de Obra de Programação: 3.344 horas * R$ 30,00/hora = R$ 100.320,00.
