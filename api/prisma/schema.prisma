@@ -11,7 +11,7 @@ datasource db {
 model Empresa {
   id         Int           @id @default(autoincrement())
   nome       String        @db.VarChar(255)
-  cnpj        Int @unique
+  cnpj        String   @unique @db.VarChar(18)
   email      String        @db.VarChar(255) @unique
   produtos   Produto[]
   empregados Funcionario[]

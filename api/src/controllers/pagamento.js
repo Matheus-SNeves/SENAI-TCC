@@ -29,7 +29,9 @@ const readOne = async (req, res) => {
                     select: {
                         valor: true,
                         cliente: {
+                            select:{
                             nome: true
+                            }
                         }
                     }
                 }
