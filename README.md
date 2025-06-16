@@ -61,6 +61,9 @@
 ## Protótipo Figma Mobile:
 [***Link***](https://www.figma.com/design/4V3yrFrDjP3KDmGCCxzphi/Prototipo-Mobile-Speed-Market)
 
+## Protótipo Figma Web:
+[***Link***](https://www.figma.com/proto/OlHvhztXHYQJX8xR6OwxvU/Prototipo-Desktop-Speed-Market)
+
 ## Quadro Canvas:
 [***canvas***](./docs/canvas(3).json)
 
