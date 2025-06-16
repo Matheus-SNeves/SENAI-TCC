@@ -26,5 +26,43 @@
 - [x] Prótótipo Figma Mobile
 - [ ] Iniciar a codificação/desenvolvimento **Mobile**
 
+## Gráfico Gantt:
+![gantt](./docs/gantt.png)
+
+## Progresso:
+|Semanas|Progresso|
+|-|-|
+|Semana 1| ![semana1](./docs/1semana.png)|
+|Semana 2| ![semana2](./docs/2semana.png)|
+|Semana 3.1| ![semana3.1](./docs/3semana1.png)|
+|Semana 3.2| ![semana3.2](./docs/3semana2.png)|
+|Semana 3.3| ![semana3.3](./docs/3semana3.png)|
+|Semana 3.4| ![semana3.4](./docs/3semana4.png)|
+|Semana 4| ![semana4](./docs/4semana.png)|
+| Mês 5 e 6 | ![mes5e6](./docs/progresso)
+
+## Diagramas:
+|Diagrama|Foto|
+|-|-|
+|DA| ![da](./docs/da.png)|
+|DC| ![dc](./docs/dc.png)|
+|DCU| ![dcu](./docs/dcu.png)|
+|DER| ![der2](./docs/der.png)|
+
+## Requisitos Funcionais:
+[***req***](./docs/reqFuncionais.txt)
+
+## Cronograma:
+[***cronograma***](./docs/cronograma.txt)
+
+## Banco de Dados:
+[***bd***](./docs/bd.txt)
+
 ## Protótipo Figma Mobile:
 [***Link***](https://www.figma.com/design/4V3yrFrDjP3KDmGCCxzphi/Prototipo-Mobile-Speed-Market)
+
+### Quadro Canvas:
+[***canvas***](./docs/canvas(3).json)
+
+# Obrigado
+![gif](./docs/logoanimacao.gif)
