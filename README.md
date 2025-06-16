@@ -1,5 +1,5 @@
 # Speed Market
-|![logo](../docs/logo+nome.png)|
+![logo](../docs/logo+nome.png)
 
 ## Tarefas:
 - [x] Escolher a metodologia **SCRUM, KANBAN, XP, outras**
