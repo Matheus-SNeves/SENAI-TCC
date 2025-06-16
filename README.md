@@ -27,4 +27,4 @@
 - [ ] Iniciar a codificação/desenvolvimento **Mobile**
 
 ## Protótipo Figma Mobile:
-**![link](https://www.figma.com/design/4V3yrFrDjP3KDmGCCxzphi/Prototipo-Mobile-Speed-Market)**
+**[link](https://www.figma.com/design/4V3yrFrDjP3KDmGCCxzphi/Prototipo-Mobile-Speed-Market)**
