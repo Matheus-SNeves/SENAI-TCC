@@ -1,6 +1,10 @@
 # Speed Market
 ![logo](./docs/logo+nome.png)
 
+## Participantes: 
+- Isabelle Almeida
+- Matheus Neves
+
 ## Tarefas:
 - [x] Escolher a metodologia **SCRUM, KANBAN, XP, outras**
 - [x] Modelar o negócio no **Canvas**
@@ -22,3 +26,5 @@
 - [x] Prótótipo Figma Mobile
 - [ ] Iniciar a codificação/desenvolvimento **Mobile**
 
+## Protótipo Figma Mobile:
+[***Link***](https://www.figma.com/design/4V3yrFrDjP3KDmGCCxzphi/Prototipo-Mobile-Speed-Market)
