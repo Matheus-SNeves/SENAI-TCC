@@ -1,0 +1,2654 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Speed Market PW API",
+    "description": "Documentação da API para o projeto Speed Market PW, abrangendo operações CRUD e autenticação para diferentes entidades.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor de desenvolvimento"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Empresas",
+      "description": "Operações relacionadas a empresas (supermercados)"
+    },
+    {
+      "name": "Produtos",
+      "description": "Operações relacionadas a produtos"
+    },
+    {
+      "name": "Tipos de Emprego",
+      "description": "Operações relacionadas a tipos de emprego"
+    },
+    {
+      "name": "Funcionários",
+      "description": "Operações relacionadas a funcionários"
+    },
+    {
+      "name": "Clientes",
+      "description": "Operações relacionadas a clientes"
+    },
+    {
+      "name": "Endereços",
+      "description": "Operações relacionadas a endereços"
+    },
+    {
+      "name": "Pedidos",
+      "description": "Operações relacionadas a pedidos"
+    },
+    {
+      "name": "Itens de Pedido",
+      "description": "Operações relacionadas a itens de pedido"
+    },
+    {
+      "name": "Pagamentos",
+      "description": "Operações relacionadas a pagamentos"
+    },
+    {
+      "name": "Avaliações",
+      "description": "Operações relacionadas a avaliações de produtos"
+    },
+    {
+      "name": "Autenticação",
+      "description": "Rotas para login e cadastro de usuários"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Verifica se a API está online",
+        "description": "Endpoint de teste que retorna uma mensagem de boas-vindas.",
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "titulo": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "titulo": "Speed Market PW"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cadastro/cliente": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Cadastra um novo cliente",
+        "description": "Cria um novo cliente com senha criptografada.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "cpf",
+                  "telefone",
+                  "email",
+                  "senha"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "telefone": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cliente"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login/cliente": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Login de cliente",
+        "description": "Autentica um cliente e retorna um token JWT.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "senha"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "validade": {
+                    "type": "integer",
+                    "description": "Tempo de expiração do token em minutos. Padrão: 60 min"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login bem-sucedido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "E-mail ou senha incorretos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login/admin": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Login de administrador (funcionário)",
+        "description": "Autentica um funcionário e retorna um token JWT com a role 'ADMIN'.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "senha"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "validade": {
+                    "type": "integer",
+                    "description": "Tempo de expiração do token em minutos. Padrão: 60 min"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login bem-sucedido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "E-mail ou senha incorretos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/empresas": {
+      "get": {
+        "tags": [
+          "Empresas"
+        ],
+        "summary": "Lista todas as empresas",
+        "description": "Retorna uma lista de todas as empresas cadastradas.",
+        "responses": {
+          "200": {
+            "description": "Lista de empresas retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Empresa"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Empresas"
+        ],
+        "summary": "Cria uma nova empresa",
+        "description": "Cria uma nova empresa no sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "cnpj",
+                  "email"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string"
+                  },
+                  "cnpj": {
+                    "type": "string",
+                    "example": "XX.XXX.XXX/YYYY-ZZ"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Empresa criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/empresas/{id}": {
+      "get": {
+        "tags": [
+          "Empresas"
+        ],
+        "summary": "Obtém uma empresa por ID",
+        "description": "Retorna os detalhes de uma empresa específica.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da empresa",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Empresas"
+        ],
+        "summary": "Atualiza uma empresa",
+        "description": "Atualiza os dados de uma empresa existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da empresa a ser atualizada",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmpresaUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Empresa atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Empresas"
+        ],
+        "summary": "Deleta uma empresa",
+        "description": "Remove uma empresa do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da empresa a ser deletada",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Empresa deletada com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/produtos": {
+      "get": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Lista todos os produtos",
+        "description": "Retorna uma lista de todos os produtos cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de produtos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Produto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Cria um novo produto",
+        "description": "Cria um novo produto no sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "preco",
+                  "quantidade",
+                  "descricao",
+                  "id_supermercado"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string"
+                  },
+                  "preco": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "quantidade": {
+                    "type": "integer"
+                  },
+                  "descricao": {
+                    "type": "string"
+                  },
+                  "id_supermercado": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/produtos/{id}": {
+      "get": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Obtém um produto por ID",
+        "description": "Retorna os detalhes de um produto específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do produto",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Atualiza um produto",
+        "description": "Atualiza os dados de um produto existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do produto a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Produto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Deleta um produto",
+        "description": "Remove um produto do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do produto a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Produto deletado com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tipoempregos": {
+      "get": {
+        "tags": [
+          "Tipos de Emprego"
+        ],
+        "summary": "Lista todos os tipos de emprego",
+        "description": "Retorna uma lista de todos os tipos de emprego cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de tipos de emprego retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoEmprego"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tipos de Emprego"
+        ],
+        "summary": "Cria um novo tipo de emprego",
+        "description": "Cria um novo tipo de emprego no sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "salario",
+                  "carga_horaria"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string"
+                  },
+                  "salario": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "carga_horaria": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipo de emprego criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoEmprego"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tipoempregos/{id}": {
+      "get": {
+        "tags": [
+          "Tipos de Emprego"
+        ],
+        "summary": "Obtém um tipo de emprego por ID",
+        "description": "Retorna os detalhes de um tipo de emprego específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do tipo de emprego",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipo de emprego encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoEmprego"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tipos de Emprego"
+        ],
+        "summary": "Atualiza um tipo de emprego",
+        "description": "Atualiza os dados de um tipo de emprego existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do tipo de emprego a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoEmpregoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Tipo de emprego atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoEmprego"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tipos de Emprego"
+        ],
+        "summary": "Deleta um tipo de emprego",
+        "description": "Remove um tipo de emprego do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do tipo de emprego a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tipo de emprego deletado com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios": {
+      "get": {
+        "tags": [
+          "Funcionários"
+        ],
+        "summary": "Lista todos os funcionários",
+        "description": "Retorna uma lista de todos os funcionários cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de funcionários retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Funcionario"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Funcionários"
+        ],
+        "summary": "Cria um novo funcionário",
+        "description": "Cria um novo funcionário no sistema. Requer autenticação de administrador.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "cpf",
+                  "telefone",
+                  "id_empresa",
+                  "id_tipo_empregado"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "telefone": {
+                    "type": "string"
+                  },
+                  "id_empresa": {
+                    "type": "integer"
+                  },
+                  "id_tipo_empregado": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Funcionário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Funcionario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/funcionarios/{id}": {
+      "get": {
+        "tags": [
+          "Funcionários"
+        ],
+        "summary": "Obtém um funcionário por ID",
+        "description": "Retorna os detalhes de um funcionário específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do funcionário",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Funcionário encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Funcionario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Funcionários"
+        ],
+        "summary": "Atualiza um funcionário",
+        "description": "Atualiza os dados de um funcionário existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do funcionário a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FuncionarioUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Funcionário atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Funcionario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Funcionários"
+        ],
+        "summary": "Deleta um funcionário",
+        "description": "Remove um funcionário do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do funcionário a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Funcionário deletado com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clientes": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Lista todos os clientes",
+        "description": "Retorna uma lista de todos os clientes cadastrados.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de clientes retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cliente"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Cria um novo cliente",
+        "description": "Cria um novo cliente no sistema. Esta rota não requer autenticação, pois a rota de cadastro é separada.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nome",
+                  "cpf",
+                  "telefone",
+                  "email",
+                  "senha"
+                ],
+                "properties": {
+                  "nome": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "telefone": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cliente"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clientes/{id}": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Obtém um cliente por ID",
+        "description": "Retorna os detalhes de um cliente específico.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do cliente",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cliente"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Atualiza um cliente",
+        "description": "Atualiza os dados de um cliente existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do cliente a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClienteUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Cliente atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cliente"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Deleta um cliente",
+        "description": "Remove um cliente do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do cliente a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Cliente deletado com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/enderecos": {
+      "get": {
+        "tags": [
+          "Endereços"
+        ],
+        "summary": "Lista todos os endereços",
+        "description": "Retorna uma lista de todos os endereços cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de endereços retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Endereco"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Endereços"
+        ],
+        "summary": "Cria um novo endereço",
+        "description": "Cria um novo endereço no sistema. Requer autenticação.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "cep",
+                  "logradouro",
+                  "numero",
+                  "bairro"
+                ],
+                "properties": {
+                  "cep": {
+                    "type": "string",
+                    "example": "12345-678"
+                  },
+                  "logradouro": {
+                    "type": "string"
+                  },
+                  "numero": {
+                    "type": "integer"
+                  },
+                  "complemento": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "bairro": {
+                    "type": "string"
+                  },
+                  "id_cliente": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "id_empresa": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "id_funcionario": {
+                    "type": "integer",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Endereço criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Endereco"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/enderecos/{id}": {
+      "get": {
+        "tags": [
+          "Endereços"
+        ],
+        "summary": "Obtém um endereço por ID",
+        "description": "Retorna os detalhes de um endereço específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do endereço",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Endereço encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Endereco"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Endereços"
+        ],
+        "summary": "Atualiza um endereço",
+        "description": "Atualiza os dados de um endereço existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do endereço a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnderecoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Endereço atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Endereco"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Endereços"
+        ],
+        "summary": "Deleta um endereço",
+        "description": "Remove um endereço do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do endereço a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Endereço deletado com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedidos": {
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Lista todos os pedidos",
+        "description": "Retorna uma lista de todos os pedidos cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de pedidos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pedido"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Cria um novo pedido",
+        "description": "Cria um novo pedido no sistema. Requer autenticação.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_cliente",
+                  "valor"
+                ],
+                "properties": {
+                  "id_cliente": {
+                    "type": "integer"
+                  },
+                  "valor": {
+                    "type": "number",
+                    "format": "float"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pedido criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pedido"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedidos/{id}": {
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Obtém um pedido por ID",
+        "description": "Retorna os detalhes de um pedido específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do pedido",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pedido"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Atualiza um pedido",
+        "description": "Atualiza os dados de um pedido existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do pedido a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Pedido atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pedido"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Deleta um pedido",
+        "description": "Remove um pedido do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do pedido a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Pedido deletado com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itenspedidos": {
+      "get": {
+        "tags": [
+          "Itens de Pedido"
+        ],
+        "summary": "Lista todos os itens de pedido",
+        "description": "Retorna uma lista de todos os itens de pedido cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de itens de pedido retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItensPedido"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Itens de Pedido"
+        ],
+        "summary": "Cria um novo item de pedido",
+        "description": "Cria um novo item de pedido no sistema. Requer autenticação.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_pedido",
+                  "id_produto",
+                  "quantidade"
+                ],
+                "properties": {
+                  "id_pedido": {
+                    "type": "integer"
+                  },
+                  "id_produto": {
+                    "type": "integer"
+                  },
+                  "quantidade": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item de pedido criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItensPedido"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itenspedidos/{id}": {
+      "get": {
+        "tags": [
+          "Itens de Pedido"
+        ],
+        "summary": "Obtém um item de pedido por ID",
+        "description": "Retorna os detalhes de um item de pedido específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do item de pedido",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item de pedido encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItensPedido"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Itens de Pedido"
+        ],
+        "summary": "Atualiza um item de pedido",
+        "description": "Atualiza os dados de um item de pedido existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do item de pedido a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItensPedidoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Item de pedido atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItensPedido"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Itens de Pedido"
+        ],
+        "summary": "Deleta um item de pedido",
+        "description": "Remove um item de pedido do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do item de pedido a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Item de pedido deletado com sucesso"
+          },
+          "404": {
+            "description": "Item de pedido não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pagamentos": {
+      "get": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Lista todos os pagamentos",
+        "description": "Retorna uma lista de todos os pagamentos cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de pagamentos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pagamento"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Cria um novo pagamento",
+        "description": "Cria um novo pagamento no sistema. Requer autenticação.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_pedido",
+                  "tipo"
+                ],
+                "properties": {
+                  "id_pedido": {
+                    "type": "integer"
+                  },
+                  "tipo": {
+                    "$ref": "#/components/schemas/TipoPagamento"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pagamento criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pagamento"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pagamentos/{id}": {
+      "get": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Obtém um pagamento por ID",
+        "description": "Retorna os detalhes de um pagamento específico.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do pagamento",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pagamento encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pagamento"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Atualiza um pagamento",
+        "description": "Atualiza os dados de um pagamento existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do pagamento a ser atualizado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PagamentoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Pagamento atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pagamento"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Deleta um pagamento",
+        "description": "Remove um pagamento do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID do pagamento a ser deletado",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Pagamento deletado com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avaliacoes": {
+      "get": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Lista todas as avaliações",
+        "description": "Retorna uma lista de todas as avaliações de produtos.",
+        "responses": {
+          "200": {
+            "description": "Lista de avaliações retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Avaliacao"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Cria uma nova avaliação",
+        "description": "Cria uma nova avaliação de produto. Requer autenticação.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_cliente",
+                  "id_produto",
+                  "nota",
+                  "comentario"
+                ],
+                "properties": {
+                  "id_cliente": {
+                    "type": "integer"
+                  },
+                  "id_produto": {
+                    "type": "integer"
+                  },
+                  "nota": {
+                    "type": "integer"
+                  },
+                  "comentario": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Avaliação criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Avaliacao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avaliacoes/{id}": {
+      "get": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Obtém uma avaliação por ID",
+        "description": "Retorna os detalhes de uma avaliação específica.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da avaliação",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Avaliação encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Avaliacao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido fornecido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Atualiza uma avaliação",
+        "description": "Atualiza os dados de uma avaliação existente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da avaliação a ser atualizada",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Avaliação atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Avaliacao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Deleta uma avaliação",
+        "description": "Remove uma avaliação do sistema.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID da avaliação a ser deletada",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Avaliação deletada com sucesso"
+          },
+          "400": {
+            "description": "ID inválido ou erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

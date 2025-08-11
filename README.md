@@ -39,7 +39,7 @@
 |Semana 3.3| ![semana3.3](./docs/3semana3.png)|
 |Semana 3.4| ![semana3.4](./docs/3semana4.png)|
 |Semana 4| ![semana4](./docs/4semana.png)|
-| Mês 5 e 6 | ![mes5e6](./docs/progresso)
+| Mês 5 e 6 | ![mes5e6](./docs/progresso.png)
 
 ## Diagramas:
 |Diagrama|Foto|

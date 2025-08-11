@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  //output   = "../generated/prisma"
 }
 
 datasource db {
@@ -18,6 +18,11 @@ model Empresa {
   enderecos  Endereco[]
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
+}
+
+enum UserRole {
+  CLIENTE
+  ADMIN
 }
 
 model Produto {
@@ -50,6 +55,9 @@ model Funcionario {
   nome              String      @db.VarChar(255)
   cpf               String      @db.VarChar(11)
   telefone          String      @db.VarChar(15)
+  email             String      @db.VarChar(255) @unique 
+  senha             String      
+  role              UserRole    @default(ADMIN) 
   id_empresa        Int
   id_tipo_empregado Int
   empresa           Empresa     @relation(fields: [id_empresa], references: [id])
@@ -65,12 +73,15 @@ model Cliente {
   cpf        String      @db.VarChar(11) @unique
   telefone   String      @db.VarChar(15) @unique
   email      String      @db.VarChar(255) @unique
+  senha      String      
+  role       UserRole    @default(CLIENTE) 
   enderecos  Endereco[]
   pedidos    Pedido[]
   avaliacoes Avaliacao[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
+
 
 model Endereco {
   id            Int          @id @default(autoincrement())
