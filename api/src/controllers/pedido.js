@@ -1,4 +1,4 @@
-const { PrismaClient } = require('../../generated/prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const create = async (req, res) => {
@@ -68,4 +68,10 @@ const remove = async (req, res) => {
     }
 }
 
-module.exports = { create, read, readOne, update, remove };
+module.exports = {
+    create,
+    read,
+    readOne,
+    update,
+    remove
+};

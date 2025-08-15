@@ -1,9 +1,6 @@
 const express = require('express');
 const routes = express.Router();
-const { validate, validateAdmin } = require('./middlewares/auth');
-
-const { loginCliente, loginAdmin } = require('./controllers/login');
-const { createCliente } = require('./controllers/cadastro');
+const { validate, isCliente, isAdmin } = require('./middlewares/auth');
 
 const Empresa = require('./controllers/empresa');
 const Produto = require('./controllers/produto');
@@ -15,75 +12,76 @@ const Pedido = require('./controllers/pedido');
 const ItensPedido = require('./controllers/itenspedido');
 const Pagamento = require('./controllers/pagamento');
 const Avaliacao = require('./controllers/avaliacao');
+const login = require('./controllers/login');
+const cadastro = require('./controllers/cadastro');
 
 routes.get('/', (req, res) => {
     return res.json({ titulo: 'Speed Market PW' });
 });
 
-// Rotas Públicas
-routes.post('/login/cliente', loginCliente);
-routes.post('/login/admin', loginAdmin);
-routes.post('/cadastro/cliente', createCliente);
+routes.post('/login', login.loginCliente);
+routes.post('/login-admin', login.loginAdmin);
+
+routes.post('/clientes', cadastro.createCliente);
+
 routes.get('/produtos', Produto.read);
 routes.get('/produtos/:id', Produto.readOne);
 
-// Rotas para Clientes Logados
-routes.get('/avaliacoes', validate, Avaliacao.read);
-routes.get('/avaliacoes/:id', validate, Avaliacao.readOne);
-routes.post('/avaliacoes', validate, Avaliacao.create);
-routes.put('/avaliacoes/:id', validate, Avaliacao.update);
-routes.delete('/avaliacoes/:id', validate, Avaliacao.remove);
+routes.post('/pedidos', validate, isCliente, Pedido.create);
+routes.get('/pedidos', validate, isCliente, Pedido.read);
+routes.get('/pedidos/:id', validate, isCliente, Pedido.readOne);
+routes.put('/pedidos/:id', validate, isCliente, Pedido.update);
+routes.delete('/pedidos/:id', validate, isCliente, Pedido.remove);
 
-routes.get('/pedidos', validate, Pedido.read);
-routes.get('/pedidos/:id', validate, Pedido.readOne);
-routes.post('/pedidos', validate, Pedido.create);
-routes.put('/pedidos/:id', validate, Pedido.update);
-routes.delete('/pedidos/:id', validate, Pedido.remove);
+routes.post('/itenspedidos', validate, isCliente, ItensPedido.create);
+routes.get('/itenspedidos', validate, isCliente, ItensPedido.read);
+routes.get('/itenspedidos/:id', validate, isCliente, ItensPedido.readOne);
+routes.put('/itenspedidos/:id', validate, isCliente, ItensPedido.update);
+routes.delete('/itenspedidos/:id', validate, isCliente, ItensPedido.remove);
 
-routes.get('/enderecos', validate, Endereco.read);
-routes.get('/enderecos/:id', validate, Endereco.readOne);
-routes.post('/enderecos', validate, Endereco.create);
-routes.put('/enderecos/:id', validate, Endereco.update);
-routes.delete('/enderecos/:id', validate, Endereco.remove);
+routes.post('/pagamentos', validate, isCliente, Pagamento.create);
+routes.get('/pagamentos', validate, isCliente, Pagamento.read);
+routes.get('/pagamentos/:id', validate, isCliente, Pagamento.readOne);
+routes.put('/pagamentos/:id', validate, isCliente, Pagamento.update);
+routes.delete('/pagamentos/:id', validate, isCliente, Pagamento.remove);
 
-routes.get('/clientes', validate, Cliente.read);
-routes.get('/clientes/:id', validate, Cliente.readOne);
-routes.put('/clientes/:id', validate, Cliente.update);
-routes.delete('/clientes/:id', validate, Cliente.remove);
+routes.post('/avaliacoes', validate, isCliente, Avaliacao.create);
+routes.get('/avaliacoes', validate, isCliente, Avaliacao.read);
+routes.get('/avaliacoes/:id', validate, isCliente, Avaliacao.readOne);
+routes.put('/avaliacoes/:id', validate, isCliente, Avaliacao.update);
+routes.delete('/avaliacoes/:id', validate, isCliente, Avaliacao.remove);
 
-// Rotas de Administradores
-routes.post('/empresas', validateAdmin, Empresa.create);
-routes.get('/empresas', validateAdmin, Empresa.read);
-routes.get('/empresas/:id', validateAdmin, Empresa.readOne);
-routes.put('/empresas/:id', validateAdmin, Empresa.update);
-routes.delete('/empresas/:id', validateAdmin, Empresa.remove);
+routes.post('/enderecos', validate, isCliente, Endereco.create);
+routes.get('/enderecos', validate, isCliente, Endereco.read);
+routes.get('/enderecos/:id', validate, isCliente, Endereco.readOne);
+routes.put('/enderecos/:id', validate, isCliente, Endereco.update);
+routes.delete('/enderecos/:id', validate, isCliente, Endereco.remove);
 
-routes.post('/produtos', validateAdmin, Produto.create);
-routes.put('/produtos/:id', validateAdmin, Produto.update);
-routes.delete('/produtos/:id', validateAdmin, Produto.remove);
+routes.post('/empresas', validate, isAdmin, Empresa.create);
+routes.get('/empresas', validate, isAdmin, Empresa.read);
+routes.get('/empresas/:id', validate, isAdmin, Empresa.readOne);
+routes.put('/empresas/:id', validate, isAdmin, Empresa.update);
+routes.delete('/empresas/:id', validate, isAdmin, Empresa.remove);
 
-routes.post('/tipoempregos', validateAdmin, TipoEmprego.create);
-routes.get('/tipoempregos', validateAdmin, TipoEmprego.read);
-routes.get('/tipoempregos/:id', validateAdmin, TipoEmprego.readOne);
-routes.put('/tipoempregos/:id', validateAdmin, TipoEmprego.update);
-routes.delete('/tipoempregos/:id', validateAdmin, TipoEmprego.remove);
+routes.post('/produtos', validate, isAdmin, Produto.create);
+routes.put('/produtos/:id', validate, isAdmin, Produto.update);
+routes.delete('/produtos/:id', validate, isAdmin, Produto.remove);
 
-routes.post('/funcionarios', validateAdmin, Funcionario.create);
-routes.get('/funcionarios', validateAdmin, Funcionario.read);
-routes.get('/funcionarios/:id', validateAdmin, Funcionario.readOne);
-routes.put('/funcionarios/:id', validateAdmin, Funcionario.update);
-routes.delete('/funcionarios/:id', validateAdmin, Funcionario.remove);
+routes.post('/tipoempregos', validate, isAdmin, TipoEmprego.create);
+routes.get('/tipoempregos', validate, isAdmin, TipoEmprego.read);
+routes.get('/tipoempregos/:id', validate, isAdmin, TipoEmprego.readOne);
+routes.put('/tipoempregos/:id', validate, isAdmin, TipoEmprego.update);
+routes.delete('/tipoempregos/:id', validate, isAdmin, TipoEmprego.remove);
 
-routes.post('/itenspedidos', validateAdmin, ItensPedido.create);
-routes.get('/itenspedidos', validateAdmin, ItensPedido.read);
-routes.get('/itenspedidos/:id', validateAdmin, ItensPedido.readOne);
-routes.put('/itenspedidos/:id', validateAdmin, ItensPedido.update);
-routes.delete('/itenspedidos/:id', validateAdmin, ItensPedido.remove);
+routes.post('/funcionarios', validate, isAdmin, Funcionario.create);
+routes.get('/funcionarios', validate, isAdmin, Funcionario.read);
+routes.get('/funcionarios/:id', validate, isAdmin, Funcionario.readOne);
+routes.put('/funcionarios/:id', validate, isAdmin, Funcionario.update);
+routes.delete('/funcionarios/:id', validate, isAdmin, Funcionario.remove);
 
-routes.post('/pagamentos', validateAdmin, Pagamento.create);
-routes.get('/pagamentos', validateAdmin, Pagamento.read);
-routes.get('/pagamentos/:id', validateAdmin, Pagamento.readOne);
-routes.put('/pagamentos/:id', validateAdmin, Pagamento.update);
-routes.delete('/pagamentos/:id', validateAdmin, Pagamento.remove);
+routes.get('/clientes', validate, isAdmin, Cliente.read);
+routes.get('/clientes/:id', validate, isAdmin, Cliente.readOne);
+routes.put('/clientes/:id', validate, isAdmin, Cliente.update);
+routes.delete('/clientes/:id', validate, isAdmin, Cliente.remove);
 
 module.exports = routes;

@@ -18,6 +18,10 @@
   ],
   "tags": [
     {
+      "name": "Autenticação",
+      "description": "Rotas para cadastro e login de clientes e administradores"
+    },
+    {
       "name": "Empresas",
       "description": "Operações relacionadas a empresas (supermercados)"
     },
@@ -55,82 +59,30 @@
     },
     {
       "name": "Avaliações",
-      "description": "Operações relacionadas a avaliações de produtos"
-    },
-    {
-      "name": "Autenticação",
-      "description": "Rotas para login e cadastro de usuários"
+      "description": "Operações relacionadas a avaliações"
     }
   ],
   "paths": {
-    "/": {
-      "get": {
-        "tags": [
-          "Autenticação"
-        ],
-        "summary": "Verifica se a API está online",
-        "description": "Endpoint de teste que retorna uma mensagem de boas-vindas.",
-        "responses": {
-          "200": {
-            "description": "Sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "titulo": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "titulo": "Speed Market PW"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/cadastro/cliente": {
+    "/cadastro": {
       "post": {
         "tags": [
           "Autenticação"
         ],
         "summary": "Cadastra um novo cliente",
-        "description": "Cria um novo cliente com senha criptografada.",
+        "description": "Cria uma nova entrada de cliente no banco de dados.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "nome",
-                  "cpf",
-                  "telefone",
-                  "email",
-                  "senha"
-                ],
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  },
-                  "cpf": {
-                    "type": "string"
-                  },
-                  "telefone": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "senha": {
-                    "type": "string",
-                    "format": "password"
-                  }
-                }
+                "$ref": "#/components/schemas/ClienteCreate"
+              },
+              "example": {
+                "nome": "João Silva",
+                "cpf": "123.456.789-00",
+                "telefone": "99999-8888",
+                "email": "joao.silva@email.com",
+                "senha": "senha123"
               }
             }
           }
@@ -142,19 +94,24 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Cliente"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "João Silva",
+                  "cpf": "123.456.789-00",
+                  "telefone": "99999-8888",
+                  "email": "joao.silva@email.com",
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
                 }
               }
             }
           },
+          "400": {
+            "description": "Requisição inválida"
+          },
           "500": {
-            "description": "Erro interno do servidor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Erro interno do servidor"
           }
         }
       }
@@ -172,24 +129,25 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "senha"
-                ],
                 "properties": {
                   "email": {
                     "type": "string",
-                    "format": "email"
+                    "example": "joao.silva@email.com"
                   },
                   "senha": {
                     "type": "string",
-                    "format": "password"
+                    "example": "senha123"
                   },
                   "validade": {
                     "type": "integer",
-                    "description": "Tempo de expiração do token em minutos. Padrão: 60 min"
+                    "description": "Duração do token em minutos. Opcional.",
+                    "example": 60
                   }
-                }
+                },
+                "required": [
+                  "email",
+                  "senha"
+                ]
               }
             }
           }
@@ -203,7 +161,8 @@
                   "type": "object",
                   "properties": {
                     "token": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                     }
                   }
                 }
@@ -211,24 +170,10 @@
             }
           },
           "401": {
-            "description": "E-mail ou senha incorretos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "E-mail ou senha incorretos"
           },
           "500": {
-            "description": "Erro interno do servidor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Erro interno do servidor"
           }
         }
       }
@@ -238,32 +183,28 @@
         "tags": [
           "Autenticação"
         ],
-        "summary": "Login de administrador (funcionário)",
-        "description": "Autentica um funcionário e retorna um token JWT com a role 'ADMIN'.",
+        "summary": "Login de funcionário (admin)",
+        "description": "Autentica um funcionário com privilégios de administrador e retorna um token JWT.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "senha"
-                ],
                 "properties": {
                   "email": {
                     "type": "string",
-                    "format": "email"
+                    "example": "admin@speedmarket.com"
                   },
                   "senha": {
                     "type": "string",
-                    "format": "password"
-                  },
-                  "validade": {
-                    "type": "integer",
-                    "description": "Tempo de expiração do token em minutos. Padrão: 60 min"
+                    "example": "admin123"
                   }
-                }
+                },
+                "required": [
+                  "email",
+                  "senha"
+                ]
               }
             }
           }
@@ -277,7 +218,8 @@
                   "type": "object",
                   "properties": {
                     "token": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                     }
                   }
                 }
@@ -285,67 +227,20 @@
             }
           },
           "401": {
-            "description": "E-mail ou senha incorretos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "E-mail ou senha incorretos"
           },
           "500": {
-            "description": "Erro interno do servidor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Erro interno do servidor"
           }
         }
       }
     },
     "/empresas": {
-      "get": {
-        "tags": [
-          "Empresas"
-        ],
-        "summary": "Lista todas as empresas",
-        "description": "Retorna uma lista de todas as empresas cadastradas.",
-        "responses": {
-          "200": {
-            "description": "Lista de empresas retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Empresa"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Empresas"
         ],
         "summary": "Cria uma nova empresa",
-        "description": "Cria uma nova empresa no sistema.",
         "security": [
           {
             "bearerAuth": []
@@ -356,25 +251,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "nome",
-                  "cnpj",
-                  "email"
-                ],
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  },
-                  "cnpj": {
-                    "type": "string",
-                    "example": "XX.XXX.XXX/YYYY-ZZ"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  }
-                }
+                "$ref": "#/components/schemas/EmpresaCreate"
+              },
+              "example": {
+                "nome": "Supermercado Exemplo",
+                "cnpj": "12.345.678/0001-90",
+                "email": "contato@supermercado.com"
               }
             }
           }
@@ -386,19 +268,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Empresa"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Supermercado Exemplo",
+                  "cnpj": "12.345.678/0001-90",
+                  "email": "contato@supermercado.com",
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Empresas"
+        ],
+        "summary": "Lista todas as empresas",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de empresas",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Empresa"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "nome": "Supermercado Exemplo",
+                    "cnpj": "12.345.678/0001-90",
+                    "email": "contato@supermercado.com",
+                    "createdAt": "2023-10-27T10:00:00Z",
+                    "updatedAt": "2023-10-27T10:00:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "nome": "Mercado Bom Preço",
+                    "cnpj": "98.765.432/0001-10",
+                    "email": "bompreco@mercado.com",
+                    "createdAt": "2023-10-27T10:05:00Z",
+                    "updatedAt": "2023-10-27T10:05:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -408,48 +341,7 @@
         "tags": [
           "Empresas"
         ],
-        "summary": "Obtém uma empresa por ID",
-        "description": "Retorna os detalhes de uma empresa específica.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID da empresa",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Empresa encontrada",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Empresa"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Empresas"
-        ],
-        "summary": "Atualiza uma empresa",
-        "description": "Atualiza os dados de uma empresa existente.",
+        "summary": "Retorna uma empresa por ID",
         "security": [
           {
             "bearerAuth": []
@@ -460,10 +352,61 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID da empresa a ser atualizada",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes da empresa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Supermercado Exemplo",
+                  "cnpj": "12.345.678/0001-90",
+                  "email": "contato@supermercado.com",
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Empresa não encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Empresas"
+        ],
+        "summary": "Atualiza uma empresa por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -472,6 +415,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/EmpresaUpdate"
+              },
+              "example": {
+                "nome": "Supermercado Exemplo 2.0"
               }
             }
           }
@@ -483,19 +429,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Empresa"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Supermercado Exemplo 2.0",
+                  "cnpj": "12.345.678/0001-90",
+                  "email": "contato@supermercado.com",
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:15:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Empresa não encontrada"
           }
         }
       },
@@ -503,8 +456,7 @@
         "tags": [
           "Empresas"
         ],
-        "summary": "Deleta uma empresa",
-        "description": "Remove uma empresa do sistema.",
+        "summary": "Deleta uma empresa por ID",
         "security": [
           {
             "bearerAuth": []
@@ -515,10 +467,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID da empresa a ser deletada",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -526,57 +478,23 @@
             "description": "Empresa deletada com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Empresa não encontrada"
           }
         }
       }
     },
     "/produtos": {
-      "get": {
-        "tags": [
-          "Produtos"
-        ],
-        "summary": "Lista todos os produtos",
-        "description": "Retorna uma lista de todos os produtos cadastrados.",
-        "responses": {
-          "200": {
-            "description": "Lista de produtos retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Produto"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Produtos"
         ],
         "summary": "Cria um novo produto",
-        "description": "Cria um novo produto no sistema.",
         "security": [
           {
             "bearerAuth": []
@@ -587,32 +505,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "nome",
-                  "preco",
-                  "quantidade",
-                  "descricao",
-                  "id_supermercado"
-                ],
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  },
-                  "preco": {
-                    "type": "number",
-                    "format": "float"
-                  },
-                  "quantidade": {
-                    "type": "integer"
-                  },
-                  "descricao": {
-                    "type": "string"
-                  },
-                  "id_supermercado": {
-                    "type": "integer"
-                  }
-                }
+                "$ref": "#/components/schemas/ProdutoCreate"
+              },
+              "example": {
+                "nome": "Arroz Parboilizado 5kg",
+                "preco": 25.50,
+                "quantidade": 100,
+                "descricao": "Arroz de alta qualidade, ideal para o dia a dia.",
+                "id_supermercado": 1
               }
             }
           }
@@ -624,19 +524,76 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Produto"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Arroz Parboilizado 5kg",
+                  "preco": 25.50,
+                  "quantidade": 100,
+                  "descricao": "Arroz de alta qualidade, ideal para o dia a dia.",
+                  "id_supermercado": 1,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Lista todos os produtos",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Produto"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "nome": "Arroz Parboilizado 5kg",
+                    "preco": 25.50,
+                    "quantidade": 100,
+                    "descricao": "Arroz de alta qualidade, ideal para o dia a dia.",
+                    "id_supermercado": 1,
+                    "createdAt": "2023-10-27T10:00:00Z",
+                    "updatedAt": "2023-10-27T10:00:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "nome": "Feijão Preto 1kg",
+                    "preco": 8.99,
+                    "quantidade": 250,
+                    "descricao": "Feijão de excelente qualidade.",
+                    "id_supermercado": 1,
+                    "createdAt": "2023-10-27T10:05:00Z",
+                    "updatedAt": "2023-10-27T10:05:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -646,48 +603,7 @@
         "tags": [
           "Produtos"
         ],
-        "summary": "Obtém um produto por ID",
-        "description": "Retorna os detalhes de um produto específico.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID do produto",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Produto encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Produto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Produtos"
-        ],
-        "summary": "Atualiza um produto",
-        "description": "Atualiza os dados de um produto existente.",
+        "summary": "Retorna um produto por ID",
         "security": [
           {
             "bearerAuth": []
@@ -698,10 +614,63 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do produto a ser atualizado",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do produto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produto"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Arroz Parboilizado 5kg",
+                  "preco": 25.50,
+                  "quantidade": 100,
+                  "descricao": "Arroz de alta qualidade, ideal para o dia a dia.",
+                  "id_supermercado": 1,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Produtos"
+        ],
+        "summary": "Atualiza um produto por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -710,6 +679,10 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ProdutoUpdate"
+              },
+              "example": {
+                "preco": 26.00,
+                "quantidade": 90
               }
             }
           }
@@ -721,19 +694,28 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Produto"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Arroz Parboilizado 5kg",
+                  "preco": 26.00,
+                  "quantidade": 90,
+                  "descricao": "Arroz de alta qualidade, ideal para o dia a dia.",
+                  "id_supermercado": 1,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:20:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Produto não encontrado"
           }
         }
       },
@@ -741,8 +723,7 @@
         "tags": [
           "Produtos"
         ],
-        "summary": "Deleta um produto",
-        "description": "Remove um produto do sistema.",
+        "summary": "Deleta um produto por ID",
         "security": [
           {
             "bearerAuth": []
@@ -753,10 +734,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do produto a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -764,57 +745,23 @@
             "description": "Produto deletado com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Produto não encontrado"
           }
         }
       }
     },
     "/tipoempregos": {
-      "get": {
-        "tags": [
-          "Tipos de Emprego"
-        ],
-        "summary": "Lista todos os tipos de emprego",
-        "description": "Retorna uma lista de todos os tipos de emprego cadastrados.",
-        "responses": {
-          "200": {
-            "description": "Lista de tipos de emprego retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TipoEmprego"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Tipos de Emprego"
         ],
         "summary": "Cria um novo tipo de emprego",
-        "description": "Cria um novo tipo de emprego no sistema.",
         "security": [
           {
             "bearerAuth": []
@@ -825,24 +772,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "nome",
-                  "salario",
-                  "carga_horaria"
-                ],
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  },
-                  "salario": {
-                    "type": "number",
-                    "format": "float"
-                  },
-                  "carga_horaria": {
-                    "type": "integer"
-                  }
-                }
+                "$ref": "#/components/schemas/TipoEmpregoCreate"
+              },
+              "example": {
+                "nome": "Gerente",
+                "salario": 5000.00,
+                "carga_horaria": 40
               }
             }
           }
@@ -854,19 +789,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TipoEmprego"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Gerente",
+                  "salario": 5000.00,
+                  "carga_horaria": 40,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tipos de Emprego"
+        ],
+        "summary": "Lista todos os tipos de emprego",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de tipos de emprego",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoEmprego"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "nome": "Gerente",
+                    "salario": 5000.00,
+                    "carga_horaria": 40,
+                    "createdAt": "2023-10-27T10:00:00Z",
+                    "updatedAt": "2023-10-27T10:00:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "nome": "Caixa",
+                    "salario": 1800.00,
+                    "carga_horaria": 30,
+                    "createdAt": "2023-10-27T10:05:00Z",
+                    "updatedAt": "2023-10-27T10:05:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -876,48 +862,7 @@
         "tags": [
           "Tipos de Emprego"
         ],
-        "summary": "Obtém um tipo de emprego por ID",
-        "description": "Retorna os detalhes de um tipo de emprego específico.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID do tipo de emprego",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Tipo de emprego encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TipoEmprego"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Tipos de Emprego"
-        ],
-        "summary": "Atualiza um tipo de emprego",
-        "description": "Atualiza os dados de um tipo de emprego existente.",
+        "summary": "Retorna um tipo de emprego por ID",
         "security": [
           {
             "bearerAuth": []
@@ -928,10 +873,61 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do tipo de emprego a ser atualizado",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do tipo de emprego",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoEmprego"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Gerente",
+                  "salario": 5000.00,
+                  "carga_horaria": 40,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Tipo de emprego não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tipos de Emprego"
+        ],
+        "summary": "Atualiza um tipo de emprego por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -940,6 +936,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/TipoEmpregoUpdate"
+              },
+              "example": {
+                "salario": 5500.00
               }
             }
           }
@@ -951,19 +950,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TipoEmprego"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Gerente",
+                  "salario": 5500.00,
+                  "carga_horaria": 40,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:25:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Tipo de emprego não encontrado"
           }
         }
       },
@@ -971,8 +977,7 @@
         "tags": [
           "Tipos de Emprego"
         ],
-        "summary": "Deleta um tipo de emprego",
-        "description": "Remove um tipo de emprego do sistema.",
+        "summary": "Deleta um tipo de emprego por ID",
         "security": [
           {
             "bearerAuth": []
@@ -983,10 +988,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do tipo de emprego a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -994,57 +999,23 @@
             "description": "Tipo de emprego deletado com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Tipo de emprego não encontrado"
           }
         }
       }
     },
     "/funcionarios": {
-      "get": {
-        "tags": [
-          "Funcionários"
-        ],
-        "summary": "Lista todos os funcionários",
-        "description": "Retorna uma lista de todos os funcionários cadastrados.",
-        "responses": {
-          "200": {
-            "description": "Lista de funcionários retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Funcionario"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Funcionários"
         ],
         "summary": "Cria um novo funcionário",
-        "description": "Cria um novo funcionário no sistema. Requer autenticação de administrador.",
         "security": [
           {
             "bearerAuth": []
@@ -1055,31 +1026,16 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "nome",
-                  "cpf",
-                  "telefone",
-                  "id_empresa",
-                  "id_tipo_empregado"
-                ],
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  },
-                  "cpf": {
-                    "type": "string"
-                  },
-                  "telefone": {
-                    "type": "string"
-                  },
-                  "id_empresa": {
-                    "type": "integer"
-                  },
-                  "id_tipo_empregado": {
-                    "type": "integer"
-                  }
-                }
+                "$ref": "#/components/schemas/FuncionarioCreate"
+              },
+              "example": {
+                "nome": "Maria de Souza",
+                "cpf": "111.222.333-44",
+                "telefone": "99999-7777",
+                "id_empresa": 1,
+                "id_tipo_emprego": 1,
+                "email": "maria.souza@supermercado.com",
+                "senha": "senhaSegura123"
               }
             }
           }
@@ -1091,19 +1047,79 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Funcionario"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Maria de Souza",
+                  "cpf": "111.222.333-44",
+                  "telefone": "99999-7777",
+                  "email": "maria.souza@supermercado.com",
+                  "id_empresa": 1,
+                  "id_tipo_emprego": 1,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Funcionários"
+        ],
+        "summary": "Lista todos os funcionários",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de funcionários",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Funcionario"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "nome": "Maria de Souza",
+                    "cpf": "111.222.333-44",
+                    "telefone": "99999-7777",
+                    "email": "maria.souza@supermercado.com",
+                    "id_empresa": 1,
+                    "id_tipo_emprego": 1,
+                    "createdAt": "2023-10-27T10:00:00Z",
+                    "updatedAt": "2023-10-27T10:00:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "nome": "Pedro Oliveira",
+                    "cpf": "555.666.777-88",
+                    "telefone": "99999-6666",
+                    "email": "pedro.oliveira@supermercado.com",
+                    "id_empresa": 1,
+                    "id_tipo_emprego": 2,
+                    "createdAt": "2023-10-27T10:05:00Z",
+                    "updatedAt": "2023-10-27T10:05:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -1113,48 +1129,7 @@
         "tags": [
           "Funcionários"
         ],
-        "summary": "Obtém um funcionário por ID",
-        "description": "Retorna os detalhes de um funcionário específico.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID do funcionário",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Funcionário encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Funcionario"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Funcionários"
-        ],
-        "summary": "Atualiza um funcionário",
-        "description": "Atualiza os dados de um funcionário existente.",
+        "summary": "Retorna um funcionário por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1165,10 +1140,64 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do funcionário a ser atualizado",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do funcionário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Funcionario"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Maria de Souza",
+                  "cpf": "111.222.333-44",
+                  "telefone": "99999-7777",
+                  "email": "maria.souza@supermercado.com",
+                  "id_empresa": 1,
+                  "id_tipo_emprego": 1,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Funcionário não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Funcionários"
+        ],
+        "summary": "Atualiza um funcionário por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -1177,6 +1206,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/FuncionarioUpdate"
+              },
+              "example": {
+                "id_tipo_emprego": 2
               }
             }
           }
@@ -1188,19 +1220,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Funcionario"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Maria de Souza",
+                  "cpf": "111.222.333-44",
+                  "telefone": "99999-7777",
+                  "email": "maria.souza@supermercado.com",
+                  "id_empresa": 1,
+                  "id_tipo_emprego": 2,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:30:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Funcionário não encontrado"
           }
         }
       },
@@ -1208,8 +1250,7 @@
         "tags": [
           "Funcionários"
         ],
-        "summary": "Deleta um funcionário",
-        "description": "Remove um funcionário do sistema.",
+        "summary": "Deleta um funcionário por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1220,10 +1261,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do funcionário a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -1231,14 +1272,13 @@
             "description": "Funcionário deletado com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Funcionário não encontrado"
           }
         }
       }
@@ -1249,7 +1289,6 @@
           "Clientes"
         ],
         "summary": "Lista todos os clientes",
-        "description": "Retorna uma lista de todos os clientes cadastrados.",
         "security": [
           {
             "bearerAuth": []
@@ -1257,7 +1296,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Lista de clientes retornada com sucesso",
+            "description": "Lista de clientes",
             "content": {
               "application/json": {
                 "schema": {
@@ -1265,84 +1304,32 @@
                   "items": {
                     "$ref": "#/components/schemas/Cliente"
                   }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Clientes"
-        ],
-        "summary": "Cria um novo cliente",
-        "description": "Cria um novo cliente no sistema. Esta rota não requer autenticação, pois a rota de cadastro é separada.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "nome",
-                  "cpf",
-                  "telefone",
-                  "email",
-                  "senha"
-                ],
-                "properties": {
-                  "nome": {
-                    "type": "string"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "nome": "João Silva",
+                    "cpf": "123.456.789-00",
+                    "telefone": "99999-8888",
+                    "email": "joao.silva@email.com",
+                    "createdAt": "2023-10-27T10:00:00Z",
+                    "updatedAt": "2023-10-27T10:00:00Z"
                   },
-                  "cpf": {
-                    "type": "string"
-                  },
-                  "telefone": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "senha": {
-                    "type": "string",
-                    "format": "password"
+                  {
+                    "id": 2,
+                    "nome": "Ana Souza",
+                    "cpf": "987.654.321-11",
+                    "telefone": "99999-5555",
+                    "email": "ana.souza@email.com",
+                    "createdAt": "2023-10-27T10:05:00Z",
+                    "updatedAt": "2023-10-27T10:05:00Z"
                   }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Cliente criado com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Cliente"
-                }
+                ]
               }
             }
           },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -1352,8 +1339,7 @@
         "tags": [
           "Clientes"
         ],
-        "summary": "Obtém um cliente por ID",
-        "description": "Retorna os detalhes de um cliente específico.",
+        "summary": "Retorna um cliente por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1364,32 +1350,40 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do cliente",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "Cliente encontrado",
+            "description": "Detalhes do cliente",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Cliente"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "João Silva",
+                  "cpf": "123.456.789-00",
+                  "telefone": "99999-8888",
+                  "email": "joao.silva@email.com",
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Cliente não encontrado"
           }
         }
       },
@@ -1397,8 +1391,7 @@
         "tags": [
           "Clientes"
         ],
-        "summary": "Atualiza um cliente",
-        "description": "Atualiza os dados de um cliente existente.",
+        "summary": "Atualiza um cliente por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1409,10 +1402,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do cliente a ser atualizado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -1421,6 +1414,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ClienteUpdate"
+              },
+              "example": {
+                "telefone": "99999-1111"
               }
             }
           }
@@ -1432,19 +1428,27 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Cliente"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "João Silva",
+                  "cpf": "123.456.789-00",
+                  "telefone": "99999-1111",
+                  "email": "joao.silva@email.com",
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:35:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Cliente não encontrado"
           }
         }
       },
@@ -1452,8 +1456,7 @@
         "tags": [
           "Clientes"
         ],
-        "summary": "Deleta um cliente",
-        "description": "Remove um cliente do sistema.",
+        "summary": "Deleta um cliente por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1464,10 +1467,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do cliente a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -1475,57 +1478,23 @@
             "description": "Cliente deletado com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Cliente não encontrado"
           }
         }
       }
     },
     "/enderecos": {
-      "get": {
-        "tags": [
-          "Endereços"
-        ],
-        "summary": "Lista todos os endereços",
-        "description": "Retorna uma lista de todos os endereços cadastrados.",
-        "responses": {
-          "200": {
-            "description": "Lista de endereços retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Endereco"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Endereços"
         ],
         "summary": "Cria um novo endereço",
-        "description": "Cria um novo endereço no sistema. Requer autenticação.",
         "security": [
           {
             "bearerAuth": []
@@ -1536,44 +1505,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "cep",
-                  "logradouro",
-                  "numero",
-                  "bairro"
-                ],
-                "properties": {
-                  "cep": {
-                    "type": "string",
-                    "example": "12345-678"
-                  },
-                  "logradouro": {
-                    "type": "string"
-                  },
-                  "numero": {
-                    "type": "integer"
-                  },
-                  "complemento": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "bairro": {
-                    "type": "string"
-                  },
-                  "id_cliente": {
-                    "type": "integer",
-                    "nullable": true
-                  },
-                  "id_empresa": {
-                    "type": "integer",
-                    "nullable": true
-                  },
-                  "id_funcionario": {
-                    "type": "integer",
-                    "nullable": true
-                  }
-                }
+                "$ref": "#/components/schemas/EnderecoCreate"
+              },
+              "example": {
+                "cep": "12345-678",
+                "logradouro": "Rua Exemplo",
+                "numero": "123",
+                "complemento": "Apto 101",
+                "bairro": "Centro",
+                "id_cliente": 1
               }
             }
           }
@@ -1585,19 +1525,85 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Endereco"
+                },
+                "example": {
+                  "id": 1,
+                  "cep": "12345-678",
+                  "logradouro": "Rua Exemplo",
+                  "numero": "123",
+                  "complemento": "Apto 101",
+                  "bairro": "Centro",
+                  "id_cliente": 1,
+                  "id_empresa": null,
+                  "id_funcionario": null,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Endereços"
+        ],
+        "summary": "Lista todos os endereços",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de endereços",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Endereco"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "cep": "12345-678",
+                    "logradouro": "Rua Exemplo",
+                    "numero": "123",
+                    "complemento": "Apto 101",
+                    "bairro": "Centro",
+                    "id_cliente": 1,
+                    "id_empresa": null,
+                    "id_funcionario": null,
+                    "createdAt": "2023-10-27T10:00:00Z",
+                    "updatedAt": "2023-10-27T10:00:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "cep": "87654-321",
+                    "logradouro": "Avenida Principal",
+                    "numero": "456",
+                    "complemento": null,
+                    "bairro": "Vila Nova",
+                    "id_cliente": null,
+                    "id_empresa": 1,
+                    "id_funcionario": null,
+                    "createdAt": "2023-10-27T10:05:00Z",
+                    "updatedAt": "2023-10-27T10:05:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -1607,48 +1613,7 @@
         "tags": [
           "Endereços"
         ],
-        "summary": "Obtém um endereço por ID",
-        "description": "Retorna os detalhes de um endereço específico.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID do endereço",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Endereço encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Endereco"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Endereços"
-        ],
-        "summary": "Atualiza um endereço",
-        "description": "Atualiza os dados de um endereço existente.",
+        "summary": "Retorna um endereço por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1659,10 +1624,66 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do endereço a ser atualizado",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do endereço",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Endereco"
+                },
+                "example": {
+                  "id": 1,
+                  "cep": "12345-678",
+                  "logradouro": "Rua Exemplo",
+                  "numero": "123",
+                  "complemento": "Apto 101",
+                  "bairro": "Centro",
+                  "id_cliente": 1,
+                  "id_empresa": null,
+                  "id_funcionario": null,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:00:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Endereço não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Endereços"
+        ],
+        "summary": "Atualiza um endereço por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -1671,6 +1692,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/EnderecoUpdate"
+              },
+              "example": {
+                "complemento": "Apto 202"
               }
             }
           }
@@ -1682,19 +1706,31 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Endereco"
+                },
+                "example": {
+                  "id": 1,
+                  "cep": "12345-678",
+                  "logradouro": "Rua Exemplo",
+                  "numero": "123",
+                  "complemento": "Apto 202",
+                  "bairro": "Centro",
+                  "id_cliente": 1,
+                  "id_empresa": null,
+                  "id_funcionario": null,
+                  "createdAt": "2023-10-27T10:00:00Z",
+                  "updatedAt": "2023-10-27T10:40:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Endereço não encontrado"
           }
         }
       },
@@ -1702,8 +1738,7 @@
         "tags": [
           "Endereços"
         ],
-        "summary": "Deleta um endereço",
-        "description": "Remove um endereço do sistema.",
+        "summary": "Deleta um endereço por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1714,10 +1749,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do endereço a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -1725,57 +1760,23 @@
             "description": "Endereço deletado com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Endereço não encontrado"
           }
         }
       }
     },
     "/pedidos": {
-      "get": {
-        "tags": [
-          "Pedidos"
-        ],
-        "summary": "Lista todos os pedidos",
-        "description": "Retorna uma lista de todos os pedidos cadastrados.",
-        "responses": {
-          "200": {
-            "description": "Lista de pedidos retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pedido"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Pedidos"
         ],
         "summary": "Cria um novo pedido",
-        "description": "Cria um novo pedido no sistema. Requer autenticação.",
         "security": [
           {
             "bearerAuth": []
@@ -1786,20 +1787,11 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "id_cliente",
-                  "valor"
-                ],
-                "properties": {
-                  "id_cliente": {
-                    "type": "integer"
-                  },
-                  "valor": {
-                    "type": "number",
-                    "format": "float"
-                  }
-                }
+                "$ref": "#/components/schemas/PedidoCreate"
+              },
+              "example": {
+                "id_cliente": 1,
+                "valor": 50.00
               }
             }
           }
@@ -1811,19 +1803,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Pedido"
+                },
+                "example": {
+                  "id": 1,
+                  "id_cliente": 1,
+                  "data_pedido": "2023-10-27T10:45:00Z",
+                  "valor": 50.00,
+                  "createdAt": "2023-10-27T10:45:00Z",
+                  "updatedAt": "2023-10-27T10:45:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Lista todos os pedidos",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pedidos",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pedido"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "id_cliente": 1,
+                    "data_pedido": "2023-10-27T10:45:00Z",
+                    "valor": 50.00,
+                    "createdAt": "2023-10-27T10:45:00Z",
+                    "updatedAt": "2023-10-27T10:45:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "id_cliente": 2,
+                    "data_pedido": "2023-10-27T10:50:00Z",
+                    "valor": 75.25,
+                    "createdAt": "2023-10-27T10:50:00Z",
+                    "updatedAt": "2023-10-27T10:50:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -1833,48 +1876,7 @@
         "tags": [
           "Pedidos"
         ],
-        "summary": "Obtém um pedido por ID",
-        "description": "Retorna os detalhes de um pedido específico.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID do pedido",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Pedido encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pedido"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Pedidos"
-        ],
-        "summary": "Atualiza um pedido",
-        "description": "Atualiza os dados de um pedido existente.",
+        "summary": "Retorna um pedido por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1885,10 +1887,61 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do pedido a ser atualizado",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do pedido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pedido"
+                },
+                "example": {
+                  "id": 1,
+                  "id_cliente": 1,
+                  "data_pedido": "2023-10-27T10:45:00Z",
+                  "valor": 50.00,
+                  "createdAt": "2023-10-27T10:45:00Z",
+                  "updatedAt": "2023-10-27T10:45:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Pedido não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Atualiza um pedido por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -1897,6 +1950,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/PedidoUpdate"
+              },
+              "example": {
+                "valor": 55.00
               }
             }
           }
@@ -1908,19 +1964,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Pedido"
+                },
+                "example": {
+                  "id": 1,
+                  "id_cliente": 1,
+                  "data_pedido": "2023-10-27T10:45:00Z",
+                  "valor": 55.00,
+                  "createdAt": "2023-10-27T10:45:00Z",
+                  "updatedAt": "2023-10-27T10:55:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Pedido não encontrado"
           }
         }
       },
@@ -1928,8 +1991,7 @@
         "tags": [
           "Pedidos"
         ],
-        "summary": "Deleta um pedido",
-        "description": "Remove um pedido do sistema.",
+        "summary": "Deleta um pedido por ID",
         "security": [
           {
             "bearerAuth": []
@@ -1940,10 +2002,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do pedido a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -1951,57 +2013,23 @@
             "description": "Pedido deletado com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Pedido não encontrado"
           }
         }
       }
     },
     "/itenspedidos": {
-      "get": {
-        "tags": [
-          "Itens de Pedido"
-        ],
-        "summary": "Lista todos os itens de pedido",
-        "description": "Retorna uma lista de todos os itens de pedido cadastrados.",
-        "responses": {
-          "200": {
-            "description": "Lista de itens de pedido retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItensPedido"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Itens de Pedido"
         ],
         "summary": "Cria um novo item de pedido",
-        "description": "Cria um novo item de pedido no sistema. Requer autenticação.",
         "security": [
           {
             "bearerAuth": []
@@ -2012,23 +2040,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "id_pedido",
-                  "id_produto",
-                  "quantidade"
-                ],
-                "properties": {
-                  "id_pedido": {
-                    "type": "integer"
-                  },
-                  "id_produto": {
-                    "type": "integer"
-                  },
-                  "quantidade": {
-                    "type": "integer"
-                  }
-                }
+                "$ref": "#/components/schemas/ItensPedidoCreate"
+              },
+              "example": {
+                "id_pedido": 1,
+                "id_produto": 1,
+                "quantidade": 2
               }
             }
           }
@@ -2040,19 +2057,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ItensPedido"
+                },
+                "example": {
+                  "id": 1,
+                  "id_pedido": 1,
+                  "id_produto": 1,
+                  "quantidade": 2,
+                  "createdAt": "2023-10-27T11:00:00Z",
+                  "updatedAt": "2023-10-27T11:00:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Itens de Pedido"
+        ],
+        "summary": "Lista todos os itens de pedido",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de itens de pedido",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItensPedido"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "id_pedido": 1,
+                    "id_produto": 1,
+                    "quantidade": 2,
+                    "createdAt": "2023-10-27T11:00:00Z",
+                    "updatedAt": "2023-10-27T11:00:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "id_pedido": 1,
+                    "id_produto": 2,
+                    "quantidade": 1,
+                    "createdAt": "2023-10-27T11:01:00Z",
+                    "updatedAt": "2023-10-27T11:01:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -2062,48 +2130,7 @@
         "tags": [
           "Itens de Pedido"
         ],
-        "summary": "Obtém um item de pedido por ID",
-        "description": "Retorna os detalhes de um item de pedido específico.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID do item de pedido",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Item de pedido encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItensPedido"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Itens de Pedido"
-        ],
-        "summary": "Atualiza um item de pedido",
-        "description": "Atualiza os dados de um item de pedido existente.",
+        "summary": "Retorna um item de pedido por ID",
         "security": [
           {
             "bearerAuth": []
@@ -2114,10 +2141,61 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do item de pedido a ser atualizado",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do item de pedido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItensPedido"
+                },
+                "example": {
+                  "id": 1,
+                  "id_pedido": 1,
+                  "id_produto": 1,
+                  "quantidade": 2,
+                  "createdAt": "2023-10-27T11:00:00Z",
+                  "updatedAt": "2023-10-27T11:00:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Item de pedido não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Itens de Pedido"
+        ],
+        "summary": "Atualiza um item de pedido por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -2126,6 +2204,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ItensPedidoUpdate"
+              },
+              "example": {
+                "quantidade": 3
               }
             }
           }
@@ -2137,19 +2218,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ItensPedido"
+                },
+                "example": {
+                  "id": 1,
+                  "id_pedido": 1,
+                  "id_produto": 1,
+                  "quantidade": 3,
+                  "createdAt": "2023-10-27T11:00:00Z",
+                  "updatedAt": "2023-10-27T11:05:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Item de pedido não encontrado"
           }
         }
       },
@@ -2157,8 +2245,7 @@
         "tags": [
           "Itens de Pedido"
         ],
-        "summary": "Deleta um item de pedido",
-        "description": "Remove um item de pedido do sistema.",
+        "summary": "Deleta um item de pedido por ID",
         "security": [
           {
             "bearerAuth": []
@@ -2169,68 +2256,34 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do item de pedido a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
           "204": {
             "description": "Item de pedido deletado com sucesso"
           },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
           "404": {
-            "description": "Item de pedido não encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Item de pedido não encontrado"
           }
         }
       }
     },
     "/pagamentos": {
-      "get": {
-        "tags": [
-          "Pagamentos"
-        ],
-        "summary": "Lista todos os pagamentos",
-        "description": "Retorna uma lista de todos os pagamentos cadastrados.",
-        "responses": {
-          "200": {
-            "description": "Lista de pagamentos retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pagamento"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Pagamentos"
         ],
         "summary": "Cria um novo pagamento",
-        "description": "Cria um novo pagamento no sistema. Requer autenticação.",
         "security": [
           {
             "bearerAuth": []
@@ -2241,19 +2294,11 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "id_pedido",
-                  "tipo"
-                ],
-                "properties": {
-                  "id_pedido": {
-                    "type": "integer"
-                  },
-                  "tipo": {
-                    "$ref": "#/components/schemas/TipoPagamento"
-                  }
-                }
+                "$ref": "#/components/schemas/PagamentoCreate"
+              },
+              "example": {
+                "id_pedido": 1,
+                "tipo": "PIX"
               }
             }
           }
@@ -2265,19 +2310,70 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Pagamento"
+                },
+                "example": {
+                  "id": 1,
+                  "id_pedido": 1,
+                  "tipo": "PIX",
+                  "data_pagamento": "2023-10-27T11:10:00Z",
+                  "createdAt": "2023-10-27T11:10:00Z",
+                  "updatedAt": "2023-10-27T11:10:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Lista todos os pagamentos",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pagamentos",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pagamento"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "id_pedido": 1,
+                    "tipo": "PIX",
+                    "data_pagamento": "2023-10-27T11:10:00Z",
+                    "createdAt": "2023-10-27T11:10:00Z",
+                    "updatedAt": "2023-10-27T11:10:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "id_pedido": 2,
+                    "tipo": "CARTAO",
+                    "data_pagamento": "2023-10-27T11:15:00Z",
+                    "createdAt": "2023-10-27T11:15:00Z",
+                    "updatedAt": "2023-10-27T11:15:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -2287,48 +2383,7 @@
         "tags": [
           "Pagamentos"
         ],
-        "summary": "Obtém um pagamento por ID",
-        "description": "Retorna os detalhes de um pagamento específico.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID do pagamento",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Pagamento encontrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pagamento"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Pagamentos"
-        ],
-        "summary": "Atualiza um pagamento",
-        "description": "Atualiza os dados de um pagamento existente.",
+        "summary": "Retorna um pagamento por ID",
         "security": [
           {
             "bearerAuth": []
@@ -2339,10 +2394,61 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do pagamento a ser atualizado",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do pagamento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pagamento"
+                },
+                "example": {
+                  "id": 1,
+                  "id_pedido": 1,
+                  "tipo": "PIX",
+                  "data_pagamento": "2023-10-27T11:10:00Z",
+                  "createdAt": "2023-10-27T11:10:00Z",
+                  "updatedAt": "2023-10-27T11:10:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pagamentos"
+        ],
+        "summary": "Atualiza um pagamento por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -2351,6 +2457,9 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/PagamentoUpdate"
+              },
+              "example": {
+                "tipo": "CARTAO"
               }
             }
           }
@@ -2362,19 +2471,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Pagamento"
+                },
+                "example": {
+                  "id": 1,
+                  "id_pedido": 1,
+                  "tipo": "CARTAO",
+                  "data_pagamento": "2023-10-27T11:10:00Z",
+                  "createdAt": "2023-10-27T11:10:00Z",
+                  "updatedAt": "2023-10-27T11:20:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
           }
         }
       },
@@ -2382,8 +2498,7 @@
         "tags": [
           "Pagamentos"
         ],
-        "summary": "Deleta um pagamento",
-        "description": "Remove um pagamento do sistema.",
+        "summary": "Deleta um pagamento por ID",
         "security": [
           {
             "bearerAuth": []
@@ -2394,10 +2509,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID do pagamento a ser deletado",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -2405,57 +2520,23 @@
             "description": "Pagamento deletado com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
           }
         }
       }
     },
     "/avaliacoes": {
-      "get": {
-        "tags": [
-          "Avaliações"
-        ],
-        "summary": "Lista todas as avaliações",
-        "description": "Retorna uma lista de todas as avaliações de produtos.",
-        "responses": {
-          "200": {
-            "description": "Lista de avaliações retornada com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Avaliacao"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Avaliações"
         ],
         "summary": "Cria uma nova avaliação",
-        "description": "Cria uma nova avaliação de produto. Requer autenticação.",
         "security": [
           {
             "bearerAuth": []
@@ -2466,27 +2547,13 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "id_cliente",
-                  "id_produto",
-                  "nota",
-                  "comentario"
-                ],
-                "properties": {
-                  "id_cliente": {
-                    "type": "integer"
-                  },
-                  "id_produto": {
-                    "type": "integer"
-                  },
-                  "nota": {
-                    "type": "integer"
-                  },
-                  "comentario": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/AvaliacaoCreate"
+              },
+              "example": {
+                "id_cliente": 1,
+                "id_produto": 1,
+                "nota": 5,
+                "comentario": "Produto de ótima qualidade, entrega rápida!"
               }
             }
           }
@@ -2498,19 +2565,73 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Avaliacao"
+                },
+                "example": {
+                  "id": 1,
+                  "id_cliente": 1,
+                  "id_produto": 1,
+                  "nota": 5,
+                  "comentario": "Produto de ótima qualidade, entrega rápida!",
+                  "createdAt": "2023-10-27T11:25:00Z",
+                  "updatedAt": "2023-10-27T11:25:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "Erro na requisição",
+            "description": "Requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Lista todas as avaliações",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de avaliações",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Avaliacao"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "id_cliente": 1,
+                    "id_produto": 1,
+                    "nota": 5,
+                    "comentario": "Produto de ótima qualidade, entrega rápida!",
+                    "createdAt": "2023-10-27T11:25:00Z",
+                    "updatedAt": "2023-10-27T11:25:00Z"
+                  },
+                  {
+                    "id": 2,
+                    "id_cliente": 2,
+                    "id_produto": 2,
+                    "nota": 4,
+                    "comentario": "Feijão de boa qualidade, mas a embalagem poderia ser melhor.",
+                    "createdAt": "2023-10-27T11:30:00Z",
+                    "updatedAt": "2023-10-27T11:30:00Z"
+                  }
+                ]
               }
             }
+          },
+          "401": {
+            "description": "Não autorizado"
           }
         }
       }
@@ -2520,48 +2641,7 @@
         "tags": [
           "Avaliações"
         ],
-        "summary": "Obtém uma avaliação por ID",
-        "description": "Retorna os detalhes de uma avaliação específica.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID da avaliação",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Avaliação encontrada",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Avaliacao"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "ID inválido fornecido",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Avaliações"
-        ],
-        "summary": "Atualiza uma avaliação",
-        "description": "Atualiza os dados de uma avaliação existente.",
+        "summary": "Retorna uma avaliação por ID",
         "security": [
           {
             "bearerAuth": []
@@ -2572,10 +2652,62 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID da avaliação a ser atualizada",
             "schema": {
               "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes da avaliação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Avaliacao"
+                },
+                "example": {
+                  "id": 1,
+                  "id_cliente": 1,
+                  "id_produto": 1,
+                  "nota": 5,
+                  "comentario": "Produto de ótima qualidade, entrega rápida!",
+                  "createdAt": "2023-10-27T11:25:00Z",
+                  "updatedAt": "2023-10-27T11:25:00Z"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Avaliação não encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Avaliações"
+        ],
+        "summary": "Atualiza uma avaliação por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -2584,6 +2716,10 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/AvaliacaoUpdate"
+              },
+              "example": {
+                "nota": 4,
+                "comentario": "Produto bom, mas a entrega demorou um pouco."
               }
             }
           }
@@ -2595,19 +2731,27 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Avaliacao"
+                },
+                "example": {
+                  "id": 1,
+                  "id_cliente": 1,
+                  "id_produto": 1,
+                  "nota": 4,
+                  "comentario": "Produto bom, mas a entrega demorou um pouco.",
+                  "createdAt": "2023-10-27T11:25:00Z",
+                  "updatedAt": "2023-10-27T11:35:00Z"
                 }
               }
             }
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "Requisição inválida ou ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Avaliação não encontrada"
           }
         }
       },
@@ -2615,8 +2759,7 @@
         "tags": [
           "Avaliações"
         ],
-        "summary": "Deleta uma avaliação",
-        "description": "Remove uma avaliação do sistema.",
+        "summary": "Deleta uma avaliação por ID",
         "security": [
           {
             "bearerAuth": []
@@ -2627,10 +2770,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "ID da avaliação a ser deletada",
             "schema": {
               "type": "integer"
-            }
+            },
+            "example": 1
           }
         ],
         "responses": {
@@ -2638,14 +2781,903 @@
             "description": "Avaliação deletada com sucesso"
           },
           "400": {
-            "description": "ID inválido ou erro de requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "description": "ID inválido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Avaliação não encontrada"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Empresa": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "nome": {
+            "type": "string",
+            "example": "Supermercado Exemplo"
+          },
+          "cnpj": {
+            "type": "string",
+            "example": "12.345.678/0001-90"
+          },
+          "email": {
+            "type": "string",
+            "example": "contato@supermercado.com"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          }
+        }
+      },
+      "EmpresaCreate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Supermercado Exemplo"
+          },
+          "cnpj": {
+            "type": "string",
+            "example": "12.345.678/0001-90"
+          },
+          "email": {
+            "type": "string",
+            "example": "contato@supermercado.com"
+          }
+        },
+        "required": [
+          "nome",
+          "cnpj",
+          "email"
+        ]
+      },
+      "EmpresaUpdate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Supermercado Exemplo 2.0"
+          },
+          "cnpj": {
+            "type": "string",
+            "example": "12.345.678/0001-90"
+          },
+          "email": {
+            "type": "string",
+            "example": "contato@supermercado.com"
+          }
+        }
+      },
+      "Produto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "nome": {
+            "type": "string",
+            "example": "Arroz Parboilizado 5kg"
+          },
+          "preco": {
+            "type": "number",
+            "format": "float",
+            "example": 25.50
+          },
+          "quantidade": {
+            "type": "integer",
+            "example": 100
+          },
+          "descricao": {
+            "type": "string",
+            "example": "Arroz de alta qualidade, ideal para o dia a dia."
+          },
+          "id_supermercado": {
+            "type": "integer",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          }
+        }
+      },
+      "ProdutoCreate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Arroz Parboilizado 5kg"
+          },
+          "preco": {
+            "type": "number",
+            "format": "float",
+            "example": 25.50
+          },
+          "quantidade": {
+            "type": "integer",
+            "example": 100
+          },
+          "descricao": {
+            "type": "string",
+            "example": "Arroz de alta qualidade, ideal para o dia a dia."
+          },
+          "id_supermercado": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "nome",
+          "preco",
+          "quantidade",
+          "descricao",
+          "id_supermercado"
+        ]
+      },
+      "ProdutoUpdate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Feijão Preto 1kg"
+          },
+          "preco": {
+            "type": "number",
+            "format": "float",
+            "example": 8.99
+          },
+          "quantidade": {
+            "type": "integer",
+            "example": 250
+          },
+          "descricao": {
+            "type": "string",
+            "example": "Feijão de excelente qualidade."
+          },
+          "id_supermercado": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "TipoEmprego": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "nome": {
+            "type": "string",
+            "example": "Gerente"
+          },
+          "salario": {
+            "type": "number",
+            "format": "float",
+            "example": 5000.00
+          },
+          "carga_horaria": {
+            "type": "integer",
+            "example": 40
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          }
+        }
+      },
+      "TipoEmpregoCreate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Gerente"
+          },
+          "salario": {
+            "type": "number",
+            "format": "float",
+            "example": 5000.00
+          },
+          "carga_horaria": {
+            "type": "integer",
+            "example": 40
+          }
+        },
+        "required": [
+          "nome",
+          "salario",
+          "carga_horaria"
+        ]
+      },
+      "TipoEmpregoUpdate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Gerente de Loja"
+          },
+          "salario": {
+            "type": "number",
+            "format": "float",
+            "example": 5500.00
+          },
+          "carga_horaria": {
+            "type": "integer",
+            "example": 40
+          }
+        }
+      },
+      "Funcionario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "nome": {
+            "type": "string",
+            "example": "Maria de Souza"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "111.222.333-44"
+          },
+          "telefone": {
+            "type": "string",
+            "example": "99999-7777"
+          },
+          "id_empresa": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_tipo_emprego": {
+            "type": "integer",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "maria.souza@supermercado.com"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          }
+        }
+      },
+      "FuncionarioCreate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Maria de Souza"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "111.222.333-44"
+          },
+          "telefone": {
+            "type": "string",
+            "example": "99999-7777"
+          },
+          "id_empresa": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_tipo_emprego": {
+            "type": "integer",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "maria.souza@supermercado.com"
+          },
+          "senha": {
+            "type": "string",
+            "example": "senhaSegura123"
+          }
+        },
+        "required": [
+          "nome",
+          "cpf",
+          "telefone",
+          "id_empresa",
+          "id_tipo_emprego",
+          "email",
+          "senha"
+        ]
+      },
+      "FuncionarioUpdate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Maria de Souza da Silva"
+          },
+          "telefone": {
+            "type": "string",
+            "example": "99999-6666"
+          },
+          "id_tipo_emprego": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "Cliente": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "nome": {
+            "type": "string",
+            "example": "João Silva"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "123.456.789-00"
+          },
+          "telefone": {
+            "type": "string",
+            "example": "99999-8888"
+          },
+          "email": {
+            "type": "string",
+            "example": "joao.silva@email.com"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          }
+        }
+      },
+      "ClienteCreate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "João Silva"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "123.456.789-00"
+          },
+          "telefone": {
+            "type": "string",
+            "example": "99999-8888"
+          },
+          "email": {
+            "type": "string",
+            "example": "joao.silva@email.com"
+          },
+          "senha": {
+            "type": "string",
+            "example": "senha123"
+          }
+        },
+        "required": [
+          "nome",
+          "cpf",
+          "telefone",
+          "email",
+          "senha"
+        ]
+      },
+      "ClienteUpdate": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "João Silva Filho"
+          },
+          "telefone": {
+            "type": "string",
+            "example": "99999-1111"
+          },
+          "email": {
+            "type": "string",
+            "example": "joao.silva.filho@email.com"
+          }
+        }
+      },
+      "Endereco": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "cep": {
+            "type": "string",
+            "example": "12345-678"
+          },
+          "logradouro": {
+            "type": "string",
+            "example": "Rua Exemplo"
+          },
+          "numero": {
+            "type": "string",
+            "example": "123"
+          },
+          "complemento": {
+            "type": "string",
+            "example": "Apto 101"
+          },
+          "bairro": {
+            "type": "string",
+            "example": "Centro"
+          },
+          "id_cliente": {
+            "type": "integer",
+            "nullable": true,
+            "example": 1
+          },
+          "id_empresa": {
+            "type": "integer",
+            "nullable": true,
+            "example": null
+          },
+          "id_funcionario": {
+            "type": "integer",
+            "nullable": true,
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:00:00Z"
+          }
+        }
+      },
+      "EnderecoCreate": {
+        "type": "object",
+        "properties": {
+          "cep": {
+            "type": "string",
+            "example": "12345-678"
+          },
+          "logradouro": {
+            "type": "string",
+            "example": "Rua Exemplo"
+          },
+          "numero": {
+            "type": "string",
+            "example": "123"
+          },
+          "complemento": {
+            "type": "string",
+            "example": "Apto 101"
+          },
+          "bairro": {
+            "type": "string",
+            "example": "Centro"
+          },
+          "id_cliente": {
+            "type": "integer",
+            "nullable": true,
+            "example": 1
+          },
+          "id_empresa": {
+            "type": "integer",
+            "nullable": true,
+            "example": null
+          },
+          "id_funcionario": {
+            "type": "integer",
+            "nullable": true,
+            "example": null
+          }
+        },
+        "required": [
+          "cep",
+          "logradouro",
+          "numero",
+          "bairro"
+        ]
+      },
+      "EnderecoUpdate": {
+        "type": "object",
+        "properties": {
+          "cep": {
+            "type": "string",
+            "example": "98765-432"
+          },
+          "numero": {
+            "type": "string",
+            "example": "456"
+          },
+          "complemento": {
+            "type": "string",
+            "example": "Casa"
+          }
+        }
+      },
+      "Pedido": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "id_cliente": {
+            "type": "integer",
+            "example": 1
+          },
+          "data_pedido": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:45:00Z"
+          },
+          "valor": {
+            "type": "number",
+            "format": "float",
+            "example": 50.00
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:45:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T10:45:00Z"
+          }
+        }
+      },
+      "PedidoCreate": {
+        "type": "object",
+        "properties": {
+          "id_cliente": {
+            "type": "integer",
+            "example": 1
+          },
+          "valor": {
+            "type": "number",
+            "format": "float",
+            "example": 50.00
+          }
+        },
+        "required": [
+          "id_cliente",
+          "valor"
+        ]
+      },
+      "PedidoUpdate": {
+        "type": "object",
+        "properties": {
+          "valor": {
+            "type": "number",
+            "format": "float",
+            "example": 65.50
+          }
+        }
+      },
+      "ItensPedido": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "id_pedido": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_produto": {
+            "type": "integer",
+            "example": 1
+          },
+          "quantidade": {
+            "type": "integer",
+            "example": 2
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:00:00Z"
+          }
+        }
+      },
+      "ItensPedidoCreate": {
+        "type": "object",
+        "properties": {
+          "id_pedido": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_produto": {
+            "type": "integer",
+            "example": 1
+          },
+          "quantidade": {
+            "type": "integer",
+            "example": 2
+          }
+        },
+        "required": [
+          "id_pedido",
+          "id_produto",
+          "quantidade"
+        ]
+      },
+      "ItensPedidoUpdate": {
+        "type": "object",
+        "properties": {
+          "quantidade": {
+            "type": "integer",
+            "example": 3
+          }
+        }
+      },
+      "Pagamento": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "id_pedido": {
+            "type": "integer",
+            "example": 1
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "CARTAO",
+              "PIX",
+              "BOLETO"
+            ],
+            "example": "PIX"
+          },
+          "data_pagamento": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:10:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:10:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:10:00Z"
+          }
+        }
+      },
+      "PagamentoCreate": {
+        "type": "object",
+        "properties": {
+          "id_pedido": {
+            "type": "integer",
+            "example": 1
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "CARTAO",
+              "PIX",
+              "BOLETO"
+            ],
+            "example": "PIX"
+          }
+        },
+        "required": [
+          "id_pedido",
+          "tipo"
+        ]
+      },
+      "PagamentoUpdate": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "CARTAO",
+              "PIX",
+              "BOLETO"
+            ],
+            "example": "CARTAO"
+          }
+        }
+      },
+      "Avaliacao": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true,
+            "example": 1
+          },
+          "id_cliente": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_produto": {
+            "type": "integer",
+            "example": 1
+          },
+          "nota": {
+            "type": "integer",
+            "example": 5
+          },
+          "comentario": {
+            "type": "string",
+            "example": "Produto de ótima qualidade, entrega rápida!"
+          },
+          "data_avaliacao": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:25:00Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:25:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "example": "2023-10-27T11:25:00Z"
+          }
+        }
+      },
+      "AvaliacaoCreate": {
+        "type": "object",
+        "properties": {
+          "id_cliente": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_produto": {
+            "type": "integer",
+            "example": 1
+          },
+          "nota": {
+            "type": "integer",
+            "example": 5
+          },
+          "comentario": {
+            "type": "string",
+            "example": "Produto de ótima qualidade, entrega rápida!"
+          }
+        },
+        "required": [
+          "id_cliente",
+          "id_produto",
+          "nota"
+        ]
+      },
+      "AvaliacaoUpdate": {
+        "type": "object",
+        "properties": {
+          "id_cliente": {
+            "type": "integer",
+            "example": 1
+          },
+          "id_produto": {
+            "type": "integer",
+            "example": 1
+          },
+          "nota": {
+            "type": "integer",
+            "example": 4
+          },
+          "comentario": {
+            "type": "string",
+            "example": "Produto bom, mas a entrega demorou um pouco."
+          }
+        }
+      },
+      "TipoPagamento": {
+        "type": "string",
+        "description": "Enum para o tipo de pagamento.",
+        "enum": [
+          "CARTAO",
+          "PIX",
+          "BOLETO"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Erro interno do servidor."
           }
         }
       }

@@ -6,7 +6,6 @@ const createCliente = async (req, res) => {
     const { nome, cpf, telefone, email, senha } = req.body;
 
     try {
-        // Cria um hash da senha antes de salvar no banco de dados
         const hashedPassword = await createHash(senha);
 
         const novoCliente = await prisma.cliente.create({
@@ -15,13 +14,19 @@ const createCliente = async (req, res) => {
                 cpf,
                 telefone,
                 email,
-                senha: hashedPassword, // Salva a senha com hash
+                senha: hashedPassword,
             },
         });
 
         res.status(201).json(novoCliente);
     } catch (error) {
         console.error('Erro ao cadastrar cliente:', error);
+        
+        // Verificação do erro específico do Prisma para chave única
+        if (error.code === 'P2002') {
+            return res.status(409).json({ message: 'O CPF informado já está cadastrado.' });
+        }
+        
         res.status(500).json({ message: 'Erro interno do servidor.' });
     }
 };
