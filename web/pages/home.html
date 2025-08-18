@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="../styles/home.css">
+</head>
+<body>
+    <header>
+        <img src="../assets/logo.png" alt="Logo" id="logo">
+        <div>
+            <input type="text" placeholder="Buscar no mercado...">
+            <button class="search-btn">X</button>
+        </div>
+        <a href="home.html"><img src="../assets/avatar.png" alt="Avatar" id="avatar"></a>
+    </header>
+
+    <main>
+        <h2 class="section-title">Seleções</h2>
+        <div class="selecoes">
+        </div>
+
+        <h2 class="section-title">Últimas Lojas</h2>
+        <div class="ultLojas">
+        </div>
+        <button id="see-all-stores-btn">Ver Todos os Supermercados</button>
+    </main>
+
+    <div id="categoriesModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="" alt="" class="modal-logo">
+                <h2 class="modal-title"></h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-categories">
+            </div>
+        </div>
+    </div>
+
+    <div id="productsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="" alt="" class="modal-logo">
+                <h2 class="modal-title"></h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-products">
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/home.js"></script>
+</body>
+</html>

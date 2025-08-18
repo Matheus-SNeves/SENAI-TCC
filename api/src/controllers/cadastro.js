@@ -22,7 +22,6 @@ const createCliente = async (req, res) => {
     } catch (error) {
         console.error('Erro ao cadastrar cliente:', error);
         
-        // Verificação do erro específico do Prisma para chave única
         if (error.code === 'P2002') {
             return res.status(409).json({ message: 'O CPF informado já está cadastrado.' });
         }
