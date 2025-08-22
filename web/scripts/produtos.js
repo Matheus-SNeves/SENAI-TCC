@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('JSON não encontrado para a categoria');
         }
         const data = await response.json();
-        
+
         titleElement.textContent = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
 
         const categoryData = data[categoryName];
@@ -27,20 +27,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         categoryData.forEach(item => {
-            const productItem = document.createElement('div');
-            productItem.className = 'product-item';
-            const productImg = document.createElement('img');
-            productImg.src = item.imagem;
-            productImg.alt = item.nome;
-            const productName = document.createElement('h4');
-            productName.textContent = item.nome;
-            const productPrice = document.createElement('p');
-            productPrice.textContent = `R$ ${item.preco.toFixed(2)}`;
-            productItem.appendChild(productImg);
-            productItem.appendChild(productName);
-            productItem.appendChild(productPrice);
-            container.appendChild(productItem);
-        });
+        // Cria um link <a> que envolve todo o card do produto
+        const productLink = document.createElement('a');
+        productLink.href = `comparar.html?category=${categoryName}&productId=${item.id}`;
+        productLink.className = 'product-link'; // Adicionamos uma classe para estilização
+
+        const productItem = document.createElement('div');
+        productItem.className = 'product-item';
+
+        const productImg = document.createElement('img');
+        productImg.src = item.imagem;
+        productImg.alt = item.nome;
+
+        const productName = document.createElement('h4');
+        productName.textContent = item.nome;
+
+        const productPrice = document.createElement('p');
+        // Mostra o preço do primeiro supermercado na lista como referência
+        // Usamos ?. para evitar erro se o array de preços estiver vazio
+        const referencePrice = item.precos?.[0]?.preco;
+        productPrice.textContent = referencePrice ? `A partir de R$ ${referencePrice.toFixed(2).replace('.', ',')}` : 'Preço indisponível';
+
+        productItem.appendChild(productImg);
+        productItem.appendChild(productName);
+        productItem.appendChild(productPrice);
+
+        // Adiciona o item dentro do link
+        productLink.appendChild(productItem);
+
+        // Adiciona o link ao container principal
+        container.appendChild(productLink);
+    });
 
     } catch (error) {
         console.error('Erro ao carregar os dados:', error);

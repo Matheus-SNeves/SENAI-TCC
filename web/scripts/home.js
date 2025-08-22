@@ -1,191 +1,300 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Objeto para armazenar todos os dados carregados e evitar múltiplas buscas na rede
+    let allData = {};
+
+    /**
+     * Função principal que busca todos os arquivos JSON de uma vez só
+     * e armazena os dados para uso em toda a aplicação.
+     */
     const fetchAllData = async () => {
-        const [
-            iconsResponse,
-            supermercadosResponse,
-            hortifrutiResponse,
-            acougueResponse,
-            bebidasResponse,
-            friosResponse,
-            higieneResponse,
-            laticiniosResponse,
-            limpezaResponse,
-            padariaResponse
-        ] = await Promise.all([
-            fetch('../mockups/icons.json'),
-            fetch('../mockups/supermercados.json'),
-            fetch('../mockups/hortifruti.json'),
-            fetch('../mockups/acougue.json'),
-            fetch('../mockups/bebidas.json'),
-            fetch('../mockups/frios.json'),
-            fetch('../mockups/higiene.json'),
-            fetch('../mockups/laticinios.json'),
-            fetch('../mockups/limpeza.json'),
-            fetch('../mockups/padaria.json')
-        ]);
+        try {
+            const categories = ['hortifruti', 'acougue', 'bebidas', 'frios', 'higiene', 'laticinios', 'limpeza', 'padaria'];
+            const promises = [
+                fetch('../mockups/icons.json'),
+                fetch('../mockups/supermercados.json'),
+                ...categories.map(cat => fetch(`../mockups/${cat}.json`))
+            ];
 
-        const iconsData = await iconsResponse.json();
-        const supermercadosData = await supermercadosResponse.json();
-        const hortifrutiData = await hortifrutiResponse.json();
-        const acougueData = await acougueResponse.json();
-        const bebidasData = await bebidasResponse.json();
-        const friosData = await friosResponse.json();
-        const higieneData = await higieneResponse.json();
-        const laticiniosData = await laticiniosResponse.json();
-        const limpezaData = await limpezaResponse.json();
-        const padariaData = await padariaResponse.json();
+            const responses = await Promise.all(promises.map(p => p.catch(e => e)));
+            
+            const successfulResponses = responses.filter(res => res instanceof Response && res.ok);
+            if (successfulResponses.length !== promises.length) {
+                console.error("Falha ao carregar um ou mais arquivos JSON.");
+                return;
+            }
 
-        // Mapeia o nome do ícone para o nome do arquivo JSON
-        const categoryMap = {
-            'Hortifrúti': { data: hortifrutiData.hortifruti, file: 'hortifruti' },
-            'Açougue': { data: acougueData.acougue, file: 'acougue' },
-            'Bebidas': { data: bebidasData.bebidas, file: 'bebidas' },
-            'Frios': { data: friosData.frios, file: 'frios' },
-            'Higiene': { data: higieneData.higiene, file: 'higiene' },
-            'Laticínios': { data: laticiniosData.laticinios, file: 'laticinios' },
-            'Limpeza': { data: limpezaData.limpeza, file: 'limpeza' },
-            'Padaria': { data: padariaData.padaria, file: 'padaria' }
-        };
+            const jsonData = await Promise.all(successfulResponses.map(res => res.json()));
 
-        createCards(iconsData.icons, categoryMap);
-        createStoreSection(supermercadosData.supermercado, iconsData.icons);
+            allData.icons = jsonData[0].icons;
+            allData.supermercados = jsonData[1].supermercado;
+            
+            // Mapeia o nome do ícone para o nome do arquivo JSON e armazena os dados dos produtos
+            allData.categoryMap = {};
+            allData.icons.forEach((icon, index) => {
+                const categoryKey = categories[index];
+                const categoryData = jsonData[index + 2][categoryKey];
+                allData.categoryMap[icon.nome] = { data: categoryData, file: categoryKey };
+            });
+
+            // Após carregar todos os dados, inicia a construção da página e a funcionalidade de busca
+            setupHomePage();
+            setupSearch();
+
+        } catch (error) {
+            console.error("Erro fatal ao carregar os dados:", error);
+        }
+    };
+
+    /**
+     * Configura os elementos iniciais da página Home.
+     */
+    const setupHomePage = () => {
+        createCategoryCards(allData.icons, allData.categoryMap);
+        createStoreCards(allData.supermercados, allData.icons);
         
-        // Adiciona evento de clique para o novo botão de ver todos os supermercados
         document.getElementById('see-all-stores-btn').addEventListener('click', () => {
             window.location.href = 'supermercados.html';
         });
     };
 
-    const searchInput = document.querySelector('input[type="text"]');
-    const searchBtn = document.querySelector('.search-btn');
-
-    searchBtn.addEventListener('click', () => {
-        searchInput.value = '';
-    });
-
-    // Função para criar os cards de categorias (Seleções) e abrir o modal de produtos
-    function createCards(icons, categoryMap) {
+    // --- LÓGICA DO MODAL DE SELEÇÕES ---
+    const createCategoryCards = (icons, categoryMap) => {
         const selecoesDiv = document.querySelector('.selecoes');
         selecoesDiv.innerHTML = '';
         icons.forEach(icon => {
             const cardItem = document.createElement('div');
             cardItem.className = 'card-item';
-            const cardImg = document.createElement('img');
-            cardImg.src = icon.imagem;
-            cardImg.alt = icon.nome;
-            const cardName = document.createElement('h3');
-            cardName.textContent = icon.nome;
-            cardItem.appendChild(cardImg);
-            cardItem.appendChild(cardName);
+            cardItem.innerHTML = `<img src="${icon.imagem}" alt="${icon.nome}"><h3>${icon.nome}</h3>`;
             selecoesDiv.appendChild(cardItem);
 
             cardItem.addEventListener('click', () => {
                 const modal = document.getElementById('productsModal');
-                const modalTitle = document.querySelector('#productsModal .modal-title');
-                const modalLogo = document.querySelector('#productsModal .modal-logo');
-                const modalSections = document.querySelector('#productsModal .modal-products');
+                const modalTitle = modal.querySelector('.modal-title');
+                const modalLogo = modal.querySelector('.modal-logo');
+                const modalBody = modal.querySelector('.modal-body');
 
-                modalSections.innerHTML = '';
+                modalBody.innerHTML = ''; 
 
                 const categoryInfo = categoryMap[icon.nome];
-                const data = categoryInfo ? categoryInfo.data : [];
-                const maxItems = 4;
-                const itemsToDisplay = data.slice(0, maxItems);
+                if (!categoryInfo) return;
 
                 modalTitle.textContent = icon.nome;
                 modalLogo.src = icon.imagem;
-                
-                itemsToDisplay.forEach(item => {
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-                    const productImg = document.createElement('img');
-                    productImg.src = item.imagem;
-                    productImg.alt = item.nome;
-                    const productName = document.createElement('h4');
-                    productName.textContent = item.nome;
-                    const productPrice = document.createElement('p');
-                    productPrice.textContent = `R$ ${item.preco.toFixed(2)}`;
-                    productItem.appendChild(productImg);
-                    productItem.appendChild(productName);
-                    productItem.appendChild(productPrice);
-                    modalSections.appendChild(productItem);
-                });
 
-                // Adiciona o botão "Ver Mais" se houver mais de 4 produtos
-                if (data.length > maxItems) {
+                const maxItems = 6;
+                const itemsToDisplay = categoryInfo.data.slice(0, maxItems);
+                
+                const productGrid = document.createElement('div');
+                productGrid.className = 'modal-products'; // Usando a classe de layout de produtos
+
+                itemsToDisplay.forEach(item => {
+                    const productLink = document.createElement('a');
+                    productLink.href = `comparar.html?category=${categoryInfo.file}&productId=${item.id}`;
+
+                    const referencePrice = item.precos?.[0]?.preco;
+                    const priceText = referencePrice ? `A partir de R$ ${referencePrice.toFixed(2).replace('.', ',')}` : 'Preço indisponível';
+                    
+                    productLink.innerHTML = `
+                        <div class="product-item">
+                            <img src="${item.imagem}" alt="${item.nome}">
+                            <h4>${item.nome}</h4>
+                            <p>${priceText}</p>
+                        </div>
+                    `;
+                    productGrid.appendChild(productLink);
+                });
+                modalBody.appendChild(productGrid);
+
+                if (categoryInfo.data.length > maxItems) {
                     const verMaisBtn = document.createElement('button');
-                    verMaisBtn.textContent = 'Ver Mais';
+                    verMaisBtn.textContent = 'Ver Todos os Produtos';
                     verMaisBtn.className = 'ver-mais-btn';
-                    verMaisBtn.addEventListener('click', () => {
-                        window.location.href = `produtos.html?category=${categoryInfo.file}`;
-                    });
-                    modalSections.appendChild(verMaisBtn);
+                    verMaisBtn.onclick = () => window.location.href = `produtos.html?category=${categoryInfo.file}`;
+                    modalBody.appendChild(verMaisBtn);
                 }
 
                 modal.style.display = 'flex';
             });
         });
-    }
+    };
 
-    // Função para criar os cards das lojas e abrir o modal de categorias
-    function createStoreSection(supermercados, icons) {
+    // --- LÓGICA DO MODAL DE SUPERMERCADOS (COM NAVEGAÇÃO INTERNA) ---
+    const createStoreCards = (supermercados, icons) => {
         const ultLojasDiv = document.querySelector('.ultLojas');
-        if (ultLojasDiv) {
-            ultLojasDiv.innerHTML = '';
-            supermercados.slice(0, 5).forEach(store => {
-                const storeItem = document.createElement('div');
-                storeItem.className = 'store-item';
-                const storeImg = document.createElement('img');
-                storeImg.src = store.imagem;
-                storeImg.alt = store.nome;
-                const storeName = document.createElement('h3');
-                storeName.textContent = store.nome;
-                const storeAddress = document.createElement('p');
-                storeAddress.textContent = store.endereco;
-                storeItem.appendChild(storeImg);
-                storeItem.appendChild(storeName);
-                storeItem.appendChild(storeAddress);
-                ultLojasDiv.appendChild(storeItem);
+        ultLojasDiv.innerHTML = '';
+        supermercados.slice(0, 5).forEach(store => {
+            const storeItem = document.createElement('div');
+            storeItem.className = 'store-item';
+            storeItem.innerHTML = `
+                <img src="${store.imagem}" alt="${store.nome}">
+                <h3>${store.nome}</h3>
+                <p>${store.endereco}</p>`;
+            ultLojasDiv.appendChild(storeItem);
 
-                // Evento de clique para abrir o modal de categorias
-                storeItem.addEventListener('click', () => {
-                    const modal = document.getElementById('categoriesModal');
-                    const modalTitle = document.querySelector('#categoriesModal .modal-title');
-                    const modalLogo = document.querySelector('#categoriesModal .modal-logo');
-                    const modalSections = document.querySelector('#categoriesModal .modal-categories');
+            storeItem.addEventListener('click', () => showCategoriesForStore(store, icons));
+        });
+    };
 
-                    modalSections.innerHTML = '';
+    const showCategoriesForStore = (store, icons) => {
+        const modal = document.getElementById('categoriesModal');
+        const modalHeader = modal.querySelector('.modal-header');
+        const modalTitle = modal.querySelector('.modal-title');
+        const modalLogo = modal.querySelector('.modal-logo');
+        const modalBody = modal.querySelector('.modal-body');
 
-                    modalTitle.textContent = store.nome;
-                    modalLogo.src = store.imagem;
+        // Limpa o header de possíveis botões "voltar"
+        const existingBackButton = modalHeader.querySelector('.modal-back-btn');
+        if (existingBackButton) {
+            modalHeader.removeChild(existingBackButton);
+        }
 
-                    icons.forEach(icon => {
-                        const iconItem = document.createElement('div');
-                        iconItem.className = 'card-item';
-                        const iconImg = document.createElement('img');
-                        iconImg.src = icon.imagem;
-                        iconImg.alt = icon.nome;
-                        const iconName = document.createElement('h3');
-                        iconName.textContent = icon.nome;
-                        iconItem.appendChild(iconImg);
-                        iconItem.appendChild(iconName);
-                        modalSections.appendChild(iconItem);
-                    });
-                    modal.style.display = 'flex';
-                });
+        modalTitle.textContent = store.nome;
+        modalLogo.src = store.imagem;
+        modalLogo.style.display = 'block';
+        modalBody.innerHTML = ''; 
+
+        const categoryGrid = document.createElement('div');
+        categoryGrid.className = 'modal-categories';
+
+        icons.forEach(icon => {
+            const iconItem = document.createElement('div');
+            iconItem.className = 'card-item';
+            iconItem.innerHTML = `<img src="${icon.imagem}" alt="${icon.nome}"><h3>${icon.nome}</h3>`;
+            categoryGrid.appendChild(iconItem);
+            
+            iconItem.addEventListener('click', () => showProductsForStore(store, icon));
+        });
+        modalBody.appendChild(categoryGrid);
+        modal.style.display = 'flex';
+    };
+    
+    const showProductsForStore = (store, icon) => {
+        const modal = document.getElementById('categoriesModal');
+        const modalHeader = modal.querySelector('.modal-header');
+        const modalTitle = modal.querySelector('.modal-title');
+        const modalLogo = modal.querySelector('.modal-logo');
+        const modalBody = modal.querySelector('.modal-body');
+        
+        modalBody.innerHTML = '<p>Carregando produtos...</p>';
+        modalLogo.style.display = 'none'; // Esconde o logo do mercado para dar espaço ao título
+
+        // Adiciona um botão de voltar, se não existir
+        if (!modalHeader.querySelector('.modal-back-btn')) {
+            const backButton = document.createElement('button');
+            backButton.innerHTML = '&larr;';
+            backButton.className = 'modal-back-btn';
+            backButton.onclick = () => showCategoriesForStore(store, allData.icons);
+            modalHeader.insertBefore(backButton, modalTitle);
+        }
+
+        const categoryInfo = allData.categoryMap[icon.nome];
+        if (!categoryInfo) {
+            modalBody.innerHTML = '<p>Categoria não encontrada.</p>';
+            return;
+        }
+
+        modalTitle.textContent = `${icon.nome}`;
+        
+        const productGrid = document.createElement('div');
+        productGrid.className = 'modal-products';
+
+        categoryInfo.data.forEach(product => {
+            const priceEntry = product.precos.find(p => p.supermercado_id === store.id);
+            const priceText = priceEntry ? `R$ ${priceEntry.preco.toFixed(2).replace('.', ',')}` : 'Indisponível nesta loja';
+
+            const productItem = document.createElement('div');
+            productItem.className = 'product-item';
+            productItem.innerHTML = `
+                <img src="${product.imagem}" alt="${product.nome}">
+                <h4>${product.nome}</h4>
+                <p>${priceText}</p>
+                <button class="add-to-cart-btn">Adicionar</button>
+            `;
+            productGrid.appendChild(productItem);
+        });
+        
+        modalBody.innerHTML = ''; // Limpa o "Carregando"
+        modalBody.appendChild(productGrid);
+    };
+
+    // --- LÓGICA DA BARRA DE PESQUISA ---
+    const setupSearch = () => {
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            if (searchTerm.length > 2) {
+                performSearch(searchTerm);
+            } else {
+                document.getElementById('searchModal').style.display = 'none';
+            }
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            document.getElementById('searchModal').style.display = 'none';
+        });
+    };
+
+    const performSearch = (searchTerm) => {
+        const modal = document.getElementById('searchModal');
+        const modalBody = modal.querySelector('.modal-body');
+        modalBody.innerHTML = '';
+        
+        const results = [];
+        for (const categoryName in allData.categoryMap) {
+            const categoryInfo = allData.categoryMap[categoryName];
+            categoryInfo.data.forEach(product => {
+                if (product.nome.toLowerCase().includes(searchTerm)) {
+                    results.push({ ...product, categoryFile: categoryInfo.file });
+                }
             });
         }
-    }
+        
+        const productGrid = document.createElement('div');
+        productGrid.className = 'modal-products';
 
-    // Fecha o modal de categorias
-    document.querySelector('#categoriesModal .close-btn').addEventListener('click', () => {
-        document.getElementById('categoriesModal').style.display = 'none';
+        if (results.length > 0) {
+            results.forEach(item => {
+                const productLink = document.createElement('a');
+                productLink.href = `comparar.html?category=${item.categoryFile}&productId=${item.id}`;
+                const referencePrice = item.precos?.[0]?.preco;
+                const priceText = referencePrice ? `A partir de R$ ${referencePrice.toFixed(2).replace('.', ',')}` : 'Preço indisponível';
+                
+                productLink.innerHTML = `
+                    <div class="product-item">
+                        <img src="${item.imagem}" alt="${item.nome}">
+                        <h4>${item.nome}</h4>
+                        <p>${priceText}</p>
+                    </div>
+                `;
+                productGrid.appendChild(productLink);
+            });
+            modalBody.appendChild(productGrid);
+        } else {
+            modalBody.innerHTML = '<p style="text-align: center; width: 100%;">Nenhum produto encontrado.</p>';
+        }
+
+        modal.style.display = 'flex';
+    };
+
+    // --- FUNÇÕES GERAIS DE CONTROLE DOS MODAIS ---
+    document.querySelectorAll('.modal-overlay .close-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const modal = e.target.closest('.modal-overlay');
+            modal.style.display = 'none';
+
+            // Limpa o botão de voltar do modal de categorias ao fechar
+            if (modal.id === 'categoriesModal') {
+                const backButton = modal.querySelector('.modal-back-btn');
+                if (backButton) {
+                    backButton.remove();
+                }
+            }
+        });
     });
 
-    // Fecha o modal de produtos
-    document.querySelector('#productsModal .close-btn').addEventListener('click', () => {
-        document.getElementById('productsModal').style.display = 'none';
-    });
-
+    // Inicia o carregamento de todos os dados necessários
     fetchAllData();
 });

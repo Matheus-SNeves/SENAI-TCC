@@ -68,3 +68,8 @@ body {
     font-weight: bold;
     font-size: 14px;
 }
+
+.product-link {
+    text-decoration: none; /* Remove o sublinhado do link */
+    color: inherit; /* Faz o texto herdar a cor do elemento pai */
+}

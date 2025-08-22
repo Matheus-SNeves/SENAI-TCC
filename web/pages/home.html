@@ -9,9 +9,9 @@
 <body>
     <header>
         <img src="../assets/logo.png" alt="Logo" id="logo">
-        <div>
-            <input type="text" placeholder="Buscar no mercado...">
-            <button class="search-btn">X</button>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Buscar no mercado...">
+            <button class="search-btn" id="clear-search-btn">X</button>
         </div>
         <a href="home.html"><img src="../assets/avatar.png" alt="Avatar" id="avatar"></a>
     </header>
@@ -34,8 +34,8 @@
                 <h2 class="modal-title"></h2>
                 <button class="close-btn">&times;</button>
             </div>
-            <div class="modal-categories">
-            </div>
+            <div class="modal-body">
+                </div>
         </div>
     </div>
 
@@ -46,8 +46,19 @@
                 <h2 class="modal-title"></h2>
                 <button class="close-btn">&times;</button>
             </div>
-            <div class="modal-products">
+            <div class="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <div id="searchModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Resultados da Busca</h2>
+                <button class="close-btn">&times;</button>
             </div>
+            <div class="modal-body">
+                </div>
         </div>
     </div>
 
