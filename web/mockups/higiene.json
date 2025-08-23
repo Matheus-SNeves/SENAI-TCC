@@ -122,7 +122,7 @@
     {
       "id": 8,
       "nome": "Fio Dental Oral-B",
-      "imagem": "https://images.dentalspeed.com/produtos/150/253018.jpg",
+      "imagem": "https://mercantilnovaera.vtexassets.com/arquivos/ids/203633-800-450?v=638080259484300000&width=800&height=450&aspect=true",
       "precos": [
         {"supermercado_id": 1, "preco": 9.50},
         {"supermercado_id": 2, "preco": 9.70},
@@ -139,7 +139,7 @@
     {
       "id": 9,
       "nome": "Condicionador Seda",
-      "imagem": "https://seda.vtexassets.com/arquivos/ids/156710-1200-auto?v=638141444589330000&width=1200&height=auto&aspect=true",
+      "imagem": "https://assets.unileversolutions.com/v1/57877299.png",
       "precos": [
         {"supermercado_id": 1, "preco": 16.90},
         {"supermercado_id": 2, "preco": 17.20},
@@ -156,7 +156,7 @@
     {
       "id": 10,
       "nome": "Absorvente Always",
-      "imagem": "https://www.soneda.com.br/media/catalog/product/p/r/protetor-diario-always-protetores-diarios-leve-40-pague-30-unidades-1.jpg",
+      "imagem": "https://images.ctfassets.net/r6s1vsrk21dt/4HDJxwiESPOnfvzEklIM3F/b221639e3a75d3d7381c6003c289413e/80807210_Ehub_AlwaysPT_PI_SuperProtecci%C3%B3n_D%C3%ADa_Suave_SinAlas_TallaP_8U.png",
       "precos": [
         {"supermercado_id": 1, "preco": 10.50},
         {"supermercado_id": 2, "preco": 10.70},
@@ -173,7 +173,7 @@
     {
       "id": 11,
       "nome": "Cotonetes",
-      "imagem": "https://a-static.mlcdn.com.br/450x450/hastes-flexiveis-cotonetes-johnsons-johnson-c-75-unidades/drogariasp/12217/582ab393b4f620e2cc51065f4d89a690.jpeg",
+      "imagem": "https://www.drogasil.com.br/_next/image?url=https%3A%2F%2Fproduct-data.raiadrogasil.io%2Fimages%2F3465622.webp&w=3840&q=40",
       "precos": [
         {"supermercado_id": 1, "preco": 6.80},
         {"supermercado_id": 2, "preco": 7.00},
@@ -190,7 +190,7 @@
     {
       "id": 12,
       "nome": "Enxaguante Bucal Listerine",
-      "imagem": "https://images.tcdn.com.br/img/img_prod/740391/enxaguante_bucal_listerine_anticaries_500ml_4703_1_5a26c459c25143a5af15f3e46c965751.jpg",
+      "imagem": "https://www.drogaraia.com.br/_next/image?url=https%3A%2F%2Fproduct-data.raiadrogasil.io%2Fimages%2F3469672.webp&w=3840&q=40",
       "precos": [
         {"supermercado_id": 1, "preco": 19.90},
         {"supermercado_id": 2, "preco": 20.20},
@@ -207,7 +207,7 @@
     {
       "id": 13,
       "nome": "Sabonete Líquido",
-      "imagem": "https://drogariasp.vteximg.com.br/arquivos/ids/814187-1000-1000/7891024183020-1.jpg",
+      "imagem": "https://drogal.vtexassets.com/arquivos/ids/246827/127832.jpg?v=638739810637270000",
       "precos": [
         {"supermercado_id": 1, "preco": 13.50},
         {"supermercado_id": 2, "preco": 13.80},
@@ -224,7 +224,7 @@
     {
       "id": 14,
       "nome": "Lâmina de Barbear Gillette",
-      "imagem": "https://cdn.ultrafarma.com.br/static/produtos/815774/grande-600x600/carga-para-aparelho-de-barbear-gillette-mach3-sensitive-com-2-unidades-815774.jpg",
+      "imagem": "https://io.convertiez.com.br/m/farmaponte/shop/products/images/19768/large/carga-gillette-mach3-2-unidades_10350.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 25.00},
         {"supermercado_id": 2, "preco": 25.50},
@@ -241,7 +241,7 @@
     {
       "id": 15,
       "nome": "Creme de Barbear Nivea",
-      "imagem": "https://images.tcdn.com.br/img/img_prod/638295/creme_de_barbear_nivea_men_original_protect_65g_4319_1_20201124110323.jpg",
+      "imagem": "https://product-data.raiadrogasil.io/images/10727961.webp",
       "precos": [
         {"supermercado_id": 1, "preco": 22.00},
         {"supermercado_id": 2, "preco": 22.40},

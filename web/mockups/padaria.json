@@ -105,7 +105,7 @@
     {
       "id": 7,
       "nome": "Croissant (unidade)",
-      "imagem": "https://www.receiteria.com.br/wp-content/uploads/receitas-de-croissant-730x449.jpg",
+      "imagem": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Croissant-Petr_Kratochvil.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 6.50},
         {"supermercado_id": 2, "preco": 6.80},
@@ -122,7 +122,7 @@
     {
       "id": 8,
       "nome": "Sonho (unidade)",
-      "imagem": "https://assets.delirec.com/images%2FjG9Vf2aOM14D026NbpLpZ20g2aZ2%2Fv1612882061%2F540x540-p-l-0-0-A-4139_SONHO-DE-CREME-COM-DOCE-DE-LEITE.jpg",
+      "imagem": "https://media.istockphoto.com/id/460900113/pt/foto/sonho-brasileira.jpg?s=612x612&w=0&k=20&c=_9dD7iYHZPGHoYdE4ptdL5aCiY54D5IQiaRLxxUf4fA=",
       "precos": [
         {"supermercado_id": 1, "preco": 5.50},
         {"supermercado_id": 2, "preco": 5.80},
@@ -139,7 +139,7 @@
     {
       "id": 9,
       "nome": "Bisnaga (pacote)",
-      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6s2c5T5o6Z9f4y2zX2R5s4p3j-8K6r2k9A&s",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfnbfLETl7pMbhmlk6JumAd0bqbs7fyjw54A&s",
       "precos": [
         {"supermercado_id": 1, "preco": 7.00},
         {"supermercado_id": 2, "preco": 7.30},
@@ -156,7 +156,7 @@
     {
       "id": 10,
       "nome": "Torradas Bauducco",
-      "imagem": "https://a-static.mlcdn.com.br/450x450/torrada-tradicional-bauducco-142g/drogaraia/90415/709f1df02e176fa1c5d94ec89bb467ab.jpeg",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIwCiOOJRKtQ_jaKjemBAFfTO5N4iHBW_Y7w&s",
       "precos": [
         {"supermercado_id": 1, "preco": 4.80},
         {"supermercado_id": 2, "preco": 5.00},
@@ -173,7 +173,7 @@
     {
       "id": 11,
       "nome": "Rosca Doce",
-      "imagem": "https://pilotandofogao.com.br/wp-content/uploads/2018/06/Rosca-Doce-Fofinha.jpg",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNlXHja5U-K_fC5RdqCG6lXQcWi9F_c3XfCA&s",
       "precos": [
         {"supermercado_id": 1, "preco": 12.00},
         {"supermercado_id": 2, "preco": 12.40},
@@ -190,7 +190,7 @@
     {
       "id": 12,
       "nome": "Broa de Milho",
-      "imagem": "https://www.receitasnestle.com.br/sites/default/files/srh_recipes/499a0a10-c116-433b-8d18-f29e377651a5.jpg",
+      "imagem": "https://receitadaboa.com.br/wp-content/uploads/2024/07/Imagem-ilustrativa-de-broa-de-milho.webp",
       "precos": [
         {"supermercado_id": 1, "preco": 6.00},
         {"supermercado_id": 2, "preco": 6.30},
@@ -207,7 +207,7 @@
     {
       "id": 13,
       "nome": "Pão de Leite",
-      "imagem": "https://static.itdg.com.br/images/auto-auto/653f58a98448ed086782c3c9fc18a221/pao-de-leite-fofinho.jpg",
+      "imagem": "https://receitadaboa.com.br/wp-content/uploads/2024/07/imagem-ilustrativa-de-dois-paes-de-leite.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 8.50},
         {"supermercado_id": 2, "preco": 8.80},
@@ -224,7 +224,7 @@
     {
       "id": 14,
       "nome": "Carolina Recheada",
-      "imagem": "https://static.itdg.com.br/images/360-240/1f20258169223e75e966c91a0c7104b4/carolina-recheada-com-doce-de-leite.jpg",
+      "imagem": "https://grupodocedoce.com.br/storage/produtos/177/panutti-carolina-de-brigadeiro-com-chocolate-ao-leite-1583408831.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 3.50},
         {"supermercado_id": 2, "preco": 3.70},
@@ -241,7 +241,7 @@
     {
       "id": 15,
       "nome": "Mini Pizza",
-      "imagem": "https://www.receitasagora.com.br/wp-content/uploads/2020/12/receita-mini-pizza.jpg",
+      "imagem": "https://acarnequeomundoprefere.com.br/uploads/media/image/33-11-24.png",
       "precos": [
         {"supermercado_id": 1, "preco": 5.00},
         {"supermercado_id": 2, "preco": 5.30},
