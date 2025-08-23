@@ -3,16 +3,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const categoryName = urlParams.get('category');
     const productId = urlParams.get('productId');
 
+    const productContainer = document.querySelector('.product-details-container');
+    const pricesContainer = document.querySelector('.prices-list-container');
+    const actionModal = document.getElementById('action-modal');
+
     if (!categoryName || !productId) {
         document.body.innerHTML = '<h1>Erro: Categoria ou produto não especificado.</h1>';
         return;
     }
 
-    const productContainer = document.querySelector('.product-details-container');
-    const pricesContainer = document.querySelector('.prices-list-container');
-
     try {
-        // 1. Busca os dados dos produtos e dos supermercados ao mesmo tempo
         const [productsResponse, supermarketsResponse] = await Promise.all([
             fetch(`../mockups/${categoryName}.json`),
             fetch('../mockups/supermercados.json')
@@ -21,28 +21,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         const productsData = await productsResponse.json();
         const supermarketsData = await supermarketsResponse.json();
 
-        // 2. Encontra o produto específico que queremos comparar
         const product = productsData[categoryName].find(p => p.id == productId);
-
+        
         if (!product) {
             throw new Error('Produto não encontrado');
         }
 
-        // 3. Exibe as informações do produto no container da esquerda
         productContainer.innerHTML = `
             <img src="${product.imagem}" alt="${product.nome}">
             <h2>${product.nome}</h2>
         `;
 
-        // 4. Mapeia os dados dos supermercados para fácil acesso (ID -> Nome, Imagem)
         const supermarketMap = new Map();
         supermarketsData.supermercado.forEach(store => {
-            supermarketMap.set(store.id, { nome: store.nome, imagem: store.imagem });
+            supermarketMap.set(store.id, { id: store.id, nome: store.nome, imagem: store.imagem });
         });
 
-        // 5. Cria os cards de preço para cada supermercado
+        pricesContainer.innerHTML = '';
         product.precos
-            .sort((a, b) => a.preco - b.preco) // Opcional: ordena do mais barato para o mais caro
+            .sort((a, b) => a.preco - b.preco)
             .forEach(priceEntry => {
                 const storeDetails = supermarketMap.get(priceEntry.supermercado_id);
                 if (storeDetails) {
@@ -57,6 +54,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                             R$ ${priceEntry.preco.toFixed(2).replace('.', ',')}
                         </div>
                     `;
+                    priceCard.addEventListener('click', () => {
+                        openActionModal(product, storeDetails, priceEntry.preco);
+                    });
                     pricesContainer.appendChild(priceCard);
                 }
             });
@@ -65,4 +65,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Erro ao carregar dados para comparação:', error);
         document.body.innerHTML = '<h1>Erro ao carregar os dados do produto.</h1>';
     }
+
+    function openActionModal(product, store, price) {
+        document.getElementById('action-modal-body').innerHTML = `
+            <img src="${product.imagem}" alt="${product.nome}">
+            <div>
+                <p>Adicionar <strong>${product.nome}</strong></p>
+                <p>do <strong>${store.nome}</strong></p>
+                <p>por <strong>R$ ${price.toFixed(2).replace('.', ',')}</strong>?</p>
+            </div>
+        `;
+
+        const confirmBtn = document.getElementById('action-modal-confirm');
+        confirmBtn.onclick = () => {
+            addToCart(product, store);
+            actionModal.classList.add('hidden');
+        };
+
+        actionModal.classList.remove('hidden');
+    }
+
+    document.getElementById('action-modal-cancel').addEventListener('click', () => {
+        actionModal.classList.add('hidden');
+    });
 });

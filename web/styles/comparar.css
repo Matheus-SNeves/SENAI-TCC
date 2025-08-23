@@ -1,38 +1,38 @@
 body {
-    background-color: #e9e0d1;
+    background-color: #f7f5f2;
     font-family: Arial, sans-serif;
     margin: 0;
+    color: #4a3e30;
 }
 
 .compare-header {
     display: flex;
     align-items: center;
     padding: 20px 50px;
-    background-color: #f2e9d8;
-    border-bottom: 2px solid #BF946F;
+    background-color: #ffffff;
+    border-bottom: 2px solid #e0d9cf;
 }
 
 .compare-header h1 {
-    color: #4a3e30;
     font-size: 28px;
     margin: 0;
     flex-grow: 1;
     text-align: center;
 }
 
-.back-btn {
+.back-btn, .home-btn {
     text-decoration: none;
     color: #4a3e30;
     font-weight: bold;
     font-size: 16px;
     padding: 10px;
-    border: 1px solid #4a3e30;
-    border-radius: 5px;
+    border: 1px solid #d4c6b6;
+    border-radius: 8px;
     transition: background-color 0.3s;
 }
 
-.back-btn:hover {
-    background-color: #d4c6b6;
+.back-btn:hover, .home-btn:hover {
+    background-color: #f0ebe5;
 }
 
 .compare-container {
@@ -44,13 +44,13 @@ body {
 
 .product-details-container {
     flex: 1;
-    background-color: #F2E9D8;
-    border: 1px solid #BF946F;
+    background-color: #ffffff;
+    border: 1px solid #e0d9cf;
     border-radius: 10px;
     padding: 20px;
     text-align: center;
-    position: sticky; /* Faz o card do produto "flutuar" ao rolar a página */
-    top: 40px;
+    position: sticky;
+    top: 120px;
 }
 
 .product-details-container img {
@@ -61,7 +61,6 @@ body {
 }
 
 .product-details-container h2 {
-    color: #4a3e30;
     font-size: 24px;
 }
 
@@ -75,11 +74,17 @@ body {
 .price-card {
     display: flex;
     align-items: center;
-    background-color: #F2E9D8;
-    border: 1px solid #BF946F;
+    background-color: #ffffff;
+    border: 1px solid #e0d9cf;
     border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.price-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
 .price-card img {
@@ -96,13 +101,102 @@ body {
 }
 
 .price-card .store-info h3 {
-    color: #4a3e30;
     font-size: 18px;
     margin: 0 0 5px 0;
 }
 
 .price-card .price-info {
-    color: #9FBF7E;
+    color: #2a8a2a;
     font-weight: bold;
     font-size: 22px;
+}
+
+.hidden { display: none; }
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.action-modal-content {
+    background: #f7f5f2;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+.action-modal-body {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: 15px;
+    margin: 20px 0;
+}
+.action-modal-body img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+.action-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+.action-btn, .action-btn-secondary {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.action-btn {
+    background-color: #BF946F;
+    color: white;
+}
+.action-btn-secondary {
+    background-color: #d4c6b6;
+    color: #4a3e30;
+}
+
+.cart-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #4a3e30;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 1500;
+}
+.cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #BF946F;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+    font-weight: bold;
+    display: none;
+    justify-content: center;
+    align-items: center;
 }

@@ -4,18 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supermercados</title>
-    <link rel="stylesheet" href="../styles/supermercados.css">
     <link rel="stylesheet" href="../styles/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header class="category-header">
+    <header class="category-header" style="background-color: #fff; padding: 15px 50px;">
         <a href="home.html" class="back-btn">&#8592; Voltar</a>
-        <h1 id="category-title">Supermercados</h1>
+        <h1 id="category-title">Todos os Supermercados</h1>
     </header>
 
-    <main class="supermarkets-container">
+    <main class="supermarkets-container products-grid" style="padding: 20px 50px;">
     </main>
     
+    <div id="generic-modal-overlay" class="modal-overlay hidden">
+    </div>
+
+    <button id="cart-button" class="cart-button">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span id="cart-count" class="cart-count">0</span>
+    </button>
+    
+    <script src="../scripts/cart-logic.js"></script>
     <script src="../scripts/supermercados.js"></script>
 </body>
 </html>
