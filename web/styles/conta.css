@@ -67,7 +67,10 @@ body {
 }
 .form-group input:disabled {
     background-color: #f0ebe5;
+<<<<<<< HEAD
     cursor: not-allowed;
+=======
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
 }
 .form-group-inline {
     display: flex;

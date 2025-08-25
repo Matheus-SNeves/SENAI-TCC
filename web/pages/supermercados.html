@@ -6,6 +6,7 @@
     <title>Supermercados - Speed Market</title>
     <link rel="stylesheet" href="../styles/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <header class="category-header" style="background-color: #fff; padding: 15px 50px; border-bottom: 1px solid #e0d9cf;">
@@ -16,6 +17,15 @@
     <main class="supermarkets-container products-grid" style="padding: 40px 50px;">
     </main>
     
+    <div id="generic-modal-overlay" class="modal-overlay hidden">
+    </div>
+
+    <button id="cart-button" class="cart-button">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span id="cart-count" class="cart-count">0</span>
+    </button>
+    
+    <script src="../scripts/cart-logic.js"></script>
     <div id="generic-modal-overlay" class="modal-overlay hidden">
     </div>
 

@@ -15,12 +15,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         allData.supermercados = supermercadosData.supermercado;
         allData.icons = iconsData.icons;
         
+<<<<<<< HEAD
         const categoryKeys = ['hortifruti', 'acougue', 'bebidas', 'frios', 'higiene', 'laticinios', 'limpeza', 'padaria'];
         allData.categoryMap = {};
         allData.icons.forEach((icon, index) => {
             allData.categoryMap[icon.nome] = { file: categoryKeys[index] };
         });
 
+=======
+        const iconsMapResponse = await fetch('../mockups/icons.json');
+        const { icons: iconsMap } = await iconsMapResponse.json();
+        const categoryKeys = ['hortifruti', 'acougue', 'bebidas', 'frios', 'higiene', 'laticinios', 'limpeza', 'padaria'];
+        allData.categoryMap = {};
+        iconsMap.forEach((icon, index) => {
+            allData.categoryMap[icon.nome] = { file: categoryKeys[index] };
+        });
+
+
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
         if (!allData.supermercados || allData.supermercados.length === 0) {
             container.innerHTML = '<p>Nenhum supermercado encontrado.</p>';
             return;
@@ -61,6 +73,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="modal-body">
                     <div class="modal-categories">
                         ${allData.icons.map(icon => {
+<<<<<<< HEAD
+=======
+                            const categoryInfo = Object.values(allData.categoryMap).find(val => val.name === icon.nome) || {};
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
                             const categoryKey = allData.categoryMap[icon.nome]?.file;
                             return `
                                 <div class="card-item" onclick="window.location.href='produtos.html?category=${categoryKey}&storeId=${store.id}'">

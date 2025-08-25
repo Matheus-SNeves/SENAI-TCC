@@ -5,20 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparar Preços</title>
     <link rel="stylesheet" href="../styles/comparar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <header class="compare-header">
         <a href="javascript:history.back()" class="back-btn">&#8592; Voltar</a>
         <h1>Comparar Preços</h1>
+        <a href="home.html" class="home-btn"><i class="fa-solid fa-house"></i></a>
     </header>
 
     <main class="compare-container">
         <div class="product-details-container">
-            </div>
+        </div>
         <div class="prices-list-container">
-            </div>
+        </div>
     </main>
     
+    <div id="action-modal" class="modal-overlay hidden">
+        <div class="action-modal-content">
+            <h3 id="action-modal-title">Adicionar ao Carrinho</h3>
+            <div id="action-modal-body" class="action-modal-body">
+            </div>
+            <div class="action-modal-footer">
+                <button id="action-modal-cancel" class="action-btn-secondary">Voltar</button>
+                <button id="action-modal-confirm" class="action-btn">Adicionar</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="cart-button" class="cart-button">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span id="cart-count" class="cart-count">0</span>
+    </button>
+
+    <script src="../scripts/cart-logic.js"></script>
     <script src="../scripts/comparar.js"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@ const loginCliente = async (req, res) => {
     const { email, senha, validade } = req.body;
 
     try {
-        const cliente = await prisma.cliente.findUnique({
+        const cliente = await prisma.cliente.findMany({
             where: {
                 email: email,
             }

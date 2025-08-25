@@ -75,7 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const storeCard = e.target.closest('.store-item');
 
             if (categoryCard && categoryCard.dataset.categoryKey) {
+<<<<<<< HEAD
                 showProductsModal(categoryCard.dataset.categoryKey);
+=======
+                showStoreCategoriesModal(null, categoryCard.dataset.categoryKey);
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
             }
             if (storeCard && storeCard.dataset.storeId) {
                 showStoreCategoriesModal(parseInt(storeCard.dataset.storeId));
@@ -120,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         searchResultsContainer.classList.add('hidden');
     };
     
+<<<<<<< HEAD
     const showProductsModal = (categoryKey) => {
         const category = allData.categoryMap[categoryKey];
         const maxItems = 5;
@@ -153,6 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
         genericModalOverlay.querySelector('.close-btn').addEventListener('click', () => genericModalOverlay.classList.add('hidden'));
     };
 
+=======
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
     const showStoreCategoriesModal = (storeId) => {
         const store = allData.supermercados.find(s => s.id === storeId);
         genericModalOverlay.classList.remove('hidden');

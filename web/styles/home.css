@@ -83,7 +83,11 @@ header {
 }
 
 main {
+<<<<<<< HEAD
     padding: 40px 0;
+=======
+    padding: 20px 0;
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
 }
 
 .section-title {
@@ -209,6 +213,10 @@ main {
     background-color: #A67C52;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
 .product-item {
     display: flex;
     flex-direction: column;
@@ -296,7 +304,10 @@ main {
     grid-template-columns: repeat(4, 1fr);
     gap: 15px;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
 .modal-products {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

@@ -6,12 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressListDiv = document.getElementById('address-list');
     const modalTitle = document.getElementById('modal-title');
     const addressIdInput = document.getElementById('address-id');
+<<<<<<< HEAD
     const editDataBtn = document.getElementById('edit-data-btn');
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
 
     let addresses = JSON.parse(localStorage.getItem('userAddresses')) || [];
     let isEditingData = false;
+=======
+
+    let addresses = JSON.parse(localStorage.getItem('userAddresses')) || [];
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
 
     const renderAddresses = () => {
         addressListDiv.innerHTML = '';
@@ -104,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+<<<<<<< HEAD
     const toggleEditData = () => {
         isEditingData = !isEditingData;
         nameInput.disabled = !isEditingData;
@@ -115,6 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
     closeAddressModalBtn.addEventListener('click', closeModal);
     addressForm.addEventListener('submit', saveAddress);
     editDataBtn.addEventListener('click', toggleEditData);
+=======
+    addAddressBtn.addEventListener('click', () => openModal());
+    closeAddressModalBtn.addEventListener('click', closeModal);
+    addressForm.addEventListener('submit', saveAddress);
+>>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
 
     renderAddresses();
 });
