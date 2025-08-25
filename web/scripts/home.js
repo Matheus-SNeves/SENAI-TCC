@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('main-content');
     const searchResultsContainer = document.getElementById('search-results-container');
     const searchInput = document.getElementById('search-input');
-    
     const cartButton = document.getElementById('cart-button');
     const cartOverlay = document.getElementById('cart-overlay');
     const closeCartBtn = document.getElementById('close-cart-btn');
@@ -75,11 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const storeCard = e.target.closest('.store-item');
 
             if (categoryCard && categoryCard.dataset.categoryKey) {
-<<<<<<< HEAD
                 showProductsModal(categoryCard.dataset.categoryKey);
-=======
-                showStoreCategoriesModal(null, categoryCard.dataset.categoryKey);
->>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
             }
             if (storeCard && storeCard.dataset.storeId) {
                 showStoreCategoriesModal(parseInt(storeCard.dataset.storeId));
@@ -87,7 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         cartButton.addEventListener('click', toggleCart);
-        closeCartBtn.addEventListener('click', toggleCart);
+        if (closeCartBtn) {
+            closeCartBtn.addEventListener('click', toggleCart);
+        }
         cartOverlay.addEventListener('click', (e) => {
             if (e.target === cartOverlay) toggleCart();
         });
@@ -124,13 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
         searchResultsContainer.classList.add('hidden');
     };
     
-<<<<<<< HEAD
     const showProductsModal = (categoryKey) => {
         const category = allData.categoryMap[categoryKey];
         const maxItems = 5;
         const itemsToDisplay = category.data.slice(0, maxItems);
         
-        const modalContent = `
+        let modalContentHTML = `
             <div class="modal-content">
                 <div class="modal-header">
                     <img src="${category.icon}" alt="${category.name}" class="modal-logo">
@@ -150,16 +146,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             `;
                         }).join('')}
                     </div>
-                </div>
-            </div>`;
+        `;
+
+        if (category.data.length > maxItems) {
+            modalContentHTML += `<button class="ver-mais-btn" onclick="window.location.href='produtos.html?category=${categoryKey}&storeId=1'">Ver Todos os Produtos</button>`;
+        }
         
-        genericModalOverlay.innerHTML = modalContent;
+        modalContentHTML += `</div></div>`;
+        
+        genericModalOverlay.innerHTML = modalContentHTML;
         genericModalOverlay.classList.remove('hidden');
         genericModalOverlay.querySelector('.close-btn').addEventListener('click', () => genericModalOverlay.classList.add('hidden'));
     };
 
-=======
->>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
     const showStoreCategoriesModal = (storeId) => {
         const store = allData.supermercados.find(s => s.id === storeId);
         genericModalOverlay.classList.remove('hidden');
@@ -188,6 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toggleCart = () => {
         cartOverlay.classList.toggle('hidden');
+        if(!cartOverlay.classList.contains('hidden')) {
+            updateCartUI();
+        }
     };
 
     const updateCartUI = () => {
@@ -195,6 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const cartItemsContainer = document.getElementById('cart-items-container');
         const cartTotalPrice = document.getElementById('cart-total-price');
         const checkoutBtn = document.getElementById('checkout-btn');
+        const cartModal = document.querySelector('.cart-modal');
+
+        if (!cartItemsContainer || !cartTotalPrice || !checkoutBtn || !cartModal) {
+            return;
+        }
 
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = '<p style="text-align:center; padding: 20px;">Seu carrinho está vazio.</p>';
@@ -230,20 +237,30 @@ document.addEventListener('DOMContentLoaded', () => {
         cartTotalPrice.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
         
         const addresses = JSON.parse(localStorage.getItem('userAddresses')) || [];
+        const selectedAddressId = localStorage.getItem('selectedAddressId');
         const currentAddressSpan = document.getElementById('current-address');
-        if (addresses.length > 0) {
-            const firstAddress = addresses[0];
-            currentAddressSpan.textContent = `${firstAddress.street}, ${firstAddress.number}`;
+        let selectedAddress = null;
+
+        if (selectedAddressId) {
+            selectedAddress = addresses.find(addr => addr.id == selectedAddressId);
+        }
+        if (!selectedAddress && addresses.length > 0) {
+            selectedAddress = addresses[0];
+        }
+
+        if (selectedAddress) {
+            currentAddressSpan.textContent = `${selectedAddress.street}, ${selectedAddress.number}`;
         } else {
             currentAddressSpan.textContent = 'Nenhum endereço cadastrado';
         }
+
         document.getElementById('change-address-btn').onclick = () => window.location.href = 'conta.html';
         
-        if (cart.length > 0 && addresses.length > 0) {
+        if (cart.length > 0 && selectedAddress) {
             checkoutBtn.classList.remove('disabled');
             checkoutBtn.onclick = () => {
                 localStorage.setItem('checkoutCart', JSON.stringify(cart));
-                localStorage.setItem('checkoutAddress', JSON.stringify(addresses[0]));
+                localStorage.setItem('checkoutAddress', JSON.stringify(selectedAddress));
                 window.location.href = 'pagamento.html';
             };
         } else {

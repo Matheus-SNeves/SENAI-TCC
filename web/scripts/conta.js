@@ -6,17 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressListDiv = document.getElementById('address-list');
     const modalTitle = document.getElementById('modal-title');
     const addressIdInput = document.getElementById('address-id');
-<<<<<<< HEAD
     const editDataBtn = document.getElementById('edit-data-btn');
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
+    const zipcode_input = document.getElementById('zipcode');
 
     let addresses = JSON.parse(localStorage.getItem('userAddresses')) || [];
+    let selectedAddressId = localStorage.getItem('selectedAddressId') || null;
     let isEditingData = false;
-=======
-
-    let addresses = JSON.parse(localStorage.getItem('userAddresses')) || [];
->>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
 
     const renderAddresses = () => {
         addressListDiv.innerHTML = '';
@@ -25,25 +22,52 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        if (!selectedAddressId && addresses.length > 0) {
+            selectedAddressId = addresses[0].id;
+            localStorage.setItem('selectedAddressId', selectedAddressId);
+        }
+
         addresses.forEach(address => {
+            const isSelected = address.id == selectedAddressId;
             const addressItem = document.createElement('div');
-            addressItem.className = 'address-item';
+            addressItem.className = `address-item ${isSelected ? 'selected' : ''}`;
+            addressItem.dataset.id = address.id;
+            
             addressItem.innerHTML = `
-                <div>
-                    <p><strong>${address.street}, ${address.number}</strong></p>
-                    <p>${address.neighborhood}, ${address.city} - ${address.state}</p>
-                    <p>${address.zipcode}</p>
+                <input type="radio" name="selected-address" class="address-item-radio" ${isSelected ? 'checked' : ''}>
+                <div class="address-item-content">
+                    <p><strong>${address.street || ''}, ${address.number || ''}</strong></p>
+                    <p>${address.neighborhood || ''}, ${address.city || ''} - ${address.state || ''}</p>
+                    <p>${address.zipcode || ''}</p>
                 </div>
                 <div class="address-actions">
-                    <button class="edit-btn" data-id="${address.id}"><i class="fa-solid fa-pencil"></i></button>
-                    <button class="delete-btn" data-id="${address.id}"><i class="fa-solid fa-trash"></i></button>
+                    <button class="edit-btn"><i class="fa-solid fa-pencil"></i></button>
+                    <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `;
             addressListDiv.appendChild(addressItem);
         });
 
-        document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', handleEditAddress));
-        document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDeleteAddress));
+        addressListDiv.querySelectorAll('.address-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const id = e.currentTarget.dataset.id;
+                const action = e.target.closest('button');
+
+                if (action?.classList.contains('edit-btn')) {
+                    handleEditAddress(id);
+                } else if (action?.classList.contains('delete-btn')) {
+                    handleDeleteAddress(id);
+                } else {
+                    setSelectedAddress(id);
+                }
+            });
+        });
+    };
+
+    const setSelectedAddress = (id) => {
+        selectedAddressId = id;
+        localStorage.setItem('selectedAddressId', id);
+        renderAddresses();
     };
 
     const openModal = (address = null) => {
@@ -87,45 +111,68 @@ document.addEventListener('DOMContentLoaded', () => {
             addresses = addresses.map(addr => addr.id == address.id ? address : addr);
         } else {
             addresses.push(address);
+            setSelectedAddress(address.id);
         }
 
         localStorage.setItem('userAddresses', JSON.stringify(addresses));
         renderAddresses();
         closeModal();
     };
-
-    const handleEditAddress = (e) => {
-        const addressId = e.currentTarget.dataset.id;
-        const addressToEdit = addresses.find(addr => addr.id == addressId);
+    
+    const handleEditAddress = (id) => {
+        const addressToEdit = addresses.find(addr => addr.id == id);
         openModal(addressToEdit);
     };
     
-    const handleDeleteAddress = (e) => {
-        const addressId = e.currentTarget.dataset.id;
+    const handleDeleteAddress = (id) => {
         if (confirm('Tem certeza que deseja excluir este endereço?')) {
-            addresses = addresses.filter(addr => addr.id != addressId);
+            addresses = addresses.filter(addr => addr.id != id);
+            if (selectedAddressId == id) {
+                selectedAddressId = null;
+                localStorage.removeItem('selectedAddressId');
+            }
             localStorage.setItem('userAddresses', JSON.stringify(addresses));
             renderAddresses();
         }
     };
 
-<<<<<<< HEAD
     const toggleEditData = () => {
         isEditingData = !isEditingData;
         nameInput.disabled = !isEditingData;
         emailInput.disabled = !isEditingData;
         editDataBtn.textContent = isEditingData ? 'Salvar Alterações' : 'Editar Dados';
+        if (isEditingData) {
+            nameInput.focus();
+        }
+    };
+
+    const fetchAddressFromCEP = async (cep) => {
+        const cleanCep = cep.replace(/\D/g, '');
+        if (cleanCep.length !== 8) return;
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+            const data = await response.json();
+            if (!data.erro) {
+                document.getElementById('street').value = data.logradouro;
+                document.getElementById('neighborhood').value = data.bairro;
+                document.getElementById('city').value = data.localidade;
+                document.getElementById('state').value = data.uf;
+                document.getElementById('number').focus();
+            } else {
+                alert('CEP não encontrado.');
+            }
+        } catch (error) {
+            console.error("Erro ao buscar CEP:", error);
+            alert('Não foi possível buscar o CEP.');
+        }
     };
 
     addAddressBtn.addEventListener('click', () => openModal());
     closeAddressModalBtn.addEventListener('click', closeModal);
     addressForm.addEventListener('submit', saveAddress);
     editDataBtn.addEventListener('click', toggleEditData);
-=======
-    addAddressBtn.addEventListener('click', () => openModal());
-    closeAddressModalBtn.addEventListener('click', closeModal);
-    addressForm.addEventListener('submit', saveAddress);
->>>>>>> efa47ff8736db59a86fb5827275cc5527fd1d8fd
+    zipcode_input.addEventListener('blur', (e) => fetchAddressFromCEP(e.target.value));
 
     renderAddresses();
 });
