@@ -88,7 +88,7 @@
     {
       "id": 6,
       "nome": "Leite Condensado Moça",
-      "imagem": "https://acdn.mitiendanube.com/stores/001/178/842/products/lata-leite-condensado-moca-nestle-395g1-7781b2c5c99b2447d216952494793673-480-0.webp",
+      "imagem": "https://cdn.shopify.com/s/files/1/0587/8487/4575/files/41cb8668-846a-442e-a784-6147e22bf35b@3x.png?v=1743011140",
       "precos": [
         {"supermercado_id": 1, "preco": 6.90},
         {"supermercado_id": 2, "preco": 7.10},
@@ -105,7 +105,7 @@
     {
       "id": 7,
       "nome": "Queijo Parmesão Ralado",
-      "imagem": "https://static.clubeextra.com.br/img/uploads/1/74/23577074.jpg",
+      "imagem": "https://queijospresident.com.br/uploads/1651165792-PRESIDENT_QUEIJO_PARMESAO_RALADO_50G-MD.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 8.50},
         {"supermercado_id": 2, "preco": 8.70},
@@ -122,7 +122,7 @@
     {
       "id": 8,
       "nome": "Doce de Leite",
-      "imagem": "https://m.media-amazon.com/images/I/71Xm3p2x5+L.jpg",
+      "imagem": "https://images.tcdn.com.br/img/img_prod/834515/doce_de_leite_aviacao_tradicional_pote_400_g_3_1_20200819105811.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 12.50},
         {"supermercado_id": 2, "preco": 12.80},
@@ -139,7 +139,7 @@
     {
       "id": 9,
       "nome": "Leite Fermentado Yakult",
-      "imagem": "https://acdn.mitiendanube.com/stores/001/450/487/products/leite-fermentado-yakult-480g1-2319a9a5f4d306b86416246473163155-480-0.jpg",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ_k4pcqT9IPGyTOFmmDz99GIZLITDbrQtOw&s",
       "precos": [
         {"supermercado_id": 1, "preco": 7.90},
         {"supermercado_id": 2, "preco": 8.10},
@@ -156,7 +156,7 @@
     {
       "id": 10,
       "nome": "Sobremesa Láctea Danette",
-      "imagem": "https://supermercadoonline.vovozilo.com.br/images/product/20700_1.jpg",
+      "imagem": "https://prezunic.vtexassets.com/arquivos/ids/176920-800-auto?v=638318661206330000&width=800&height=auto&aspect=true",
       "precos": [
         {"supermercado_id": 1, "preco": 5.20},
         {"supermercado_id": 2, "preco": 5.40},
@@ -173,7 +173,7 @@
     {
       "id": 11,
       "nome": "Leite Desnatado",
-      "imagem": "https://static.clubeextra.com.br/img/uploads/1/901/20127901.jpg",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYAj7TZiG-brPym-eim_BM7zfYHKyhXQyHPw&s",
       "precos": [
         {"supermercado_id": 1, "preco": 5.60},
         {"supermercado_id": 2, "preco": 5.80},
@@ -190,7 +190,7 @@
     {
       "id": 12,
       "nome": "Queijo Cottage",
-      "imagem": "https://verdeampo.com.br/wp-content/uploads/2018/11/queijo-cottage-verde-campo-250g.png",
+      "imagem": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTXkWAmodIDzc4MclnJ-aP46KDmir9PVA4etfyk-bcRmBUvzuADQAKAiuLO_PlrmBeHXJHmp9248X7MKS70KYrljeSoTjxNDNMUQZf_L7F1O3kmE9qgE8Nw7g",
       "precos": [
         {"supermercado_id": 1, "preco": 11.50},
         {"supermercado_id": 2, "preco": 11.80},
@@ -207,7 +207,7 @@
     {
       "id": 13,
       "nome": "Iogurte Natural",
-      "imagem": "https://www.nestle.com.br/sites/default/files/styles/np_product_main_image/public/2022-12/Iogurte%20Nestl%C3%A9%20Natural%20Integral%20170g_0.png",
+      "imagem": "https://carrefourbrfood.vtexassets.com/arquivos/ids/185653010/iogurte-integral-nestle-tradicional-170g-1.jpg?v=638756709034770000",
       "precos": [
         {"supermercado_id": 1, "preco": 4.50},
         {"supermercado_id": 2, "preco": 4.70},
@@ -224,7 +224,7 @@
     {
       "id": 14,
       "nome": "Nata (Creme de Leite Fresco)",
-      "imagem": "https://static.clubeextra.com.br/img/uploads/1/901/18151901.png",
+      "imagem": "https://static.paodeacucar.com/img/uploads/1/950/32909950.png?im=Resize,width=200",
       "precos": [
         {"supermercado_id": 1, "preco": 9.50},
         {"supermercado_id": 2, "preco": 9.80},
@@ -241,7 +241,7 @@
     {
       "id": 15,
       "nome": "Bebida Láctea",
-      "imagem": "https://d1mv2b9v99cq0i.cloudfront.net/eyJidWNrZXQiOiJzaG9waXhlLWltYWdlcyIsImtleSI6IldFQi92aXRhbGFjLmpwZWciLCJlZGl0cyI6eyJncmF5c2NhbGUiOmZhbHNlLCJmbGF0dGVuIjpmYWxzZSwicmVzaXplIjp7ImZpdCI6ImNvbnRhaW4iLCJoZWlnaHQiOjYwMCwid2lkdGgiOjYwMH19fQ==",
+      "imagem": "https://drogal.vtexassets.com/arquivos/ids/237683/117739.jpg?v=638633767128070000",
       "precos": [
         {"supermercado_id": 1, "preco": 3.80},
         {"supermercado_id": 2, "preco": 4.00},

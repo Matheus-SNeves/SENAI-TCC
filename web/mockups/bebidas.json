@@ -156,7 +156,7 @@
     {
       "id": 10,
       "nome": "Fanta Laranja (2L)",
-      "imagem": "https://static.clubeextra.com.br/img/uploads/1/902/20212902.jpg",
+      "imagem": "https://coopsp.vtexassets.com/arquivos/ids/215362/7894900031515.jpg?v=637919527220430000",
       "precos": [
         {"supermercado_id": 1, "preco": 6.89},
         {"supermercado_id": 2, "preco": 7.00},
@@ -173,7 +173,7 @@
     {
       "id": 11,
       "nome": "Cerveja Brahma Duplo Malte (Lata 350ml)",
-      "imagem": "https://revistabeerart.com/wp-content/uploads/2020/03/Brahma-Duplo-Malte_Lata-350ml.png",
+      "imagem": "https://mercantilatacado.vtexassets.com/arquivos/ids/168539/65391b486a2a15a1bb6c1ba4.jpg?v=638338381594630000",
       "precos": [
         {"supermercado_id": 1, "preco": 4.59},
         {"supermercado_id": 2, "preco": 4.70},
@@ -190,7 +190,7 @@
     {
       "id": 12,
       "nome": "Vinho Tinto Suave (750ml)",
-      "imagem": "https://static.paodeacucar.com/img/uploads/1/365/12560365.jpg",
+      "imagem": "https://acdn-us.mitiendanube.com/stores/002/508/888/products/vinho-tinto-suave-1l1-e74b619b552bfab80916710180913686-1024-1024.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 25.90},
         {"supermercado_id": 2, "preco": 26.50},
@@ -207,7 +207,7 @@
     {
       "id": 13,
       "nome": "Água de Coco (1L)",
-      "imagem": "https://araujo.vteximg.com.br/arquivos/ids/410626-1000-1000/08021400.jpg?v=638102838384930000",
+      "imagem": "https://savegnagoio.vtexassets.com/arquivos/ids/347563/AGUADECOCOPUROCOCO1L.jpg?v=638080328684630000",
       "precos": [
         {"supermercado_id": 1, "preco": 9.90},
         {"supermercado_id": 2, "preco": 10.20},
@@ -224,7 +224,7 @@
     {
       "id": 14,
       "nome": "Gatorade (500ml)",
-      "imagem": "https://www.imigrantesbebidas.com.br/bebida/images/products/full/3909-gatorade-sabor-tangerina-500ml.jpg",
+      "imagem": "https://savegnagoio.vtexassets.com/arquivos/ids/414497/IsotonicoGatoradeMorangocomMaracu1.jpg?v=638340151003500000",
       "precos": [
         {"supermercado_id": 1, "preco": 5.50},
         {"supermercado_id": 2, "preco": 5.70},
@@ -241,7 +241,7 @@
     {
       "id": 15,
       "nome": "Leite Integral (1L)",
-      "imagem": "https://static.clubeextra.com.br/img/uploads/1/931/19829931.jpg",
+      "imagem": "https://superprix.vteximg.com.br/arquivos/ids/208297/7898215151708--1-.jpg?v=637916015363630000",
       "precos": [
         {"supermercado_id": 1, "preco": 4.80},
         {"supermercado_id": 2, "preco": 4.90},

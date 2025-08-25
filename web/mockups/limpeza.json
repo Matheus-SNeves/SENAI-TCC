@@ -88,7 +88,7 @@
     {
       "id": 6,
       "nome": "Limpador Multiuso Veja",
-      "imagem": "https://m.media-amazon.com/images/I/51wBf-qf14L.jpg",
+      "imagem": "https://elastobor.vtexassets.com/arquivos/ids/190082/LIMPADOR-MULTIUSO-VEJA-GOLD-ORIGINAL-500ML.jpg?v=637276451181070000",
       "precos": [
         {"supermercado_id": 1, "preco": 6.50},
         {"supermercado_id": 2, "preco": 6.70},
@@ -105,7 +105,7 @@
     {
       "id": 7,
       "nome": "Esponja de Aço Bombril",
-      "imagem": "https://a-static.mlcdn.com.br/450x450/esponja-de-aco-bombril-8-unidades/g Barbosa/199015/a408e08d1326be7ac2b6b553e18a8f4c.jpeg",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWLioMFKb9qNK0sdYm6qnzcuVQrRcxS8PkaQ&s",
       "precos": [
         {"supermercado_id": 1, "preco": 3.20},
         {"supermercado_id": 2, "preco": 3.30},
@@ -122,7 +122,7 @@
     {
       "id": 8,
       "nome": "Saco de Lixo 30L",
-      "imagem": "https://images.tcdn.com.br/img/img_prod/789396/saco_para_lixo_30_litros_reforcado_pacote_com_100_unidades_767_1_20201028163532.jpg",
+      "imagem": "https://condortatix2.vtexassets.com/arquivos/ids/155699/Saco_de_Lixo_30_Litros_Reforca_962.jpg?v=638833435998100000",
       "precos": [
         {"supermercado_id": 1, "preco": 10.50},
         {"supermercado_id": 2, "preco": 10.70},
@@ -139,7 +139,7 @@
     {
       "id": 9,
       "nome": "Álcool 70% 1L",
-      "imagem": "https://www.alcoolaroma.com.br/wp-content/uploads/2021/04/Alcool-70-1L-Aroma.jpg",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREDHSJ173lIHWo_DGixbFQS1s52T36HB9x6Q&s",
       "precos": [
         {"supermercado_id": 1, "preco": 9.80},
         {"supermercado_id": 2, "preco": 10.00},
@@ -156,7 +156,7 @@
     {
       "id": 10,
       "nome": "Papel Toalha",
-      "imagem": "https://www.staples.com.br/static/media/product/D929.jpg",
+      "imagem": "https://m.media-amazon.com/images/I/71rV1BPX9AL.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 5.50},
         {"supermercado_id": 2, "preco": 5.70},
@@ -173,7 +173,7 @@
     {
       "id": 11,
       "nome": "Lustra Móveis",
-      "imagem": "https://cdn.awsli.com.br/600x450/541/541574/produto/309794017/lustra-moveis-200ml-peroba-tradicional-f25b273b.jpg",
+      "imagem": "https://cdn.awsli.com.br/600x450/1935/1935087/produto/100366404/lustra-moveis-poliflor-lavanda-200-ml-8d8cdff8.png",
       "precos": [
         {"supermercado_id": 1, "preco": 8.50},
         {"supermercado_id": 2, "preco": 8.70},
@@ -190,7 +190,7 @@
     {
       "id": 12,
       "nome": "Sabão em Barra Ypê",
-      "imagem": "https://assunsete.vtexassets.com/arquivos/ids/206969/7896098900010.jpg",
+      "imagem": "https://cdn.awsli.com.br/600x1000/1027/1027618/produto/55867977/51206cb51c.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 12.00},
         {"supermercado_id": 2, "preco": 12.20},
@@ -207,7 +207,7 @@
     {
       "id": 13,
       "nome": "Vassoura",
-      "imagem": "https://cdn.leroymerlin.com.br/products/vassoura_para_piso_interno_com_cabo_1,20m_plastico_vermelho__89823272_0001_600x600.jpg",
+      "imagem": "https://cepel.vteximg.com.br/arquivos/ids/166710-410-410/bettanin-amarela.png?v=637013038988770000",
       "precos": [
         {"supermercado_id": 1, "preco": 15.00},
         {"supermercado_id": 2, "preco": 15.30},
@@ -224,7 +224,7 @@
     {
       "id": 14,
       "nome": "Pano de Chão",
-      "imagem": "https://http2.mlstatic.com/D_NQ_NP_699310-MLB45653606869_042021-O.jpg",
+      "imagem": "https://cdn.awsli.com.br/1593/1593430/produto/123863854/7dc0d4c96c.jpg",
       "precos": [
         {"supermercado_id": 1, "preco": 4.50},
         {"supermercado_id": 2, "preco": 4.70},
@@ -241,7 +241,7 @@
     {
       "id": 15,
       "nome": "Rodo",
-      "imagem": "https://cdn.leroymerlin.com.br/products/rodo_de_plastico_40cm_com_cabo_cinza_e_verde_limppano_1569300551_5b35_600x600.jpg",
+      "imagem": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTT8FLnjHa_Tq7r0SzKkHZaD3Ps_R2lqsOJtA&s",
       "precos": [
         {"supermercado_id": 1, "preco": 11.00},
         {"supermercado_id": 2, "preco": 11.30},

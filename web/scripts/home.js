@@ -1,12 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Objeto para armazenar todos os dados carregados e evitar múltiplas buscas na rede
     let allData = {};
+    const mainContent = document.getElementById('main-content');
+    const searchResultsContainer = document.getElementById('search-results-container');
+    const searchInput = document.getElementById('search-input');
+    
+    const cartButton = document.getElementById('cart-button');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const closeCartBtn = document.getElementById('close-cart-btn');
+    const genericModalOverlay = document.getElementById('generic-modal-overlay');
 
-    /**
-     * Função principal que busca todos os arquivos JSON de uma vez só
-     * e armazena os dados para uso em toda a aplicação.
-     */
-    const fetchAllData = async () => {
+    const initializeApp = async () => {
         try {
             const categories = ['hortifruti', 'acougue', 'bebidas', 'frios', 'higiene', 'laticinios', 'limpeza', 'padaria'];
             const promises = [
@@ -14,287 +17,242 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch('../mockups/supermercados.json'),
                 ...categories.map(cat => fetch(`../mockups/${cat}.json`))
             ];
-
-            const responses = await Promise.all(promises.map(p => p.catch(e => e)));
-            
-            const successfulResponses = responses.filter(res => res instanceof Response && res.ok);
-            if (successfulResponses.length !== promises.length) {
-                console.error("Falha ao carregar um ou mais arquivos JSON.");
-                return;
-            }
-
-            const jsonData = await Promise.all(successfulResponses.map(res => res.json()));
+            const responses = await Promise.all(promises);
+            const jsonData = await Promise.all(responses.map(res => res.json()));
 
             allData.icons = jsonData[0].icons;
             allData.supermercados = jsonData[1].supermercado;
-            
-            // Mapeia o nome do ícone para o nome do arquivo JSON e armazena os dados dos produtos
             allData.categoryMap = {};
-            allData.icons.forEach((icon, index) => {
-                const categoryKey = categories[index];
-                const categoryData = jsonData[index + 2][categoryKey];
-                allData.categoryMap[icon.nome] = { data: categoryData, file: categoryKey };
+            allData.allProducts = [];
+
+            categories.forEach((catKey, index) => {
+                const categoryData = jsonData[index + 2][catKey];
+                allData.categoryMap[catKey] = {
+                    data: categoryData,
+                    icon: allData.icons[index].imagem,
+                    name: allData.icons[index].nome
+                };
+                categoryData.forEach(p => allData.allProducts.push({ ...p, category: catKey }));
             });
 
-            // Após carregar todos os dados, inicia a construção da página e a funcionalidade de busca
             setupHomePage();
-            setupSearch();
+            setupEventListeners();
+            updateCartUI();
 
         } catch (error) {
-            console.error("Erro fatal ao carregar os dados:", error);
+            console.error("Erro ao inicializar a aplicação:", error);
+            mainContent.innerHTML = "<h1>Erro ao carregar os dados. Tente recarregar a página.</h1>";
         }
     };
 
-    /**
-     * Configura os elementos iniciais da página Home.
-     */
     const setupHomePage = () => {
-        createCategoryCards(allData.icons, allData.categoryMap);
-        createStoreCards(allData.supermercados, allData.icons);
-        
-        document.getElementById('see-all-stores-btn').addEventListener('click', () => {
-            window.location.href = 'supermercados.html';
-        });
-    };
-
-    // --- LÓGICA DO MODAL DE SELEÇÕES ---
-    const createCategoryCards = (icons, categoryMap) => {
         const selecoesDiv = document.querySelector('.selecoes');
-        selecoesDiv.innerHTML = '';
-        icons.forEach(icon => {
-            const cardItem = document.createElement('div');
-            cardItem.className = 'card-item';
-            cardItem.innerHTML = `<img src="${icon.imagem}" alt="${icon.nome}"><h3>${icon.nome}</h3>`;
-            selecoesDiv.appendChild(cardItem);
+        selecoesDiv.innerHTML = Object.entries(allData.categoryMap).map(([key, value]) => `
+            <div class="card-item" data-category-key="${key}">
+                <img src="${value.icon}" alt="${value.name}">
+                <h3>${value.name}</h3>
+            </div>
+        `).join('');
 
-            cardItem.addEventListener('click', () => {
-                const modal = document.getElementById('productsModal');
-                const modalTitle = modal.querySelector('.modal-title');
-                const modalLogo = modal.querySelector('.modal-logo');
-                const modalBody = modal.querySelector('.modal-body');
-
-                modalBody.innerHTML = ''; 
-
-                const categoryInfo = categoryMap[icon.nome];
-                if (!categoryInfo) return;
-
-                modalTitle.textContent = icon.nome;
-                modalLogo.src = icon.imagem;
-
-                const maxItems = 6;
-                const itemsToDisplay = categoryInfo.data.slice(0, maxItems);
-                
-                const productGrid = document.createElement('div');
-                productGrid.className = 'modal-products'; // Usando a classe de layout de produtos
-
-                itemsToDisplay.forEach(item => {
-                    const productLink = document.createElement('a');
-                    productLink.href = `comparar.html?category=${categoryInfo.file}&productId=${item.id}`;
-
-                    const referencePrice = item.precos?.[0]?.preco;
-                    const priceText = referencePrice ? `A partir de R$ ${referencePrice.toFixed(2).replace('.', ',')}` : 'Preço indisponível';
-                    
-                    productLink.innerHTML = `
-                        <div class="product-item">
-                            <img src="${item.imagem}" alt="${item.nome}">
-                            <h4>${item.nome}</h4>
-                            <p>${priceText}</p>
-                        </div>
-                    `;
-                    productGrid.appendChild(productLink);
-                });
-                modalBody.appendChild(productGrid);
-
-                if (categoryInfo.data.length > maxItems) {
-                    const verMaisBtn = document.createElement('button');
-                    verMaisBtn.textContent = 'Ver Todos os Produtos';
-                    verMaisBtn.className = 'ver-mais-btn';
-                    verMaisBtn.onclick = () => window.location.href = `produtos.html?category=${categoryInfo.file}`;
-                    modalBody.appendChild(verMaisBtn);
-                }
-
-                modal.style.display = 'flex';
-            });
-        });
-    };
-
-    // --- LÓGICA DO MODAL DE SUPERMERCADOS (COM NAVEGAÇÃO INTERNA) ---
-    const createStoreCards = (supermercados, icons) => {
         const ultLojasDiv = document.querySelector('.ultLojas');
-        ultLojasDiv.innerHTML = '';
-        supermercados.slice(0, 5).forEach(store => {
-            const storeItem = document.createElement('div');
-            storeItem.className = 'store-item';
-            storeItem.innerHTML = `
+        ultLojasDiv.innerHTML = allData.supermercados.slice(0, 8).map(store => `
+            <div class="store-item" data-store-id="${store.id}">
                 <img src="${store.imagem}" alt="${store.nome}">
-                <h3>${store.nome}</h3>
-                <p>${store.endereco}</p>`;
-            ultLojasDiv.appendChild(storeItem);
-
-            storeItem.addEventListener('click', () => showCategoriesForStore(store, icons));
-        });
-    };
-
-    const showCategoriesForStore = (store, icons) => {
-        const modal = document.getElementById('categoriesModal');
-        const modalHeader = modal.querySelector('.modal-header');
-        const modalTitle = modal.querySelector('.modal-title');
-        const modalLogo = modal.querySelector('.modal-logo');
-        const modalBody = modal.querySelector('.modal-body');
-
-        // Limpa o header de possíveis botões "voltar"
-        const existingBackButton = modalHeader.querySelector('.modal-back-btn');
-        if (existingBackButton) {
-            modalHeader.removeChild(existingBackButton);
-        }
-
-        modalTitle.textContent = store.nome;
-        modalLogo.src = store.imagem;
-        modalLogo.style.display = 'block';
-        modalBody.innerHTML = ''; 
-
-        const categoryGrid = document.createElement('div');
-        categoryGrid.className = 'modal-categories';
-
-        icons.forEach(icon => {
-            const iconItem = document.createElement('div');
-            iconItem.className = 'card-item';
-            iconItem.innerHTML = `<img src="${icon.imagem}" alt="${icon.nome}"><h3>${icon.nome}</h3>`;
-            categoryGrid.appendChild(iconItem);
-            
-            iconItem.addEventListener('click', () => showProductsForStore(store, icon));
-        });
-        modalBody.appendChild(categoryGrid);
-        modal.style.display = 'flex';
+                <div class="store-info">
+                    <h3>${store.nome}</h3>
+                    <p>${store.endereco}</p>
+                </div>
+            </div>
+        `).join('');
     };
     
-    const showProductsForStore = (store, icon) => {
-        const modal = document.getElementById('categoriesModal');
-        const modalHeader = modal.querySelector('.modal-header');
-        const modalTitle = modal.querySelector('.modal-title');
-        const modalLogo = modal.querySelector('.modal-logo');
-        const modalBody = modal.querySelector('.modal-body');
-        
-        modalBody.innerHTML = '<p>Carregando produtos...</p>';
-        modalLogo.style.display = 'none'; // Esconde o logo do mercado para dar espaço ao título
+    const setupEventListeners = () => {
+        searchInput.addEventListener('input', handleSearch);
+        document.getElementById('clear-search-btn').addEventListener('click', clearSearch);
 
-        // Adiciona um botão de voltar, se não existir
-        if (!modalHeader.querySelector('.modal-back-btn')) {
-            const backButton = document.createElement('button');
-            backButton.innerHTML = '&larr;';
-            backButton.className = 'modal-back-btn';
-            backButton.onclick = () => showCategoriesForStore(store, allData.icons);
-            modalHeader.insertBefore(backButton, modalTitle);
-        }
+        document.body.addEventListener('click', (e) => {
+            const categoryCard = e.target.closest('.card-item');
+            const storeCard = e.target.closest('.store-item');
 
-        const categoryInfo = allData.categoryMap[icon.nome];
-        if (!categoryInfo) {
-            modalBody.innerHTML = '<p>Categoria não encontrada.</p>';
-            return;
-        }
-
-        modalTitle.textContent = `${icon.nome}`;
-        
-        const productGrid = document.createElement('div');
-        productGrid.className = 'modal-products';
-
-        categoryInfo.data.forEach(product => {
-            const priceEntry = product.precos.find(p => p.supermercado_id === store.id);
-            const priceText = priceEntry ? `R$ ${priceEntry.preco.toFixed(2).replace('.', ',')}` : 'Indisponível nesta loja';
-
-            const productItem = document.createElement('div');
-            productItem.className = 'product-item';
-            productItem.innerHTML = `
-                <img src="${product.imagem}" alt="${product.nome}">
-                <h4>${product.nome}</h4>
-                <p>${priceText}</p>
-                <button class="add-to-cart-btn">Adicionar</button>
-            `;
-            productGrid.appendChild(productItem);
-        });
-        
-        modalBody.innerHTML = ''; // Limpa o "Carregando"
-        modalBody.appendChild(productGrid);
-    };
-
-    // --- LÓGICA DA BARRA DE PESQUISA ---
-    const setupSearch = () => {
-        const searchInput = document.getElementById('search-input');
-        const clearSearchBtn = document.getElementById('clear-search-btn');
-
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            if (searchTerm.length > 2) {
-                performSearch(searchTerm);
-            } else {
-                document.getElementById('searchModal').style.display = 'none';
+            if (categoryCard && categoryCard.dataset.categoryKey) {
+                showProductsModal(categoryCard.dataset.categoryKey);
+            }
+            if (storeCard && storeCard.dataset.storeId) {
+                showStoreCategoriesModal(parseInt(storeCard.dataset.storeId));
             }
         });
 
-        clearSearchBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            document.getElementById('searchModal').style.display = 'none';
+        cartButton.addEventListener('click', toggleCart);
+        closeCartBtn.addEventListener('click', toggleCart);
+        cartOverlay.addEventListener('click', (e) => {
+            if (e.target === cartOverlay) toggleCart();
         });
     };
 
-    const performSearch = (searchTerm) => {
-        const modal = document.getElementById('searchModal');
-        const modalBody = modal.querySelector('.modal-body');
-        modalBody.innerHTML = '';
-        
-        const results = [];
-        for (const categoryName in allData.categoryMap) {
-            const categoryInfo = allData.categoryMap[categoryName];
-            categoryInfo.data.forEach(product => {
-                if (product.nome.toLowerCase().includes(searchTerm)) {
-                    results.push({ ...product, categoryFile: categoryInfo.file });
-                }
-            });
-        }
-        
-        const productGrid = document.createElement('div');
-        productGrid.className = 'modal-products';
-
-        if (results.length > 0) {
-            results.forEach(item => {
-                const productLink = document.createElement('a');
-                productLink.href = `comparar.html?category=${item.categoryFile}&productId=${item.id}`;
-                const referencePrice = item.precos?.[0]?.preco;
-                const priceText = referencePrice ? `A partir de R$ ${referencePrice.toFixed(2).replace('.', ',')}` : 'Preço indisponível';
-                
-                productLink.innerHTML = `
-                    <div class="product-item">
-                        <img src="${item.imagem}" alt="${item.nome}">
-                        <h4>${item.nome}</h4>
-                        <p>${priceText}</p>
+    const handleSearch = (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        if (searchTerm.length > 1) {
+            const results = allData.allProducts.filter(p => p.nome.toLowerCase().includes(searchTerm));
+            mainContent.classList.add('hidden');
+            searchResultsContainer.classList.remove('hidden');
+            document.getElementById('search-results-title').textContent = `Resultados para "${searchTerm}"`;
+            
+            const grid = document.getElementById('search-results-grid');
+            if (results.length > 0) {
+                grid.innerHTML = results.map(product => `
+                    <div class="product-item" onclick="window.location.href='comparar.html?category=${product.category}&productId=${product.id}'">
+                        <img src="${product.imagem}" alt="${product.nome}">
+                        <h4>${product.nome}</h4>
+                        <p>A partir de R$ ${product.precos[0].preco.toFixed(2).replace('.', ',')}</p>
                     </div>
-                `;
-                productGrid.appendChild(productLink);
-            });
-            modalBody.appendChild(productGrid);
+                `).join('');
+            } else {
+                grid.innerHTML = '<p>Nenhum produto encontrado.</p>';
+            }
         } else {
-            modalBody.innerHTML = '<p style="text-align: center; width: 100%;">Nenhum produto encontrado.</p>';
+            clearSearch();
         }
-
-        modal.style.display = 'flex';
     };
 
-    // --- FUNÇÕES GERAIS DE CONTROLE DOS MODAIS ---
-    document.querySelectorAll('.modal-overlay .close-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const modal = e.target.closest('.modal-overlay');
-            modal.style.display = 'none';
+    const clearSearch = () => {
+        searchInput.value = '';
+        mainContent.classList.remove('hidden');
+        searchResultsContainer.classList.add('hidden');
+    };
+    
+    const showProductsModal = (categoryKey) => {
+        const category = allData.categoryMap[categoryKey];
+        const maxItems = 5;
+        const itemsToDisplay = category.data.slice(0, maxItems);
+        
+        const modalContent = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img src="${category.icon}" alt="${category.name}" class="modal-logo">
+                    <h2 class="modal-title">${category.name}</h2>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-products">
+                        ${itemsToDisplay.map(p => {
+                            const productUrl = `comparar.html?category=${categoryKey}&productId=${p.id}`;
+                            return `
+                                <div class="product-item" onclick="window.location.href='${productUrl}'">
+                                    <img src="${p.imagem}" alt="${p.nome}">
+                                    <h4>${p.nome}</h4>
+                                    <p>A partir de R$ ${p.precos[0].preco.toFixed(2).replace('.', ',')}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            </div>`;
+        
+        genericModalOverlay.innerHTML = modalContent;
+        genericModalOverlay.classList.remove('hidden');
+        genericModalOverlay.querySelector('.close-btn').addEventListener('click', () => genericModalOverlay.classList.add('hidden'));
+    };
 
-            // Limpa o botão de voltar do modal de categorias ao fechar
-            if (modal.id === 'categoriesModal') {
-                const backButton = modal.querySelector('.modal-back-btn');
-                if (backButton) {
-                    backButton.remove();
-                }
-            }
+    const showStoreCategoriesModal = (storeId) => {
+        const store = allData.supermercados.find(s => s.id === storeId);
+        genericModalOverlay.classList.remove('hidden');
+        genericModalOverlay.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <img src="${store.imagem}" alt="${store.nome}" class="modal-logo">
+                    <h2 class="modal-title">${store.nome}</h2>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-categories">
+                        ${Object.entries(allData.categoryMap).map(([key, value]) => `
+                            <div class="card-item" onclick="window.location.href='produtos.html?category=${key}&storeId=${store.id}'">
+                                <img src="${value.icon}" alt="${value.name}">
+                                <h3>${value.name}</h3>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>`;
+        genericModalOverlay.querySelector('.close-btn').addEventListener('click', () => {
+            genericModalOverlay.classList.add('hidden');
         });
-    });
+    };
 
-    // Inicia o carregamento de todos os dados necessários
-    fetchAllData();
+    const toggleCart = () => {
+        cartOverlay.classList.toggle('hidden');
+    };
+
+    const updateCartUI = () => {
+        updateCartCount();
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartTotalPrice = document.getElementById('cart-total-price');
+        const checkoutBtn = document.getElementById('checkout-btn');
+
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p style="text-align:center; padding: 20px;">Seu carrinho está vazio.</p>';
+        } else {
+            cartItemsContainer.innerHTML = cart.map((item, index) => {
+                const priceEntry = item.precos.find(p => p.supermercado_id === item.supermarket.id);
+                const price = priceEntry ? priceEntry.preco : 0;
+                return `
+                <div class="cart-item">
+                    <img src="${item.imagem}" alt="${item.nome}">
+                    <div class="cart-item-details">
+                        <h4>${item.nome}</h4>
+                        <p class="store-name">${item.supermarket.nome}</p>
+                        <div class="quantity-controls">
+                            <button data-cart-index="${index}" class="decrease-qty">-</button>
+                            <span>${item.quantity}</span>
+                            <button data-cart-index="${index}" class="increase-qty">+</button>
+                        </div>
+                    </div>
+                    <p class="cart-item-price">R$ ${(price * item.quantity).toFixed(2).replace('.', ',')}</p>
+                </div>`;
+            }).join('');
+        }
+        
+        cartItemsContainer.querySelectorAll('.increase-qty').forEach(btn => btn.addEventListener('click', () => changeQuantity(btn.dataset.cartIndex, 1)));
+        cartItemsContainer.querySelectorAll('.decrease-qty').forEach(btn => btn.addEventListener('click', () => changeQuantity(btn.dataset.cartIndex, -1)));
+
+        const totalPrice = cart.reduce((total, item) => {
+            const priceEntry = item.precos.find(p => p.supermercado_id === item.supermarket.id);
+            const price = priceEntry ? priceEntry.preco : 0;
+            return total + (price * item.quantity);
+        }, 0);
+        cartTotalPrice.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+        
+        const addresses = JSON.parse(localStorage.getItem('userAddresses')) || [];
+        const currentAddressSpan = document.getElementById('current-address');
+        if (addresses.length > 0) {
+            const firstAddress = addresses[0];
+            currentAddressSpan.textContent = `${firstAddress.street}, ${firstAddress.number}`;
+        } else {
+            currentAddressSpan.textContent = 'Nenhum endereço cadastrado';
+        }
+        document.getElementById('change-address-btn').onclick = () => window.location.href = 'conta.html';
+        
+        if (cart.length > 0 && addresses.length > 0) {
+            checkoutBtn.classList.remove('disabled');
+            checkoutBtn.onclick = () => {
+                localStorage.setItem('checkoutCart', JSON.stringify(cart));
+                localStorage.setItem('checkoutAddress', JSON.stringify(addresses[0]));
+                window.location.href = 'pagamento.html';
+            };
+        } else {
+            checkoutBtn.classList.add('disabled');
+            checkoutBtn.onclick = null;
+        }
+    };
+    
+    const changeQuantity = (index, amount) => {
+        cart[index].quantity += amount;
+        if (cart[index].quantity <= 0) {
+            cart.splice(index, 1);
+        }
+        saveCart();
+        updateCartUI();
+    };
+    
+    initializeApp();
 });
