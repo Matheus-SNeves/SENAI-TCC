@@ -6,8 +6,12 @@ const prisma = new PrismaClient();
 const loginCliente = async (req, res) => {
     const { email, senha, validade } = req.body;
 
+    if (!email || !senha) {
+        return res.status(400).json({ message: 'E-mail e senha são obrigatórios.' });
+    }
+
     try {
-        const cliente = await prisma.cliente.findMany({
+        const cliente = await prisma.cliente.findUnique({
             where: {
                 email: email,
             }
@@ -32,7 +36,16 @@ const loginCliente = async (req, res) => {
             process.env.SECRET_JWT,
             { expiresIn: validade ? validade + "min" : "60min" }
         );
-        res.status(200).json({ token: token });
+        
+        // Retorna o token e os dados básicos do usuário
+        return res.status(200).json({ 
+            token: token,
+            usuario: {
+                id: cliente.id,
+                nome: cliente.nome,
+                email: cliente.email
+            }
+        });
 
     } catch (err) {
         console.error('Erro no login do cliente:', err);
@@ -42,6 +55,10 @@ const loginCliente = async (req, res) => {
 
 const loginAdmin = async (req, res) => {
     const { email, senha, validade } = req.body;
+
+    if (!email || !senha) {
+        return res.status(400).json({ message: 'E-mail e senha são obrigatórios.' });
+    }
 
     try {
         const admin = await prisma.funcionario.findUnique({
@@ -69,7 +86,15 @@ const loginAdmin = async (req, res) => {
             process.env.SECRET_JWT,
             { expiresIn: validade ? validade + "min" : "60min" }
         );
-        res.status(200).json({ token: token });
+
+        return res.status(200).json({ 
+            token: token,
+            usuario: {
+                id: admin.id,
+                nome: admin.nome,
+                email: admin.email
+            }
+        });
 
     } catch (err) {
         console.error('Erro no login do admin:', err);

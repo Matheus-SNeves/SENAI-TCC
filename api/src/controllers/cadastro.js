@@ -6,13 +6,19 @@ const createCliente = async (req, res) => {
     const { nome, cpf, telefone, email, senha } = req.body;
 
     try {
-        const clienteExistente = await prisma.cliente.findUnique({
-            where: {
-                cpf,
-            },
+        const emailExistente = await prisma.cliente.findUnique({
+            where: { email },
         });
 
-        if (clienteExistente) {
+        if (emailExistente) {
+            return res.status(409).json({ message: 'O email informado já está cadastrado.' });
+        }
+
+        const cpfExistente = await prisma.cliente.findUnique({
+            where: { cpf },
+        });
+
+        if (cpfExistente) {
             return res.status(409).json({ message: 'O CPF informado já está cadastrado.' });
         }
 
@@ -27,14 +33,62 @@ const createCliente = async (req, res) => {
                 senha: hashedPassword,
             },
         });
+        
+        // Remove a senha da resposta para segurança
+        const { senha: _, ...clienteSemSenha } = novoCliente;
 
-        res.status(201).json(novoCliente);
+        res.status(201).json(clienteSemSenha);
     } catch (error) {
         console.error('Erro ao cadastrar cliente:', error);
         res.status(500).json({ message: 'Erro interno do servidor.' });
     }
 };
 
+// Nova função para criar um administrador
+const createAdmin = async (req, res) => {
+    const { nome, cpf, telefone, email, senha } = req.body;
+
+    try {
+        const emailExistente = await prisma.funcionario.findUnique({
+            where: { email },
+        });
+
+        if (emailExistente) {
+            return res.status(409).json({ message: 'O e-mail informado já está cadastrado para um funcionário.' });
+        }
+
+        const cpfExistente = await prisma.funcionario.findUnique({
+            where: { cpf },
+        });
+
+        if (cpfExistente) {
+            return res.status(409).json({ message: 'O CPF informado já está cadastrado para um funcionário.' });
+        }
+
+        const hashedPassword = await createHash(senha);
+
+        const novoAdmin = await prisma.funcionario.create({
+            data: {
+                nome,
+                cpf,
+                telefone,
+                email,
+                senha: hashedPassword,
+                role: 'ADMIN', // Define o papel (role) como ADMIN
+            },
+        });
+        
+        // Remove a senha da resposta por segurança
+        const { senha: _, ...adminSemSenha } = novoAdmin;
+
+        res.status(201).json(adminSemSenha);
+    } catch (error) {
+        console.error('Erro ao cadastrar administrador:', error);
+        res.status(500).json({ message: 'Erro ao cadastrar administrador. Por favor, tente novamente mais tarde.' });
+    }
+}
+
 module.exports = {
     createCliente,
+    createAdmin // Adicionando a nova função para exportação
 };

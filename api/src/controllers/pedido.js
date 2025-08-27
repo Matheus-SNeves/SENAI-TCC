@@ -12,8 +12,31 @@ const create = async (req, res) => {
     }
 }
 
+// Dentro do seu controller/pedido.js
 const read = async (req, res) => {
-    const pedidos = await prisma.pedido.findMany();
+    // req.user é injetado pelo middleware de autenticação
+    const usuarioLogado = req.user;
+
+    let whereClause = {};
+
+    // Se o usuário for um CLIENTE, ele só pode ver os próprios pedidos
+    if (usuarioLogado.role === 'CLIENTE') {
+        whereClause = {
+            id_cliente: usuarioLogado.id
+        };
+    }
+    // Se for ADMIN, o whereClause fica vazio {}, e ele busca todos os pedidos.
+
+    const pedidos = await prisma.pedido.findMany({
+        where: whereClause,
+        include: {
+            cliente: {
+                select: {
+                    nome: true
+                }
+            }
+        }
+    });
     return res.json(pedidos);
 }
 

@@ -9,11 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const editDataBtn = document.getElementById('edit-data-btn');
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
+    const userName = localStorage.getItem('userName');
     const zipcode_input = document.getElementById('zipcode');
 
     let addresses = JSON.parse(localStorage.getItem('userAddresses')) || [];
     let selectedAddressId = localStorage.getItem('selectedAddressId') || null;
     let isEditingData = false;
+
+    const logoutButton = document.querySelector('.action-btn-danger');
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userAddresses');
+        localStorage.removeItem('selectedAddressId');
+        window.location.href = 'login.html';
+    });
+    
+    
+    if (userName) {
+        nameInput.value = userName;
+    }
 
     const renderAddresses = () => {
         addressListDiv.innerHTML = '';
@@ -32,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const addressItem = document.createElement('div');
             addressItem.className = `address-item ${isSelected ? 'selected' : ''}`;
             addressItem.dataset.id = address.id;
-            
+
             addressItem.innerHTML = `
                 <input type="radio" name="selected-address" class="address-item-radio" ${isSelected ? 'checked' : ''}>
                 <div class="address-item-content">
@@ -118,12 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAddresses();
         closeModal();
     };
-    
+
     const handleEditAddress = (id) => {
         const addressToEdit = addresses.find(addr => addr.id == id);
         openModal(addressToEdit);
     };
-    
+
     const handleDeleteAddress = (id) => {
         if (confirm('Tem certeza que deseja excluir este endereço?')) {
             addresses = addresses.filter(addr => addr.id != id);
@@ -167,6 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Não foi possível buscar o CEP.');
         }
     };
+
+    
 
     addAddressBtn.addEventListener('click', () => openModal());
     closeAddressModalBtn.addEventListener('click', closeModal);

@@ -57,54 +57,6 @@
     }
   ],
   "paths": {
-    "/cadastro/cliente": {
-      "post": {
-        "tags": [
-          "Autenticação"
-        ],
-        "summary": "Cadastrar um novo cliente",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CadastroClienteInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Cliente criado com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Cliente"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflito: o CPF já está cadastrado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Erro interno do servidor"
-          }
-        }
-      }
-    },
     "/login/cliente": {
       "post": {
         "tags": [
@@ -116,7 +68,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginInput"
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "carlos.silva@email.com"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha_segura_123"
+                  }
+                }
               }
             }
           }
@@ -126,8 +90,17 @@
             "description": "Login bem-sucedido",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginOutput"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                      "usuario": {
+                        "id": 1,
+                        "nome": "Carlos Silva",
+                        "email": "carlos.silva@email.com"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -152,7 +125,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginInput"
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "gerente@supermercadoanjos.com.br"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha_admin_anjos_123"
+                  }
+                }
               }
             }
           }
@@ -162,14 +147,93 @@
             "description": "Login bem-sucedido",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginOutput"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                      "usuario": {
+                        "id": 1,
+                        "nome": "João Admin",
+                        "email": "gerente@supermercadoanjos.com.br"
+                      }
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
             "description": "Não autorizado: E-mail ou Senha incorretos"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/cadastro/cliente": {
+      "post": {
+        "tags": [
+          "Autenticação"
+        ],
+        "summary": "Cadastrar um novo cliente",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Ana Santos"
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "example": "555.666.777-88"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "example": "5511987654321"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "ana.santos@email.com"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha_segura_ana_123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 2,
+                      "nome": "Ana Santos",
+                      "cpf": "555.666.777-88",
+                      "telefone": "5511987654321",
+                      "email": "ana.santos@email.com",
+                      "createdAt": "2025-08-27T21:15:00.000Z",
+                      "updatedAt": "2025-08-27T21:15:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito: o CPF ou e-mail já estão cadastrados"
           },
           "500": {
             "description": "Erro interno do servidor"
@@ -188,10 +252,24 @@
             "description": "Lista de clientes",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Cliente"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "nome": "Carlos Silva",
+                        "cpf": "111.111.111-11",
+                        "telefone": "5511999999999",
+                        "email": "carlos.silva@email.com"
+                      },
+                      {
+                        "id": 2,
+                        "nome": "Ana Santos",
+                        "cpf": "555.666.777-88",
+                        "telefone": "5511987654321",
+                        "email": "ana.santos@email.com"
+                      }
+                    ]
                   }
                 }
               }
@@ -209,7 +287,31 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ClienteInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Beatriz Oliveira"
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "example": "999.888.777-66"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "example": "5521999887766"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "beatriz.oliveira@email.com"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha_beatriz_456"
+                  }
+                }
               }
             }
           }
@@ -219,8 +321,18 @@
             "description": "Cliente criado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Cliente"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "nome": "Beatriz Oliveira",
+                      "cpf": "999.888.777-66",
+                      "telefone": "5521999887766",
+                      "email": "beatriz.oliveira@email.com",
+                      "createdAt": "2025-08-27T21:20:00.000Z",
+                      "updatedAt": "2025-08-27T21:20:00.000Z"
+                    }
+                  }
                 }
               }
             }
@@ -243,8 +355,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do cliente a ser obtido"
           }
         ],
         "responses": {
@@ -252,14 +366,22 @@
             "description": "Cliente encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Cliente"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Carlos Silva",
+                      "cpf": "111.111.111-11",
+                      "telefone": "5511999999999",
+                      "email": "carlos.silva@email.com"
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Cliente não encontrado"
           }
         }
       },
@@ -274,8 +396,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do cliente a ser atualizado"
           }
         ],
         "requestBody": {
@@ -283,17 +407,61 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ClienteInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Carlos da Silva"
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "example": "111.111.111-11"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "example": "5511999990000"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "carlos.silva@email.com"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "nova_senha_carlos_123"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Cliente atualizado"
+            "description": "Cliente atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Carlos da Silva",
+                      "cpf": "111.111.111-11",
+                      "telefone": "5511999990000",
+                      "email": "carlos.silva@email.com",
+                      "createdAt": "2025-08-27T21:15:00.000Z",
+                      "updatedAt": "2025-08-27T21:20:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Cliente não encontrado"
           }
         }
       },
@@ -308,16 +476,18 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do cliente a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Cliente removido"
+            "description": "Cliente removido com sucesso"
           },
-          "400": {
-            "description": "Requisição inválida"
+          "404": {
+            "description": "Cliente não encontrado"
           }
         }
       }
@@ -327,16 +497,32 @@
         "tags": [
           "Produtos"
         ],
-        "summary": "Obter todos os produtos",
+        "summary": "Listar todos os produtos",
         "responses": {
           "200": {
             "description": "Lista de produtos",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Produto"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "nome": "Leite Integral",
+                        "preco": 4.50,
+                        "quantidade": 150,
+                        "descricao": "Leite UHT, 1 litro, marca A.",
+                        "id_supermercado": 1
+                      },
+                      {
+                        "id": 2,
+                        "nome": "Arroz Branco 5kg",
+                        "preco": 19.99,
+                        "quantidade": 80,
+                        "descricao": "Arroz tipo 1, pacote de 5kg.",
+                        "id_supermercado": 1
+                      }
+                    ]
                   }
                 }
               }
@@ -354,7 +540,30 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProdutoInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Feijão Preto 1kg"
+                  },
+                  "preco": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 7.80
+                  },
+                  "quantidade": {
+                    "type": "integer",
+                    "example": 120
+                  },
+                  "descricao": {
+                    "type": "string",
+                    "example": "Feijão preto, embalagem de 1kg."
+                  },
+                  "id_supermercado": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
               }
             }
           }
@@ -364,8 +573,19 @@
             "description": "Produto criado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Produto"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "nome": "Feijão Preto 1kg",
+                      "preco": 7.80,
+                      "quantidade": 120,
+                      "descricao": "Feijão preto, embalagem de 1kg.",
+                      "id_supermercado": 1,
+                      "createdAt": "2025-08-27T21:25:00.000Z",
+                      "updatedAt": "2025-08-27T21:25:00.000Z"
+                    }
+                  }
                 }
               }
             }
@@ -388,8 +608,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do produto a ser obtido"
           }
         ],
         "responses": {
@@ -397,14 +619,23 @@
             "description": "Produto encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Produto"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Leite Integral",
+                      "preco": 4.50,
+                      "quantidade": 150,
+                      "descricao": "Leite UHT, 1 litro, marca A.",
+                      "id_supermercado": 1
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Produto não encontrado"
           }
         }
       },
@@ -419,8 +650,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do produto a ser atualizado"
           }
         ],
         "requestBody": {
@@ -428,17 +661,61 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProdutoInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Leite Semi-desnatado"
+                  },
+                  "preco": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 4.30
+                  },
+                  "quantidade": {
+                    "type": "integer",
+                    "example": 140
+                  },
+                  "descricao": {
+                    "type": "string",
+                    "example": "Leite UHT semi-desnatado, 1 litro."
+                  },
+                  "id_supermercado": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Produto atualizado"
+            "description": "Produto atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Leite Semi-desnatado",
+                      "preco": 4.30,
+                      "quantidade": 140,
+                      "descricao": "Leite UHT semi-desnatado, 1 litro.",
+                      "id_supermercado": 1,
+                      "createdAt": "2025-08-27T21:10:00.000Z",
+                      "updatedAt": "2025-08-27T21:25:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Produto não encontrado"
           }
         }
       },
@@ -453,13 +730,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do produto a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Produto removido"
+            "description": "Produto removido com sucesso"
           },
           "404": {
             "description": "Produto não encontrado"
@@ -478,10 +757,22 @@
             "description": "Lista de pedidos",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pedido"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "id_cliente": 1,
+                        "valor": 13.50,
+                        "data_pedido": "2025-08-27T21:15:00.000Z"
+                      },
+                      {
+                        "id": 2,
+                        "id_cliente": 2,
+                        "valor": 19.99,
+                        "data_pedido": "2025-08-27T21:10:00.000Z"
+                      }
+                    ]
                   }
                 }
               }
@@ -499,14 +790,40 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PedidoInput"
+                "type": "object",
+                "properties": {
+                  "id_cliente": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "valor": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 24.49
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Pedido criado"
+            "description": "Pedido criado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "id_cliente": 1,
+                      "valor": 24.49,
+                      "createdAt": "2025-08-27T21:30:00.000Z",
+                      "updatedAt": "2025-08-27T21:30:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -526,8 +843,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do pedido a ser obtido"
           }
         ],
         "responses": {
@@ -535,14 +854,21 @@
             "description": "Pedido encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pedido"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_cliente": 1,
+                      "data_pedido": "2025-08-27T21:15:00.000Z",
+                      "valor": 13.50
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Pedido não encontrado"
           }
         }
       },
@@ -557,8 +883,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do pedido a ser atualizado"
           }
         ],
         "requestBody": {
@@ -566,17 +894,46 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PedidoInput"
+                "type": "object",
+                "properties": {
+                  "id_cliente": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "valor": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 15.00
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Pedido atualizado"
+            "description": "Pedido atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_cliente": 1,
+                      "valor": 15.00,
+                      "data_pedido": "2025-08-27T21:15:00.000Z",
+                      "updatedAt": "2025-08-27T21:35:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Pedido não encontrado"
           }
         }
       },
@@ -591,13 +948,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do pedido a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Pedido removido"
+            "description": "Pedido removido com sucesso"
           },
           "404": {
             "description": "Pedido não encontrado"
@@ -605,21 +964,33 @@
         }
       }
     },
-    "/itenspedidos": {
+    "/itenspedido": {
       "get": {
         "tags": [
           "Itens do Pedido"
         ],
-        "summary": "Obter todos os itens de pedidos",
+        "summary": "Obter todos os itens de pedido",
         "responses": {
           "200": {
-            "description": "Lista de itens de pedidos",
+            "description": "Lista de itens de pedido",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItensPedido"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "id_pedido": 1,
+                        "id_produto": 1,
+                        "quantidade": 2
+                      },
+                      {
+                        "id": 2,
+                        "id_pedido": 1,
+                        "id_produto": 2,
+                        "quantidade": 1
+                      }
+                    ]
                   }
                 }
               }
@@ -637,14 +1008,44 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ItensPedidoInput"
+                "type": "object",
+                "properties": {
+                  "id_pedido": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "id_produto": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "quantidade": {
+                    "type": "integer",
+                    "example": 5
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Item de pedido criado"
+            "description": "Item de pedido criado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "id_pedido": 3,
+                      "id_produto": 3,
+                      "quantidade": 5,
+                      "createdAt": "2025-08-27T21:30:00.000Z",
+                      "updatedAt": "2025-08-27T21:30:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -652,7 +1053,7 @@
         }
       }
     },
-    "/itenspedidos/{id}": {
+    "/itenspedido/{id}": {
       "get": {
         "tags": [
           "Itens do Pedido"
@@ -664,8 +1065,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do item de pedido a ser obtido"
           }
         ],
         "responses": {
@@ -673,14 +1076,21 @@
             "description": "Item de pedido encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItensPedido"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_pedido": 1,
+                      "id_produto": 1,
+                      "quantidade": 2
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Item de pedido não encontrado"
           }
         }
       },
@@ -695,8 +1105,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do item de pedido a ser atualizado"
           }
         ],
         "requestBody": {
@@ -704,17 +1116,50 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ItensPedidoInput"
+                "type": "object",
+                "properties": {
+                  "id_pedido": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "id_produto": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "quantidade": {
+                    "type": "integer",
+                    "example": 5
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Item de pedido atualizado"
+            "description": "Item de pedido atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_pedido": 1,
+                      "id_produto": 1,
+                      "quantidade": 5,
+                      "createdAt": "2025-08-27T21:15:00.000Z",
+                      "updatedAt": "2025-08-27T21:30:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Item de pedido não encontrado"
           }
         }
       },
@@ -729,13 +1174,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do item de pedido a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Item de pedido removido"
+            "description": "Item de pedido removido com sucesso"
           },
           "404": {
             "description": "Item de pedido não encontrado"
@@ -754,10 +1201,22 @@
             "description": "Lista de pagamentos",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pagamento"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "id_pedido": 1,
+                        "tipo": "PIX",
+                        "data_pagamento": "2025-08-27T21:15:00.000Z"
+                      },
+                      {
+                        "id": 2,
+                        "id_pedido": 2,
+                        "tipo": "CARTAO",
+                        "data_pagamento": "2025-08-27T21:16:00.000Z"
+                      }
+                    ]
                   }
                 }
               }
@@ -775,14 +1234,40 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PagamentoInput"
+                "type": "object",
+                "properties": {
+                  "id_pedido": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "tipo": {
+                    "type": "string",
+                    "example": "PIX"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Pagamento criado"
+            "description": "Pagamento criado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "id_pedido": 3,
+                      "tipo": "PIX",
+                      "data_pagamento": "2025-08-27T21:35:00.000Z",
+                      "createdAt": "2025-08-27T21:35:00.000Z",
+                      "updatedAt": "2025-08-27T21:35:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -802,8 +1287,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do pagamento a ser obtido"
           }
         ],
         "responses": {
@@ -811,14 +1298,21 @@
             "description": "Pagamento encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pagamento"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_pedido": 1,
+                      "tipo": "PIX",
+                      "data_pagamento": "2025-08-27T21:15:00.000Z"
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Pagamento não encontrado"
           }
         }
       },
@@ -833,8 +1327,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do pagamento a ser atualizado"
           }
         ],
         "requestBody": {
@@ -842,17 +1338,45 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PagamentoInput"
+                "type": "object",
+                "properties": {
+                  "id_pedido": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "tipo": {
+                    "type": "string",
+                    "example": "CARTAO"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Pagamento atualizado"
+            "description": "Pagamento atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_pedido": 1,
+                      "tipo": "CARTAO",
+                      "data_pagamento": "2025-08-27T21:15:00.000Z",
+                      "updatedAt": "2025-08-27T21:40:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Pagamento não encontrado"
           }
         }
       },
@@ -867,13 +1391,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do pagamento a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Pagamento removido"
+            "description": "Pagamento removido com sucesso"
           },
           "404": {
             "description": "Pagamento não encontrado"
@@ -892,10 +1418,24 @@
             "description": "Lista de avaliações",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Avaliacao"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "id_cliente": 1,
+                        "id_produto": 1,
+                        "nota": 5,
+                        "comentario": "Ótimo produto!"
+                      },
+                      {
+                        "id": 2,
+                        "id_cliente": 2,
+                        "id_produto": 2,
+                        "nota": 4,
+                        "comentario": "Gostei do arroz, mas poderia ser mais soltinho."
+                      }
+                    ]
                   }
                 }
               }
@@ -913,14 +1453,49 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AvaliacaoInput"
+                "type": "object",
+                "properties": {
+                  "id_cliente": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "id_produto": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "nota": {
+                    "type": "integer",
+                    "example": 5
+                  },
+                  "comentario": {
+                    "type": "string",
+                    "example": "O leite é de ótima qualidade e o preço é justo!"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Avaliação criada"
+            "description": "Avaliação criada",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "id_cliente": 2,
+                      "id_produto": 1,
+                      "nota": 5,
+                      "comentario": "O leite é de ótima qualidade e o preço é justo!",
+                      "createdAt": "2025-08-27T21:45:00.000Z",
+                      "updatedAt": "2025-08-27T21:45:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -940,8 +1515,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID da avaliação a ser obtida"
           }
         ],
         "responses": {
@@ -949,14 +1526,22 @@
             "description": "Avaliação encontrada",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Avaliacao"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_cliente": 1,
+                      "id_produto": 1,
+                      "nota": 5,
+                      "comentario": "Ótimo produto!"
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Avaliação não encontrada"
           }
         }
       },
@@ -971,8 +1556,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID da avaliação a ser atualizada"
           }
         ],
         "requestBody": {
@@ -980,17 +1567,47 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AvaliacaoInput"
+                "type": "object",
+                "properties": {
+                  "nota": {
+                    "type": "integer",
+                    "example": 4
+                  },
+                  "comentario": {
+                    "type": "string",
+                    "example": "Ainda é um ótimo produto, mas o preço subiu."
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Avaliação atualizada"
+            "description": "Avaliação atualizada",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "id_cliente": 1,
+                      "id_produto": 1,
+                      "nota": 4,
+                      "comentario": "Ainda é um ótimo produto, mas o preço subiu.",
+                      "createdAt": "2025-08-27T21:40:00.000Z",
+                      "updatedAt": "2025-08-27T21:50:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Avaliação não encontrada"
           }
         }
       },
@@ -1005,13 +1622,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID da avaliação a ser removida"
           }
         ],
         "responses": {
           "204": {
-            "description": "Avaliação removida"
+            "description": "Avaliação removida com sucesso"
           },
           "404": {
             "description": "Avaliação não encontrada"
@@ -1030,10 +1649,28 @@
             "description": "Lista de funcionários",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Funcionario"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "nome": "João Admin",
+                        "cpf": "123.456.789-00",
+                        "telefone": "5511998877665",
+                        "id_empresa": 1,
+                        "id_tipo_empregado": 1,
+                        "id_supermercado": 1
+                      },
+                      {
+                        "id": 2,
+                        "nome": "Maria Oliveira",
+                        "cpf": "987.654.321-00",
+                        "telefone": "5511912345678",
+                        "id_empresa": 1,
+                        "id_tipo_empregado": 2,
+                        "id_supermercado": 1
+                      }
+                    ]
                   }
                 }
               }
@@ -1051,14 +1688,70 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FuncionarioInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Pedro Vendedor"
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "example": "333.444.555-66"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "example": "5511955554444"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "pedro.vendedor@supermercadoanjos.com.br"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha_pedro_789"
+                  },
+                  "id_empresa": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "id_tipo_empregado": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "id_supermercado": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Funcionário criado"
+            "description": "Funcionário criado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "nome": "Pedro Vendedor",
+                      "cpf": "333.444.555-66",
+                      "telefone": "5511955554444",
+                      "email": "pedro.vendedor@supermercadoanjos.com.br",
+                      "id_empresa": 1,
+                      "id_tipo_empregado": 2,
+                      "id_supermercado": 1,
+                      "createdAt": "2025-08-27T21:55:00.000Z",
+                      "updatedAt": "2025-08-27T21:55:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -1078,8 +1771,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do funcionário a ser obtido"
           }
         ],
         "responses": {
@@ -1087,14 +1782,24 @@
             "description": "Funcionário encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Funcionario"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "João Admin",
+                      "cpf": "123.456.789-00",
+                      "telefone": "5511998877665",
+                      "id_empresa": 1,
+                      "id_tipo_empregado": 1,
+                      "id_supermercado": 1
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Funcionário não encontrado"
           }
         }
       },
@@ -1109,8 +1814,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do funcionário a ser atualizado"
           }
         ],
         "requestBody": {
@@ -1118,17 +1825,65 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FuncionarioInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "João V. Admin"
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "example": "123.456.789-00"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "example": "5511998877665"
+                  },
+                  "id_empresa": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "id_tipo_empregado": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "id_supermercado": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Funcionário atualizado"
+            "description": "Funcionário atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "João V. Admin",
+                      "cpf": "123.456.789-00",
+                      "telefone": "5511998877665",
+                      "id_empresa": 1,
+                      "id_tipo_empregado": 1,
+                      "id_supermercado": 1,
+                      "createdAt": "2025-08-27T21:50:00.000Z",
+                      "updatedAt": "2025-08-27T21:58:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Funcionário não encontrado"
           }
         }
       },
@@ -1143,13 +1898,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do funcionário a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Funcionário removido"
+            "description": "Funcionário removido com sucesso"
           },
           "404": {
             "description": "Funcionário não encontrado"
@@ -1168,17 +1925,38 @@
             "description": "Lista de endereços",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Endereco"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "cep": "12345-678",
+                        "logradouro": "Rua das Flores",
+                        "numero": 123,
+                        "complemento": "Apto 101",
+                        "bairro": "Centro",
+                        "id_cliente": 1,
+                        "id_empresa": null,
+                        "id_funcionario": null
+                      },
+                      {
+                        "id": 2,
+                        "cep": "98765-432",
+                        "logradouro": "Avenida Brasil",
+                        "numero": 456,
+                        "complemento": null,
+                        "bairro": "Jardim América",
+                        "id_cliente": null,
+                        "id_empresa": 1,
+                        "id_funcionario": null
+                      }
+                    ]
                   }
                 }
               }
             }
           }
-        }
-      },
+        },
       "post": {
         "tags": [
           "Endereços"
@@ -1189,14 +1967,61 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EnderecoInput"
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string",
+                    "example": "54321-098"
+                  },
+                  "logradouro": {
+                    "type": "string",
+                    "example": "Rua da Paz"
+                  },
+                  "numero": {
+                    "type": "integer",
+                    "example": 789
+                  },
+                  "complemento": {
+                    "type": "string",
+                    "example": "Casa B"
+                  },
+                  "bairro": {
+                    "type": "string",
+                    "example": "Vila Nova"
+                  },
+                  "id_cliente": {
+                    "type": "integer",
+                    "example": 2
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Endereço criado"
+            "description": "Endereço criado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "cep": "54321-098",
+                      "logradouro": "Rua da Paz",
+                      "numero": 789,
+                      "complemento": "Casa B",
+                      "bairro": "Vila Nova",
+                      "id_cliente": 2,
+                      "id_empresa": null,
+                      "id_funcionario": null,
+                      "createdAt": "2025-08-27T22:00:00.000Z",
+                      "updatedAt": "2025-08-27T22:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -1216,8 +2041,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do endereço a ser obtido"
           }
         ],
         "responses": {
@@ -1225,14 +2052,26 @@
             "description": "Endereço encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Endereco"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "cep": "12345-678",
+                      "logradouro": "Rua das Flores",
+                      "numero": 123,
+                      "complemento": "Apto 101",
+                      "bairro": "Centro",
+                      "id_cliente": 1,
+                      "id_empresa": null,
+                      "id_funcionario": null
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Endereço não encontrado"
           }
         }
       },
@@ -1247,8 +2086,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do endereço a ser atualizado"
           }
         ],
         "requestBody": {
@@ -1256,17 +2097,63 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EnderecoInput"
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string",
+                    "example": "12345-679"
+                  },
+                  "logradouro": {
+                    "type": "string",
+                    "example": "Rua das Flores"
+                  },
+                  "numero": {
+                    "type": "integer",
+                    "example": 124
+                  },
+                  "complemento": {
+                    "type": "string",
+                    "example": "Apto 102"
+                  },
+                  "bairro": {
+                    "type": "string",
+                    "example": "Centro"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Endereço atualizado"
+            "description": "Endereço atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "cep": "12345-679",
+                      "logradouro": "Rua das Flores",
+                      "numero": 124,
+                      "complemento": "Apto 102",
+                      "bairro": "Centro",
+                      "id_cliente": 1,
+                      "id_empresa": null,
+                      "id_funcionario": null,
+                      "createdAt": "2025-08-27T22:00:00.000Z",
+                      "updatedAt": "2025-08-27T22:05:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Endereço não encontrado"
           }
         }
       },
@@ -1281,13 +2168,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do endereço a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Endereço removido"
+            "description": "Endereço removido com sucesso"
           },
           "404": {
             "description": "Endereço não encontrado"
@@ -1306,10 +2195,22 @@
             "description": "Lista de empresas",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Empresa"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "nome": "Supermercado Anjos",
+                        "cnpj": "12.345.678/0001-90",
+                        "email": "contato@supermercadoanjos.com.br"
+                      },
+                      {
+                        "id": 2,
+                        "nome": "Mercado do Povo",
+                        "cnpj": "98.765.432/0001-12",
+                        "email": "info@mercadodopovo.com.br"
+                      }
+                    ]
                   }
                 }
               }
@@ -1327,14 +2228,45 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EmpresaInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Distribuidora XPTO"
+                  },
+                  "cnpj": {
+                    "type": "string",
+                    "example": "11.222.333/0001-44"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "contato@distribuidoraxpto.com"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Empresa criada"
+            "description": "Empresa criada",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "nome": "Distribuidora XPTO",
+                      "cnpj": "11.222.333/0001-44",
+                      "email": "contato@distribuidoraxpto.com",
+                      "createdAt": "2025-08-27T22:10:00.000Z",
+                      "updatedAt": "2025-08-27T22:10:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -1354,8 +2286,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID da empresa a ser obtida"
           }
         ],
         "responses": {
@@ -1363,14 +2297,21 @@
             "description": "Empresa encontrada",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Empresa"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Supermercado Anjos",
+                      "cnpj": "12.345.678/0001-90",
+                      "email": "contato@supermercadoanjos.com.br"
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Empresa não encontrada"
           }
         }
       },
@@ -1385,8 +2326,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID da empresa a ser atualizada"
           }
         ],
         "requestBody": {
@@ -1394,17 +2337,51 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EmpresaInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Supermercado Anjos (Matriz)"
+                  },
+                  "cnpj": {
+                    "type": "string",
+                    "example": "12.345.678/0001-90"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "gerencia@supermercadoanjos.com.br"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Empresa atualizada"
+            "description": "Empresa atualizada",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Supermercado Anjos (Matriz)",
+                      "cnpj": "12.345.678/0001-90",
+                      "email": "gerencia@supermercadoanjos.com.br",
+                      "createdAt": "2025-08-27T22:00:00.000Z",
+                      "updatedAt": "2025-08-27T22:15:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Empresa não encontrada"
           }
         }
       },
@@ -1419,13 +2396,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID da empresa a ser removida"
           }
         ],
         "responses": {
           "204": {
-            "description": "Empresa removida"
+            "description": "Empresa removida com sucesso"
           },
           "404": {
             "description": "Empresa não encontrada"
@@ -1433,7 +2412,7 @@
         }
       }
     },
-    "/tiposemprego": {
+    "/tipoempregos": {
       "get": {
         "tags": [
           "Tipo de Emprego"
@@ -1444,10 +2423,24 @@
             "description": "Lista de tipos de emprego",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TipoEmprego"
+                "examples": {
+                  "example": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "nome": "Gerente",
+                        "salario": 5000.00,
+                        "carga_horario": 40,
+                        "descricao": "Responsável por toda a gestão do supermercado."
+                      },
+                      {
+                        "id": 2,
+                        "nome": "Vendedor",
+                        "salario": 2500.00,
+                        "carga_horario": 30,
+                        "descricao": "Atende clientes e repõe produtos."
+                      }
+                    ]
                   }
                 }
               }
@@ -1465,14 +2458,50 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TipoEmpregoInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Repositor"
+                  },
+                  "salario": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 2000.00
+                  },
+                  "carga_horario": {
+                    "type": "integer",
+                    "example": 44
+                  },
+                  "descricao": {
+                    "type": "string",
+                    "example": "Responsável por repor os produtos nas prateleiras."
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Tipo de emprego criado"
+            "description": "Tipo de emprego criado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 3,
+                      "nome": "Repositor",
+                      "salario": 2000.00,
+                      "carga_horario": 44,
+                      "descricao": "Responsável por repor os produtos nas prateleiras.",
+                      "createdAt": "2025-08-27T22:20:00.000Z",
+                      "updatedAt": "2025-08-27T22:20:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
@@ -1480,7 +2509,7 @@
         }
       }
     },
-    "/tiposemprego/{id}": {
+    "/tipoempregos/{id}": {
       "get": {
         "tags": [
           "Tipo de Emprego"
@@ -1492,8 +2521,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do tipo de emprego a ser obtido"
           }
         ],
         "responses": {
@@ -1501,14 +2532,22 @@
             "description": "Tipo de emprego encontrado",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TipoEmprego"
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Gerente",
+                      "salario": 5000.00,
+                      "carga_horario": 40,
+                      "descricao": "Responsável por toda a gestão do supermercado."
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "ID inválido"
+          "404": {
+            "description": "Tipo de emprego não encontrado"
           }
         }
       },
@@ -1523,8 +2562,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do tipo de emprego a ser atualizado"
           }
         ],
         "requestBody": {
@@ -1532,17 +2573,52 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TipoEmpregoInput"
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Gerente Geral"
+                  },
+                  "salario": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 5500.00
+                  },
+                  "carga_horario": {
+                    "type": "integer",
+                    "example": 40
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "202": {
-            "description": "Tipo de emprego atualizado"
+            "description": "Tipo de emprego atualizado",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example": {
+                    "value": {
+                      "id": 1,
+                      "nome": "Gerente Geral",
+                      "salario": 5500.00,
+                      "carga_horario": 40,
+                      "descricao": "Responsável por toda a gestão do supermercado.",
+                      "createdAt": "2025-08-27T22:15:00.000Z",
+                      "updatedAt": "2025-08-27T22:25:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Requisição inválida"
+          },
+          "404": {
+            "description": "Tipo de emprego não encontrado"
           }
         }
       },
@@ -1557,13 +2633,15 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "example": 1
+            },
+            "description": "ID do tipo de emprego a ser removido"
           }
         ],
         "responses": {
           "204": {
-            "description": "Tipo de emprego removido"
+            "description": "Tipo de emprego removido com sucesso"
           },
           "404": {
             "description": "Tipo de emprego não encontrado"
@@ -1571,585 +2649,6 @@
         }
       }
     }
-  },
-  "components": {
-    "schemas": {
-      "CadastroClienteInput": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          },
-          "cpf": {
-            "type": "string"
-          },
-          "telefone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "senha": {
-            "type": "string"
-          }
-        }
-      },
-      "LoginInput": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "senha": {
-            "type": "string"
-          },
-          "validade": {
-            "type": "integer",
-            "description": "Validade do token em minutos"
-          }
-        }
-      },
-      "LoginOutput": {
-        "type": "object",
-        "properties": {
-          "token": {
-            "type": "string"
-          }
-        }
-      },
-      "ClienteInput": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          },
-          "cpf": {
-            "type": "string"
-          },
-          "telefone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "Cliente": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "nome": {
-            "type": "string"
-          },
-          "cpf": {
-            "type": "string"
-          },
-          "telefone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "ProdutoInput": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          },
-          "preco": {
-            "type": "number"
-          },
-          "quantidade": {
-            "type": "integer"
-          },
-          "descricao": {
-            "type": "string"
-          },
-          "id_supermercado": {
-            "type": "integer"
-          }
-        }
-      },
-      "Produto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "nome": {
-            "type": "string"
-          },
-          "preco": {
-            "type": "number"
-          },
-          "quantidade": {
-            "type": "integer"
-          },
-          "descricao": {
-            "type": "string"
-          },
-          "id_supermercado": {
-            "type": "integer"
-          },
-          "supermercado": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "PedidoInput": {
-        "type": "object",
-        "properties": {
-          "id_cliente": {
-            "type": "integer"
-          },
-          "data_pedido": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "valor": {
-            "type": "number"
-          }
-        }
-      },
-      "Pedido": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "id_cliente": {
-            "type": "integer"
-          },
-          "data_pedido": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "valor": {
-            "type": "number"
-          },
-          "cliente": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "ItensPedidoInput": {
-        "type": "object",
-        "properties": {
-          "id_pedido": {
-            "type": "integer"
-          },
-          "id_produto": {
-            "type": "integer"
-          },
-          "quantidade": {
-            "type": "integer"
-          }
-        }
-      },
-      "ItensPedido": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "id_pedido": {
-            "type": "integer"
-          },
-          "id_produto": {
-            "type": "integer"
-          },
-          "quantidade": {
-            "type": "integer"
-          },
-          "pedido": {
-            "type": "object",
-            "properties": {
-              "valor": {
-                "type": "number"
-              },
-              "data_pedido": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "cliente": {
-                "type": "object",
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "produto": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              },
-              "preco": {
-                "type": "number"
-              },
-              "supermercado": {
-                "type": "object",
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "PagamentoInput": {
-        "type": "object",
-        "properties": {
-          "id_pedido": {
-            "type": "integer"
-          },
-          "tipo": {
-            "type": "string"
-          },
-          "data_pagamento": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "Pagamento": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "id_pedido": {
-            "type": "integer"
-          },
-          "tipo": {
-            "type": "string"
-          },
-          "data_pagamento": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "pedido": {
-            "type": "object",
-            "properties": {
-              "valor": {
-                "type": "number"
-              },
-              "cliente": {
-                "type": "object",
-                "properties": {
-                  "nome": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "AvaliacaoInput": {
-        "type": "object",
-        "properties": {
-          "id_cliente": {
-            "type": "integer"
-          },
-          "id_produto": {
-            "type": "integer"
-          },
-          "nota": {
-            "type": "integer"
-          },
-          "comentario": {
-            "type": "string"
-          },
-          "data_avaliacao": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "Avaliacao": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "id_cliente": {
-            "type": "integer"
-          },
-          "id_produto": {
-            "type": "integer"
-          },
-          "nota": {
-            "type": "integer"
-          },
-          "comentario": {
-            "type": "string"
-          },
-          "data_avaliacao": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "cliente": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          },
-          "produto": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "FuncionarioInput": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          },
-          "cpf": {
-            "type": "string"
-          },
-          "telefone": {
-            "type": "string"
-          },
-          "id_empresa": {
-            "type": "integer"
-          },
-          "id_tipo_empregado": {
-            "type": "integer"
-          },
-          "id_supermercado": {
-            "type": "integer"
-          }
-        }
-      },
-      "Funcionario": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "nome": {
-            "type": "string"
-          },
-          "cpf": {
-            "type": "string"
-          },
-          "telefone": {
-            "type": "string"
-          },
-          "id_empresa": {
-            "type": "integer"
-          },
-          "id_tipo_empregado": {
-            "type": "integer"
-          },
-          "id_supermercado": {
-            "type": "integer"
-          },
-          "empresa": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          },
-          "tipo_empregado": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              },
-              "salario": {
-                "type": "number"
-              },
-              "carga_horaria": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "EnderecoInput": {
-        "type": "object",
-        "properties": {
-          "cep": {
-            "type": "string"
-          },
-          "logradouro": {
-            "type": "string"
-          },
-          "numero": {
-            "type": "string"
-          },
-          "complemento": {
-            "type": "string"
-          },
-          "bairro": {
-            "type": "string"
-          },
-          "id_cliente": {
-            "type": "integer"
-          },
-          "id_empresa": {
-            "type": "integer"
-          },
-          "id_funcionario": {
-            "type": "integer"
-          }
-        }
-      },
-      "Endereco": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "cep": {
-            "type": "string"
-          },
-          "logradouro": {
-            "type": "string"
-          },
-          "numero": {
-            "type": "string"
-          },
-          "complemento": {
-            "type": "string"
-          },
-          "bairro": {
-            "type": "string"
-          },
-          "id_cliente": {
-            "type": "integer"
-          },
-          "id_empresa": {
-            "type": "integer"
-          },
-          "id_funcionario": {
-            "type": "integer"
-          },
-          "empresa": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          },
-          "cliente": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          },
-          "funcionario": {
-            "type": "object",
-            "properties": {
-              "nome": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "EmpresaInput": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          },
-          "cnpj": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "Empresa": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "nome": {
-            "type": "string"
-          },
-          "cnpj": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "TipoEmpregoInput": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          },
-          "salario": {
-            "type": "number"
-          },
-          "carga_horario": {
-            "type": "integer"
-          },
-          "descricao": {
-            "type": "string"
-          }
-        }
-      },
-      "TipoEmprego": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "nome": {
-            "type": "string"
-          },
-          "salario": {
-            "type": "number"
-          },
-          "carga_horario": {
-            "type": "integer"
-          },
-          "descricao": {
-            "type": "string"
-          }
-        }
-      }
-    }
   }
+}
 }

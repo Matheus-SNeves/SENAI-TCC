@@ -140,18 +140,6 @@ body {
     color: #7a6a58;
 }
 
-.hidden { display: none !important; }
-
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 3000;
-}
 .modal-content {
     background: #f7f5f2;
     padding: 25px;
@@ -167,14 +155,7 @@ body {
     border-bottom: 1px solid #d4c6b6;
     margin-bottom: 20px;
 }
-.close-btn {
-    font-size: 28px;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
 .form-actions {
     text-align: right;
     margin-top: 20px;
 }
-

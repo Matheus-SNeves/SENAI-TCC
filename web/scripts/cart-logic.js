@@ -1,12 +1,37 @@
 let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
 
+function canAddToCart(product, supermarket) {
+    const supermarketsInCart = [...new Set(cart.map(item => item.supermarket.id))];
+    const isNewSupermarket = !supermarketsInCart.includes(supermarket.id);
+
+    if (supermarketsInCart.length >= 2 && isNewSupermarket) {
+        for (const storeId of supermarketsInCart) {
+            const itemCount = cart
+                .filter(item => item.supermarket.id === storeId)
+                .reduce((sum, item) => sum + item.quantity, 0);
+
+            if (itemCount < 5) {
+                const storeName = cart.find(i => i.supermarket.id === storeId).supermarket.nome;
+                alert(`Você precisa ter pelo menos 5 itens do supermercado "${storeName}" para adicionar produtos de uma nova loja.`);
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 function addToCart(product, supermarket) {
+    if (!canAddToCart(product, supermarket)) {
+        return;
+    }
+
     const existingItem = cart.find(item => item.id === product.id && item.supermarket.id === supermarket.id);
 
     if (existingItem) {
         existingItem.quantity++;
     } else {
-        cart.push({ ...product, quantity: 1, supermarket: { id: supermarket.id, nome: supermarket.nome } });
+        const productWithFullSupermarket = { ...product, supermarket: { id: supermarket.id, nome: supermarket.nome, endereco: supermarket.endereco } };
+        cart.push({ ...productWithFullSupermarket, quantity: 1 });
     }
     saveCart();
     updateCartCount();
@@ -29,6 +54,23 @@ function updateCartCount() {
         }
     }
 }
+
+async function calculateShipping() {
+    const supermarketsInCart = [...new Set(cart.map(item => item.supermarket.id))];
+    if (supermarketsInCart.length === 0) {
+        return 0;
+    }
+    const baseFeePerStore = 5.00;
+    const feeBetweenStores = 2.00;
+
+    let totalShipping = supermarketsInCart.length * baseFeePerStore;
+    if (supermarketsInCart.length > 1) {
+        totalShipping += (supermarketsInCart.length - 1) * feeBetweenStores;
+    }
+
+    return totalShipping;
+}
+
 
 function showFeedback(message) {
     if (!document.getElementById('feedback-styles')) {

@@ -1,10 +1,3 @@
-body {
-    background-color: #f7f5f2;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    color: #4a3e30;
-}
-
 .compare-header {
     display: flex;
     align-items: center;
@@ -111,19 +104,6 @@ body {
     font-size: 22px;
 }
 
-.hidden { display: none !important; }
-
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 3000;
-}
-
 .action-modal-content {
     background: #f7f5f2;
     padding: 25px;
@@ -152,9 +132,8 @@ body {
 .action-modal-footer {
     display: flex;
     justify-content: center;
-    gap: 15px;
 }
-.action-btn, .action-btn-secondary {
+.action-btn {
     flex: 1;
     padding: 12px;
     border: none;
@@ -162,14 +141,6 @@ body {
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-}
-.action-btn {
     background-color: #BF946F;
     color: white;
-}
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
 }
