@@ -24,6 +24,17 @@ enum UserRole {
   ADMIN
 }
 
+enum tiposProd {
+  acougue
+  bebidas
+  frios
+  higiene
+  hortifruti
+  laticinios
+  limpeza
+  padaria
+}
+
 model Produto {
   id             Int           @id @default(autoincrement())
   nome           String        @db.VarChar(255)
@@ -44,6 +55,7 @@ model TipoEmprego {
   salario       Float
   carga_horaria Int
   descricao     String        @db.VarChar(255)
+  role          tiposProd
   empregados    Funcionario[]
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt

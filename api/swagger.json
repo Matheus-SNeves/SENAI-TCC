@@ -72,11 +72,13 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "format": "email"
+                    "format": "email",
+                    "default":"carla.oliveira@email.com"
                   },
                   "senha": {
                     "type": "string",
-                    "format": "password"
+                    "format": "password",
+                    "default":"senha-cliente-123"
                   },
                   "validade": {
                     "type": "integer"
@@ -1038,7 +1040,7 @@
         }
       }
     },
-    "/itenspedido": {
+    "/itenspedidos": {
       "post": {
         "tags": ["Itens do Pedido"],
         "summary": "Adiciona um item a um pedido",
