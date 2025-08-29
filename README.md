@@ -12,7 +12,7 @@
 - [x] Criar um repositório no **github** e adicionar os integrantes do grupo como colaboradores.
 - [x] Criar um cronograma **Gráfico Gant**
 - [x] Elencar os **requisitos funcionais**
-    - [x] Ilustrar cada **requisito funciional** com DCU (Diagrama de casos de Uso)
+    - [x] Ilustrar cada **requisito funcional** com DCU (Diagrama de casos de Uso)
 - [x] Modelar o banco de dados MER x DER Modelo conceitual
 - [x] Iniciar um DC (Diagrama de Classes) Back-End
 - [x] UML DC (Diagrama de Classes) **Back-end**
@@ -21,10 +21,17 @@
 - [x] Triângulo de Ferro Escopo, Prazo e Custo
 - [x] Iniciar a codificação/desenvolvimento **Banco de dados**
 - [x] Iniciar a codificação/desenvolvimento **Back-end**
-- [ ] Prótótipo Figma Front-end
-- [ ] Iniciar a codificação/desenvolvimento **Front-end**
+- [x] Prótótipo Figma Front-end
+- [x] Iniciar a codificação/desenvolvimento **Front-end**
 - [x] Prótótipo Figma Mobile
 - [ ] Iniciar a codificação/desenvolvimento **Mobile**
+- [x] Back-End - CRUDs (Cadastro, Listagem, alteração e exclusão) das principais **tabelas**.
+- [x] Back-Front - CRUDs das principais **Telas** com Responsividade.
+- [x] Login com autenticação real (segurança JWT).
+- [x] Integração do front com o back-end e banco de dados. 
+- [x] Fluxo de navegação funcionando (Web e/ou Mobile).
+- [x] Relatório de testes manuais **unitários**, **integração** e **ponto a ponto**.
+- [x] Entregas através do repositório do projeto no GitHub, com evidências dos testes em relatório no formato PDF.
 
 ## Gráfico Gantt:
 ![gantt](./docs/gantt.png)
