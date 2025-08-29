@@ -86,3 +86,45 @@ th {
     cursor: pointer;
     font-weight: bold;
 }
+
+@media (max-width: 1024px) {
+    .admin-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 10px;
+        border-right: none;
+        border-bottom: 1px solid #e0d9cf;
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .nav-item {
+        padding: 8px 12px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 10px;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}

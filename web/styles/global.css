@@ -21,7 +21,6 @@ main, .main-container {
     display: none !important;
 }
 
-/* --- CABEÇALHO GLOBAL --- */
 header {
     display: flex;
     justify-content: space-between;
@@ -57,7 +56,6 @@ header {
     background-color: #f0ebe5;
 }
 
-/* --- RODAPÉ GLOBAL --- */
 .site-footer {
     background-color: #4a3e30;
     color: #f7f5f2;
@@ -109,7 +107,6 @@ header {
     color: #d4c6b6;
 }
 
-/* --- SISTEMA DE CARRINHO GLOBAL --- */
 .cart-button {
     position: fixed;
     bottom: 30px;
@@ -272,7 +269,6 @@ header {
     cursor: not-allowed;
 }
 
-/* --- MODAIS GENÉRICOS --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -322,4 +318,40 @@ header {
 .modal-body {
     overflow-y: auto;
     padding: 10px;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    .user-actions {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .site-footer {
+        padding: 20px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .cart-button {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .cart-modal {
+        max-width: 100%;
+        width: 100%;
+    }
 }

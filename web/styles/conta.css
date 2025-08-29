@@ -159,3 +159,22 @@ body {
     text-align: right;
     margin-top: 20px;
 }
+
+@media (max-width: 768px) {
+    .page-header {
+        padding: 20px;
+    }
+
+    .account-container {
+        margin: 20px auto;
+        padding: 0 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+}

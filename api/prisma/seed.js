@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const { createHash } = require('../src/middlewares/auth'); // Ajuste o caminho se necessário
+const { createHash } = require('../src/middlewares/auth'); 
 const prisma = new PrismaClient();
 
 async function main() {
@@ -27,7 +27,7 @@ async function main() {
     console.log(`Criada empresa: ${empresaMatriz.nome}`);
 
     // 3. Criar o primeiro Funcionário (Admin)
-    const adminPassword = await createHash('admin123'); // Senha padrão inicial
+    const adminPassword = await createHash('admin123'); 
     const primeiroAdmin = await prisma.funcionario.create({
         data: {
             nome: 'Admin Principal',

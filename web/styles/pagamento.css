@@ -153,3 +153,31 @@ h2 {
 .confirm-btn:hover {
     background-color: #216e21;
 }
+
+@media (max-width: 1024px) {
+    .checkout-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        padding: 20px;
+    }
+
+    .checkout-container {
+        margin: 20px auto;
+        padding: 0 10px;
+        gap: 20px;
+    }
+
+    .order-summary, .payment-options {
+        padding: 20px;
+    }
+
+    .form-group-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+}

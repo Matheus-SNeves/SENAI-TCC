@@ -130,3 +130,30 @@
     background-color: #d4c6b6;
     color: #4a3e30;
 }
+
+@media (max-width: 768px) {
+    .category-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .back-btn {
+        margin-bottom: 10px;
+    }
+
+    #page-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 20px 10px;
+        gap: 15px;
+    }
+
+    .product-item img {
+        height: 100px;
+    }
+}

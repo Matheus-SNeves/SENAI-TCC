@@ -37,7 +37,6 @@ const loginCliente = async (req, res) => {
             { expiresIn: validade ? validade + "min" : "60min" }
         );
         
-        // Retorna o token e os dados básicos do usuário
         return res.status(200).json({ 
             token: token,
             usuario: {

@@ -34,7 +34,6 @@ const createCliente = async (req, res) => {
             },
         });
         
-        // Remove a senha da resposta para segurança
         const { senha: _, ...clienteSemSenha } = novoCliente;
 
         res.status(201).json(clienteSemSenha);
@@ -44,7 +43,6 @@ const createCliente = async (req, res) => {
     }
 };
 
-// Nova função para criar um administrador
 const createAdmin = async (req, res) => {
     const { nome, cpf, telefone, email, senha } = req.body;
 
@@ -74,11 +72,10 @@ const createAdmin = async (req, res) => {
                 telefone,
                 email,
                 senha: hashedPassword,
-                role: 'ADMIN', // Define o papel (role) como ADMIN
+                role: 'ADMIN', 
             },
         });
         
-        // Remove a senha da resposta por segurança
         const { senha: _, ...adminSemSenha } = novoAdmin;
 
         res.status(201).json(adminSemSenha);
@@ -90,5 +87,5 @@ const createAdmin = async (req, res) => {
 
 module.exports = {
     createCliente,
-    createAdmin // Adicionando a nova função para exportação
+    createAdmin 
 };

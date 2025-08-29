@@ -83,3 +83,20 @@
     margin-top: 8px;
     text-align: center;
 }
+
+@media (max-width: 768px) {
+    .page-header {
+        padding: 20px;
+    }
+
+    .supermarkets-container {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        padding: 20px 10px;
+        gap: 15px;
+    }
+
+    .modal-categories {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
