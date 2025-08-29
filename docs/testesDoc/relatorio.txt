@@ -1,0 +1,311 @@
+Relatório de Testes Manuais Unitários, Integração e Ponto a Ponto
+Data e Hora dos Testes: 28 de agosto de 2025, 22:30 BRT
+Nome do Testador: Assistente Virtual
+Versão da API Testada: 1.0.0
+
+Resultados dos Testes
+Autenticação e Cadastro
+Rota de Login de cliente (POST /login)
+
+Credenciais corretas retornaram um token JWT (Segurança)
+
+Credenciais incorretas retornaram erro 400 (Recuperação de falhas)
+
+Rota de Login de administrador (POST /login-admin)
+
+Credenciais corretas retornaram um token JWT (Segurança)
+
+Credenciais incorretas retornaram erro 400 (Recuperação de falhas)
+
+Rota de criação de cliente (POST /cadastro/cliente)
+
+Cliente criado com sucesso (Código 201) (Funcional)
+
+Usuário com e-mail ou CPF já existente retornou erro 409 (Recuperação de falhas)
+
+Clientes
+Rota de listagem de clientes (GET /clientes)
+
+Listagem de clientes retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Listagem de clientes vazia retornou sucesso (Funcional)
+
+Rota de atualização de cliente (PUT /clientes/{id})
+
+Cliente atualizado com sucesso (Código 202) (Funcional)
+
+Cliente não encontrado retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de cliente (DELETE /clientes/{id})
+
+Cliente excluído com sucesso (Código 204) (Funcional)
+
+Cliente não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Empresas
+Rota de criação de empresa (POST /empresas)
+
+Empresa criada com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de listagem de empresas (GET /empresas)
+
+Listagem de empresas retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de atualização de empresa (PUT /empresas/{id})
+
+Empresa atualizada com sucesso (Código 202) (Funcional)
+
+Empresa não encontrada retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de empresa (DELETE /empresas/{id})
+
+Empresa excluída com sucesso (Código 204) (Funcional)
+
+Empresa não encontrada retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Produtos
+Rota de criação de produto (POST /produtos)
+
+Produto criado com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de listagem de produtos (GET /produtos)
+
+Listagem de produtos retornou sucesso (Código 200) (Funcional)
+
+A rota não exige autenticação (Observação: a rota de listagem de produtos não requer autenticação JWT, ao contrário do exemplo de usuário).
+
+Rota de atualização de produto (PUT /produtos/{id})
+
+Produto atualizado com sucesso (Código 202) (Funcional)
+
+Produto não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de produto (DELETE /produtos/{id})
+
+Produto excluído com sucesso (Código 204) (Funcional)
+
+Produto não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Pedidos
+Rota de criação de pedido (POST /pedidos)
+
+Pedido criado com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de listagem de pedidos (GET /pedidos)
+
+Listagem de pedidos retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de atualização de pedido (PUT /pedidos/{id})
+
+Pedido atualizado com sucesso (Código 202) (Funcional)
+
+Pedido não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de pedido (DELETE /pedidos/{id})
+
+Pedido excluído com sucesso (Código 204) (Funcional)
+
+Pedido não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Itens do Pedido
+Rota de criação de item do pedido (POST /itenspedido)
+
+Item do pedido criado com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de listagem de itens do pedido (GET /itenspedido)
+
+Listagem de itens retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de atualização de item do pedido (PUT /itenspedido/{id})
+
+Item do pedido atualizado com sucesso (Código 202) (Funcional)
+
+Item não encontrado retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de item do pedido (DELETE /itenspedido/{id})
+
+Item do pedido excluído com sucesso (Código 204) (Funcional)
+
+Item não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Pagamentos
+Rota de registro de pagamento (POST /pagamentos)
+
+Pagamento registrado com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de listagem de pagamentos (GET /pagamentos)
+
+Listagem de pagamentos retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de atualização de pagamento (PUT /pagamentos/{id})
+
+Pagamento atualizado com sucesso (Código 202) (Funcional)
+
+Pagamento não encontrado retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de pagamento (DELETE /pagamentos/{id})
+
+Pagamento excluído com sucesso (Código 204) (Funcional)
+
+Pagamento não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Avaliações
+Rota de criação de avaliação (POST /avaliacoes)
+
+Avaliação criada com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de listagem de avaliações (GET /avaliacoes)
+
+Listagem de avaliações retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de atualização de avaliação (PUT /avaliacoes/{id})
+
+Avaliação atualizada com sucesso (Código 202) (Funcional)
+
+Avaliação não encontrada retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de avaliação (DELETE /avaliacoes/{id})
+
+Avaliação excluída com sucesso (Código 204) (Funcional)
+
+Avaliação não encontrada retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Funcionários
+Rota de criação de funcionário (POST /funcionarios)
+
+Funcionário criado com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de listagem de funcionários (GET /funcionarios)
+
+Listagem de funcionários retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de atualização de funcionário (PUT /funcionarios/{id})
+
+Funcionário atualizado com sucesso (Código 202) (Funcional)
+
+Funcionário não encontrado retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de funcionário (DELETE /funcionarios/{id})
+
+Funcionário excluído com sucesso (Código 204) (Funcional)
+
+Funcionário não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Tipo de Emprego
+Rota de criação de tipo de emprego (POST /tipoempregos)
+
+Tipo de emprego criado com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de listagem de tipos de emprego (GET /tipoempregos)
+
+Listagem de tipos de emprego retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de atualização de tipo de emprego (PUT /tipoempregos/{id})
+
+Tipo de emprego atualizado com sucesso (Código 202) (Funcional)
+
+Tipo de emprego não encontrado retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de tipo de emprego (DELETE /tipoempregos/{id})
+
+Tipo de emprego excluído com sucesso (Código 204) (Funcional)
+
+Tipo de emprego não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Endereços
+Rota de criação de endereço (POST /enderecos)
+
+Endereço criado com sucesso (Código 201) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de listagem de endereços (GET /enderecos)
+
+Listagem de endereços retornou sucesso (Código 200) (Funcional)
+
+A rota está protegida por autenticação JWT (Segurança)
+
+Rota de atualização de endereço (PUT /enderecos/{id})
+
+Endereço atualizado com sucesso (Código 202) (Funcional)
+
+Endereço não encontrado retornou erro 404 (Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
+Rota de exclusão de endereço (DELETE /enderecos/{id})
+
+Endereço excluído com sucesso (Código 204) (Funcional)
+
+Endereço não encontrado retornou erro 404 (Funcional, Recuperação de falhas)
+
+A rota está protegida por autenticação JWT (Funcional, Segurança)
+
