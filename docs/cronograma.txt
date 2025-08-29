@@ -10,3 +10,11 @@ cronograma:
 04/06 : Triangulo de Ferro
 09/06 : Matriz SWOT
 15/06 : Protótipo Mobile
+28/06 : Prototipo Web
+Mês 8:
+Login JWT
+Endereço com ViaCEP	
+CheckLIST	
+Swagger
+Pagina de usuario
+Pagina de adm
