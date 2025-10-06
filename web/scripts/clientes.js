@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const user = JSON.parse(localStorage.getItem('user'));
-    const API_URL = 'http://localhost:1243';
+    const API_URL = 'https://tcc-senai-tawny.vercel.app';
 
     if (!token || !user || user.role !== 'ADMIN') {
         alert('Acesso negado. Faça login como administrador.');

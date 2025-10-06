@@ -3,23 +3,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const genericModalOverlay = document.getElementById('generic-modal-overlay');
     let allData = {};
 
+    // MODIFICADO: URL da API.
+    const API_URL = 'https://tcc-senai-tawny.vercel.app';
+
     try {
-        const [supermercadosResponse, iconsResponse] = await Promise.all([
-            fetch('../mockups/supermercados.json'),
-            fetch('../mockups/icons.json')
+        // MODIFICADO: Busca dados dos endpoints da API.
+        const [supermercadosResponse, categoriasResponse] = await Promise.all([
+            fetch(`${API_URL}/supermercados`),
+            fetch(`${API_URL}/categorias`)
         ]);
         
-        const supermercadosData = await supermercadosResponse.json();
-        const iconsData = await iconsResponse.json();
-
-        allData.supermercados = supermercadosData.supermercado;
-        allData.icons = iconsData.icons;
-        
-        const categoryKeys = ['hortifruti', 'acougue', 'bebidas', 'frios', 'higiene', 'laticinios', 'limpeza', 'padaria'];
-        allData.categoryMap = {};
-        allData.icons.forEach((icon, index) => {
-            allData.categoryMap[icon.nome] = { file: categoryKeys[index] };
-        });
+        // MODIFICADO: Adaptação para a resposta da API (sem .supermercado ou .icons).
+        allData.supermercados = await supermercadosResponse.json();
+        allData.categorias = await categoriasResponse.json();
 
         if (!allData.supermercados || allData.supermercados.length === 0) {
             container.innerHTML = '<p>Nenhum supermercado encontrado.</p>';
@@ -60,15 +56,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="modal-body">
                     <div class="modal-categories">
-                        ${allData.icons.map(icon => {
-                            const categoryKey = allData.categoryMap[icon.nome]?.file;
-                            return `
-                                <div class="card-item" onclick="window.location.href='produtos.html?category=${categoryKey}&storeId=${store.id}'">
-                                    <img src="${icon.imagem}" alt="${icon.nome}">
-                                    <h3>${icon.nome}</h3>
-                                </div>
-                            `;
-                        }).join('')}
+                        ${allData.categorias.map(cat => `
+                            <div class="card-item" onclick="window.location.href='produtos.html?category=${cat.chave}&storeId=${store.id}'">
+                                <img src="${cat.imagem}" alt="${cat.nome}">
+                                <h3>${cat.nome}</h3>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             </div>`;

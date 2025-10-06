@@ -1,38 +1,53 @@
+const icons = {
+    "hortifruti": "https://cdn-icons-png.flaticon.com/512/5346/5346400.png",
+    "acougue": "https://cdn-icons-png.flaticon.com/512/1534/1534825.png",
+    "padaria": "https://cdn-icons-png.flaticon.com/512/7547/7547106.png",
+    "laticinios": "https://cdn-icons-png.flaticon.com/512/3070/3070925.png",
+    "bebidas": "https://cdn-icons-png.freepik.com/256/2405/2405451.png",
+    "frios": "https://cdn-icons-png.flaticon.com/512/869/869664.png",
+    "limpeza": "https://cdn-icons-png.freepik.com/512/994/994928.png",
+    "higiene": "https://cdn-icons-png.flaticon.com/512/11264/11264253.png"
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const categoryName = urlParams.get('category');
+    const categoryKey = urlParams.get('category');
     const storeId = parseInt(urlParams.get('storeId'));
 
     const titleElement = document.getElementById('page-title');
     const container = document.getElementById('products-container');
     const modal = document.getElementById('product-action-modal');
 
-    if (!categoryName || !storeId) {
+    // MODIFICADO: URL da API
+    const API_URL = 'https://tcc-senai-tawny.vercel.app';
+
+    if (!categoryKey || !storeId) {
         titleElement.textContent = 'Informações inválidas';
         return;
     }
 
     try {
+        // MODIFICADO: Busca produtos da categoria e os supermercados da API.
+        // O endpoint de produtos pode ser otimizado no futuro para aceitar storeId.
         const [productsResponse, supermarketsResponse] = await Promise.all([
-            fetch(`../mockups/${categoryName}.json`),
-            fetch('../mockups/supermercados.json')
+            fetch(`${API_URL}/produtos?categoria=${categoryKey}`),
+            fetch(`${API_URL}/supermercados`)
         ]);
         
-        const productsData = await productsResponse.json();
-        const supermarketsData = await supermarketsResponse.json();
+        const categoryProducts = await productsResponse.json();
+        const allSupermarkets = await supermarketsResponse.json();
         
-        const store = supermarketsData.supermercado.find(s => s.id === storeId);
-        const categoryData = productsData[categoryName];
+        const store = allSupermarkets.find(s => s.id === storeId);
         
         titleElement.textContent = `Produtos em ${store.nome}`;
 
-        if (!categoryData || categoryData.length === 0) {
+        if (!categoryProducts || categoryProducts.length === 0) {
             container.innerHTML = '<p>Nenhum produto encontrado nesta categoria.</p>';
             return;
         }
 
         container.innerHTML = '';
-        categoryData.forEach(item => {
+        categoryProducts.forEach(item => {
             const priceEntry = item.precos.find(p => p.supermercado_id === storeId);
             if (!priceEntry) return;
 
@@ -88,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         document.getElementById('modal-compare-prices').addEventListener('click', () => {
-            window.location.href = `comparar.html?category=${categoryName}&productId=${product.id}`;
+            window.location.href = `comparar.html?category=${categoryKey}&productId=${product.id}`;
         });
     }
 });

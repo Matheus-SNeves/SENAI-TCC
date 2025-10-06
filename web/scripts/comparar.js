@@ -7,21 +7,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pricesContainer = document.querySelector('.prices-list-container');
     const actionModal = document.getElementById('action-modal');
 
+    // MODIFICADO: URL da API.
+    const API_URL = 'https://tcc-senai-tawny.vercel.app';
+
     if (!categoryName || !productId) {
         document.body.innerHTML = '<h1>Erro: Categoria ou produto não especificado.</h1>';
         return;
     }
 
     try {
+        // MODIFICADO: Busca todos os produtos da categoria e todos os supermercados.
+        // Uma API mais otimizada poderia ter um endpoint /produtos/:id
         const [productsResponse, supermarketsResponse] = await Promise.all([
-            fetch(`../mockups/${categoryName}.json`),
-            fetch('../mockups/supermercados.json')
+            fetch(`${API_URL}/produtos?categoria=${categoryName}`),
+            fetch(`${API_URL}/supermercados`)
         ]);
 
         const productsData = await productsResponse.json();
         const supermarketsData = await supermarketsResponse.json();
 
-        const product = productsData[categoryName].find(p => p.id == productId);
+        // MODIFICADO: Encontra o produto na lista retornada pela API.
+        const product = productsData.find(p => p.id == productId);
         
         if (!product) {
             throw new Error('Produto não encontrado');
@@ -33,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
 
         const supermarketMap = new Map();
-        supermarketsData.supermercado.forEach(store => {
+        supermarketsData.forEach(store => {
             supermarketMap.set(store.id, { id: store.id, nome: store.nome, imagem: store.imagem });
         });
 
@@ -77,15 +83,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
 
         const confirmBtn = document.getElementById('action-modal-confirm');
-        confirmBtn.onclick = () => {
+        
+        // Remove listener antigo para evitar múltiplos cliques
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+        newConfirmBtn.addEventListener('click', () => {
             addToCart(product, store);
             actionModal.classList.add('hidden');
-        };
+        });
 
         actionModal.classList.remove('hidden');
     }
 
-    document.getElementById('action-modal-cancel').addEventListener('click', () => {
+    document.getElementById('action-modal-close').addEventListener('click', () => {
         actionModal.classList.add('hidden');
+    });
+
+    // Fechar modal ao clicar fora
+    actionModal.addEventListener('click', (e) => {
+        if (e.target === actionModal) {
+            actionModal.classList.add('hidden');
+        }
     });
 });
