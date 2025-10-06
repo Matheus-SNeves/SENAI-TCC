@@ -15,7 +15,10 @@
 - **Front-End do adm**:[link](https://matheus-sneves.github.io/web-admin-tcc/pages/login.html)
 
 ## Roteiro de testes:
-- **Arquivo**: [link](./roteiro.md)
+- **Arquivo**: [arquivo](./roteiro.md)
+
+## Front-End do cliente:
+- **Repositório**: [link](https://github.com/Matheus-SNeves/web-cliente-tcc)
 
 ## Tarefas:
 - [x] Escolher a metodologia **SCRUM, KANBAN, XP, outras**
