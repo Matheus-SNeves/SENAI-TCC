@@ -101,8 +101,5 @@
 ## Quadro Canvas:
 [***canvas***](./docs/canvas(3).json)
 
-## Arquivos:
-Backend está na pasata api e os documentos estão na pasta docs(contém arquivos em pdf, drawio, txt, png, gif, json e fig)
-
 # Obrigado
 ![gif](./docs/logoanimacao.gif)
