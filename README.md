@@ -50,7 +50,7 @@
 - [x] **Implantação** do Back-End em um serviço de nuvem (ex: Vercel, Heroku, AWS).
 - [x] **Implantação** do Front-End em um serviço de nuvem (ex: Vercel, GitHub Pages).
 - [ ] Iniciar o desenvolvimento do App **Mobile** (Funcionalidades principais).
-- [ ] Testes de integração e ponto a ponto (Caixa preta e Caixa branca).
+- [ ] Testes de integração e ponto a ponto (Caixa preta e Caixa branca)
     - [x] Após o **back-end** implantado, Criar um Roteiro/check-list e testar manualmente (**Teste de integração: Back/BD**) a API a partir do **Insomnia** e documentar os testes. Tirando prints e fazendo um relatório. (**Caixa branca**).
     - [x] Após o **front-end** implantado, Criar um Roteiro/check-list para testar o **Front-End** manualmente (**Teste ponto a ponto**), fazer um relatório dos testes. (**Caixa branca**).
     - [ ] Criar um Roteiro/check-list (**teste de integração**) pedir para um colega de outro grupo testar a **API implantada** a partir do **Insomnia** e documentar os testes. Tirando prints e fazendo um relatório. (**Caixa preta**).
