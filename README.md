@@ -21,9 +21,6 @@
 ## Roteiro de testes:
 - **Arquivo**: [arquivo](./roteiro.md)
 
-## Front-End do cliente:
-- **Repositório**: [link](https://github.com/Matheus-SNeves/web-cliente-tcc)
-
 ## Tarefas:
 - [x] Escolher a metodologia **SCRUM, KANBAN, XP, outras**
 - [x] Modelar o negócio no **Canvas**
