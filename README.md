@@ -12,7 +12,11 @@
 
 ## Front-End do adm:
 - **Repositório**: [link](https://github.com/Matheus-SNeves/web-admin-tcc)
-- **Front-End do adm**:[link](https://matheus-sneves.github.io/web-admin-tcc/pages/login.html)
+- **Tela**:[link](https://matheus-sneves.github.io/web-admin-tcc/pages/login.html)
+
+## Front-End do cliente: 
+- **Repositório**: [link](https://github.com/Matheus-SNeves/web-cliente-tcc)
+- **Tela**: [link](https://matheus-sneves.github.io/web-cliente-tcc)
 
 ## Roteiro de testes:
 - **Arquivo**: [arquivo](./roteiro.md)
